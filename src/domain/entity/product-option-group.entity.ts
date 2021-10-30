@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import ProductOption from './product-option.entity';
-import Product from './product.entity';
+import { Product } from './product.entity';
 
 @Entity()
 export default class ProductOptionGroup extends BaseEntity {
@@ -19,7 +19,13 @@ export default class ProductOptionGroup extends BaseEntity {
   @Column({ type: 'int', nullable: false })
   ordering: number;
 
-  @OneToMany(type => ProductOption, productOption => productOption.id)
+  @OneToMany(
+    type => ProductOption,
+    productOption => productOption.productOptionGroup,
+    {
+      cascade: true,
+    },
+  )
   productOptionList: ProductOption[];
 
   @ManyToOne(type => Product, product => product.productOptionGroupList)

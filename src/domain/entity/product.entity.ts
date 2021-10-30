@@ -6,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import ProductOptionGroup from './product-option-group.entity';
+import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 export enum ProductStatus {
   PREPARE = '준비중',
@@ -21,7 +23,7 @@ export class Product extends BaseEntity {
   productName: string;
 
   @Column({ type: 'varchar', nullable: false })
-  productCode: string;
+  productCode: string = uuidv4();
 
   @Column({ type: 'int', nullable: false })
   productPrice: number;
@@ -29,6 +31,12 @@ export class Product extends BaseEntity {
   @Column({ type: 'enum', enum: ProductStatus, default: ProductStatus.PREPARE })
   status: ProductStatus;
 
-  @OneToMany(type => ProductOptionGroup, productGroup => productGroup.id)
+  @OneToMany(
+    type => ProductOptionGroup,
+    ProductOptionGroup => ProductOptionGroup.product,
+    {
+      cascade: true,
+    },
+  )
   productOptionGroupList: ProductOptionGroup[];
 }

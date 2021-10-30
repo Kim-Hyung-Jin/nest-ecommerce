@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProductCommand } from '../products/dto/create-product.command';
-import { ProductsService } from '../products/products.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { CreateProductCommand } from '../domain/dto/create-product.command';
+import { ProductsServiceImpl } from '../domain/products.service-impl';
 import { ProductsCommandMapper } from '../domain/products.command.mapper';
 import { ProductsResult } from '../domain/products.result';
+import { ProductsService } from '../domain/products.service';
 
 @Injectable()
 export default class ProductsFacade {
@@ -11,8 +12,15 @@ export default class ProductsFacade {
     private readonly productsCommandMapper: ProductsCommandMapper,
   ) {}
 
-  registerProduct(command: CreateProductCommand): ProductsResult {
-    const productInfo = this.productsService.create(command);
+  async registerProduct(
+    command: CreateProductCommand,
+  ): Promise<ProductsResult> {
+    const productInfo = await this.productsService.create(command);
+    return this.productsCommandMapper.ofResult(productInfo);
+  }
+
+  async getProduct(productCode: string): Promise<ProductsResult> {
+    const productInfo = await this.productsService.findOne(productCode);
     return this.productsCommandMapper.ofResult(productInfo);
   }
 }
