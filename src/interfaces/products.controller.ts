@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import ProductsFacade from '../application/products.facade';
-import { CreateProductDto } from '../products/dto/create-product.dto';
-import { CreateProductResponse } from '../products/dto/create-product.response';
-import { ProductsDtoMapper } from '../products/dto/products-dto.mapper';
+import { CreateProductDto } from './dto/create-product.dto';
+import { CreateProductResponse } from './dto/create-product.response';
+import { ProductsDtoMapper } from './products-dto.mapper';
 
 @Controller('products')
 export default class ProductsController {
@@ -12,13 +12,13 @@ export default class ProductsController {
   ) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
+  async create(
+    @Body() createProductDto: CreateProductDto,
+  ): Promise<CreateProductResponse> {
     const command =
       this.productsDtoMapper.toCreateProductCommand(createProductDto);
-    const result = this.productsFacade.registerProduct(command);
-    return {
-      productCode: result.productInfo.productCode,
-    };
+    const result = await this.productsFacade.registerProduct(command);
+    return this.productsDtoMapper.ofResponse(result);
   }
   //
   // @Get()

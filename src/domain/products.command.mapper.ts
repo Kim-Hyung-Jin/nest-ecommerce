@@ -1,17 +1,20 @@
-import { Product } from '../products/entities/product.entity';
+import { Product } from './entity/product.entity';
 import {
   CreateProductCommand,
   CreateProductOptionCommand,
   CreateProductOptionGroupCommand,
-} from '../products/dto/create-product.command';
-import ProductOption from '../products/entities/product-option.entity';
-import ProductOptionGroup from '../products/entities/product-option-group.entity';
-import { ProductsInfo } from './products.info';
+} from './dto/create-product.command';
+import ProductOption from './entity/product-option.entity';
+import ProductOptionGroup from './entity/product-option-group.entity';
+import { ProductsInfo } from './dto/products.info';
 import { ProductsResult } from './products.result';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class ProductsCommandMapper {
   toProductEntity(command: CreateProductCommand): Product {
     const product = new Product();
+    product.productPrice = command.productPrice;
     product.productName = command.productName;
     product.productOptionGroupList = command.productOptionGroupList.map(
       productOptionGroupCommand =>

@@ -6,7 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import ProductOptionGroup from './product-option-group.entity';
-
+import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 export enum ProductStatus {
   PREPARE = '준비중',
   ON_SALE = '판매중',
@@ -21,7 +22,7 @@ export class Product extends BaseEntity {
   productName: string;
 
   @Column({ type: 'varchar', nullable: false })
-  productCode: string;
+  productCode: string = uuidv4();
 
   @Column({ type: 'int', nullable: false })
   productPrice: number;

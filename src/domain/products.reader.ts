@@ -1,7 +1,10 @@
-import Product from '../products/entities/product.entity';
-import { ProductOptionGroupInfo } from '../products/dto/product-Info';
+import { Product } from './entity/product.entity';
+import { ProductsOptionGroupInfo } from './dto/products.info';
+
 
 export interface ProductsReader {
-  getProductByCode: (productCode: string) => Product;
-  getProductOptionGroupInfoList: (product: Product) => ProductOptionGroupInfo;
+  getProductByCode: (productCode: string) => Promise<Product>;
+  getProductOptionGroupInfoList: (
+    product: Product,
+  ) => Promise<ProductsOptionGroupInfo>;
 }

@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import ProductOption from './product-option.entity';
-import Product from './product.entity';
+import { Product } from './product.entity';
 
 @Entity()
 export default class ProductOptionGroup extends BaseEntity {

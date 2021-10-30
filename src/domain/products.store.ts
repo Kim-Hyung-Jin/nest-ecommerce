@@ -1,5 +1,5 @@
-import Product from '../products/entities/product.entity';
+import { Product } from './entity/product.entity';
 
 export default interface ProductsStore {
-  store: (product: Product) => Product;
+  store: (product: Product) => Promise<Product>;
 }
