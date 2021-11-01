@@ -8,7 +8,6 @@ import { ProductsService } from '../domain/products.service';
 @Injectable()
 export default class ProductsFacade {
   constructor(
-    @Inject('ProductsService')
     private readonly productsService: ProductsService,
     private readonly productsCommandMapper: ProductsCommandMapper,
   ) {}

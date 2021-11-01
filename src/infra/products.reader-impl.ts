@@ -18,16 +18,18 @@ export class ProductsReaderImpl implements ProductsReader {
 
   async getProductByCode(productCode: string): Promise<Product> {
     return await this.productRepository.findOne({
-      relations: ['ProductOptionGroup'],
+      relations: [
+        'productOptionGroupList',
+        'productOptionGroupList.productOptionList',
+      ],
       where: [{ productCode: productCode }],
     });
-
-    this.productRepository.create
   }
 
   getProductOptionGroupInfoList(product: Product): ProductsOptionGroupInfo[] {
     Logger.log(
-      'getProductOptionGroupInfoList -> ' + product.productOptionGroupList,
+      'getProductOptionGroupInfoList -> ' +
+        JSON.stringify(product.productOptionGroupList, null, 2),
     );
     return product.productOptionGroupList.map(productOptionGroup =>
       this.getProductOptionInfo(productOptionGroup),

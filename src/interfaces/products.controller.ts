@@ -3,6 +3,7 @@ import ProductsFacade from '../application/products.facade';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductResponse } from './dto/create-product.response';
 import { ProductsDtoMapper } from './products-dto.mapper';
+import { ProductsResult } from '../domain/products.result';
 
 @Controller('products')
 export default class ProductsController {
@@ -28,8 +29,11 @@ export default class ProductsController {
   // }
   //
   @Get(':productCode')
-  async findOne(@Param('productCode') productCode: string) {
-    return await this.productsFacade.getProduct(productCode);
+  async findOne(
+    @Param('productCode') productCode: string,
+  ): Promise<ProductsResult> {
+    const result = await this.productsFacade.getProduct(productCode);
+    return result;
   }
 
   //
