@@ -8,9 +8,10 @@ import { ProductsDtoMapper } from './interfaces/products-dto.mapper';
 import { ProductsCommandMapper } from './domain/products.command.mapper';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './domain/entity/product.entity';
+import ProductOptionGroup from './domain/entity/product-option-group.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product])],
+  imports: [TypeOrmModule.forFeature([Product, ProductOptionGroup])],
   controllers: [ProductsController],
   providers: [
     ProductsFacade,

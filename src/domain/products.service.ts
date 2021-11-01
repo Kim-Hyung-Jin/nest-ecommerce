@@ -7,5 +7,6 @@ import { ProductsCommandMapper } from './products.command.mapper';
 import { ProductsInfo } from './dto/products.info';
 
 export interface ProductsService {
-  create(command: CreateProductCommand): Promise<ProductsInfo>
+  create(command: CreateProductCommand): Promise<ProductsInfo>;
+  findOne(productCode: string): Promise<ProductsInfo>;
 }

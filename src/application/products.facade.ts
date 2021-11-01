@@ -19,4 +19,9 @@ export default class ProductsFacade {
     const productInfo = await this.productsService.create(command);
     return this.productsCommandMapper.ofResult(productInfo);
   }
+
+  async getProduct(productCode: string): Promise<ProductsResult> {
+    const productInfo = await this.productsService.findOne(productCode);
+    return this.productsCommandMapper.ofResult(productInfo);
+  }
 }

@@ -6,9 +6,14 @@ import {
 } from './dto/create-product.command';
 import ProductOption from './entity/product-option.entity';
 import ProductOptionGroup from './entity/product-option-group.entity';
-import { ProductsInfo } from './dto/products.info';
+import {
+  ProductsInfo,
+  ProductsOptionGroupInfo,
+  ProductsOptionInfo,
+} from './dto/products.info';
 import { ProductsResult } from './products.result';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { LoggerService } from '@nestjs/common';
 
 @Injectable()
 export class ProductsCommandMapper {
@@ -43,13 +48,36 @@ export class ProductsCommandMapper {
     return productOption;
   }
 
-  ofInfo(entity: Product): ProductsInfo {
+  ofPaymentInfo(
+    entity: Product,
+    productOptionGroupInfoList: ProductsOptionGroupInfo[],
+  ): ProductsInfo {
+    Logger.log('## -> ' + productOptionGroupInfoList);
     return {
       productName: entity.productName,
       productPrice: entity.productPrice,
       productCode: entity.productCode,
       status: entity.status,
-      productOptionGroupList: entity.productOptionGroupList,
+      productOptionGroupList: productOptionGroupInfoList,
+    };
+  }
+
+  ofPaymentOptionGroupInfo(
+    productOptionGroup: ProductOptionGroup,
+    productOptionList: ProductsOptionInfo[],
+  ): ProductsOptionGroupInfo {
+    return {
+      productOptionGroupName: productOptionGroup.productOptionGroupName,
+      ordering: productOptionGroup.ordering,
+      productOptionList: productOptionList,
+    };
+  }
+
+  ofPaymentOptionInfo(productOption: ProductOption): ProductsOptionInfo {
+    return {
+      productOptionName: productOption.productOptionName,
+      productOptionPrice: productOption.productOptionPrice,
+      ordering: productOption.ordering,
     };
   }
 

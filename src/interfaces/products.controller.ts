@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import ProductsFacade from '../application/products.facade';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductResponse } from './dto/create-product.response';
@@ -20,16 +20,18 @@ export default class ProductsController {
     const result = await this.productsFacade.registerProduct(command);
     return this.productsDtoMapper.ofResponse(result);
   }
+
   //
   // @Get()
   // findAll() {
   //   return this.productsService.findAll();
   // }
   //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.productsService.findOne(+id);
-  // }
+  @Get(':productCode')
+  async findOne(@Param('productCode') productCode: string) {
+    return await this.productsFacade.getProduct(productCode);
+  }
+
   //
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {

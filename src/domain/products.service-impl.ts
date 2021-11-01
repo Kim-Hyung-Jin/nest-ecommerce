@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { UpdateProductDto } from '../interfaces/dto/update-product.dto';
 import { ProductsReader } from './products.reader';
 import ProductsStore from './products.store';
@@ -16,19 +16,33 @@ export class ProductsServiceImpl implements ProductsService {
   ) {}
 
   async create(command: CreateProductCommand): Promise<ProductsInfo> {
-    console.log('cmd ->' + JSON.stringify(command));
     const initProduct = this.productsCommandMapper.toProductEntity(command);
-    console.log('initProduct ->' + JSON.stringify(initProduct));
+    Logger.log('initProduct ->' + JSON.stringify(initProduct, null, 2));
     const product = await this.productStore.store(initProduct);
-    return this.productsCommandMapper.ofInfo(product);
+    const productOptionGroupInfoList =
+      this.productReader.getProductOptionGroupInfoList(product);
+    return this.productsCommandMapper.ofPaymentInfo(
+      product,
+      productOptionGroupInfoList,
+    );
   }
 
   findAll() {
     return `This action returns all products`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(productCode: string): Promise<ProductsInfo> {
+    const product = await this.productReader.getProductByCode(productCode);
+    Logger.log('product -> ' + JSON.stringify(product, null, 2));
+    const productionOptionGroupList =
+      this.productReader.getProductOptionGroupInfoList(product);
+    Logger.log(
+      'product -> ' + JSON.stringify(productionOptionGroupList, null, 2),
+    );
+    return this.productsCommandMapper.ofPaymentInfo(
+      product,
+      productionOptionGroupList,
+    );
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {

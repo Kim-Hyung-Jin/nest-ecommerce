@@ -19,7 +19,13 @@ export default class ProductOptionGroup extends BaseEntity {
   @Column({ type: 'int', nullable: false })
   ordering: number;
 
-  @OneToMany(type => ProductOption, productOption => productOption.id)
+  @OneToMany(
+    type => ProductOption,
+    productOption => productOption.productOptionGroup,
+    {
+      cascade: true,
+    },
+  )
   productOptionList: ProductOption[];
 
   @ManyToOne(type => Product, product => product.productOptionGroupList)
