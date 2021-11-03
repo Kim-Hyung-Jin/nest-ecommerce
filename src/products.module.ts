@@ -9,6 +9,7 @@ import { ProductsCommandMapper } from './domain/products.command.mapper';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './domain/entity/product.entity';
 import ProductOptionGroup from './domain/entity/product-option-group.entity';
+import { ProductsResolver } from './interfaces/graphql/products.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product, ProductOptionGroup])],
@@ -29,6 +30,7 @@ import ProductOptionGroup from './domain/entity/product-option-group.entity';
     },
     ProductsDtoMapper,
     ProductsCommandMapper,
+    ProductsResolver,
   ],
 })
 export class ProductsModule {}

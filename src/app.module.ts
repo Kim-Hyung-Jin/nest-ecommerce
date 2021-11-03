@@ -6,12 +6,23 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './domain/entity/product.entity';
 import ProductOptionGroup from './domain/entity/product-option-group.entity';
 import ProductOption from './domain/entity/product-option.entity';
-import { LoggerMiddleware } from './logger.middleware';
-import ProductsController from './interfaces/products.controller';
+import { GraphQLModule } from '@nestjs/graphql';
+import { join } from 'lodash';
+import { ProductsResolver } from './interfaces/graphql/products.resolver';
+import { takeUntil } from 'rxjs';
 
 @Module({
   imports: [
     ProductsModule,
+    GraphQLModule.forRoot({
+      typePaths: ['./**/*.graphql'],
+      playground: true,
+      debug: true,
+      // definitions: {
+      //   path: join(process.cwd(), 'src/graphql.ts'),
+      //   outputAs: 'class',
+      // },
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -28,6 +39,7 @@ import ProductsController from './interfaces/products.controller';
   providers: [AppService],
 })
 export class AppModule {}
+
 // export class AppModule implements NestModule {
 //   configure(consumer: MiddlewareConsumer) {
 //     consumer.apply(LoggerMiddleware).forRoutes(ProductsController);

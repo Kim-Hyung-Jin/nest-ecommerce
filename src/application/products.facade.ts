@@ -8,8 +8,8 @@ import { ProductsService } from '../domain/products.service';
 @Injectable()
 export default class ProductsFacade {
   constructor(
-    private readonly productsService: ProductsService,
-    private readonly productsCommandMapper: ProductsCommandMapper,
+    private productsCommandMapper: ProductsCommandMapper,
+    @Inject('ProductsService') private productsService: ProductsService,
   ) {}
 
   async registerProduct(

@@ -3,16 +3,14 @@ import ProductsController from './products.controller';
 import ProductsFacade from '../application/products.facade';
 import * as faker from 'faker';
 import { ProductsDtoMapper } from './products-dto.mapper';
-import { ProductsResult } from '../domain/products.result';
 import { Logger } from '@nestjs/common';
 
 const mockFacade = {
   registerProduct: jest.fn(),
   getProduct: jest.fn(),
 };
-jest.mock('../application/products.facade');
 
-describe('ProductsController', () => {
+describe('[GET] /products', () => {
   let controller: ProductsController;
   let facade: ProductsFacade;
 
@@ -33,47 +31,47 @@ describe('ProductsController', () => {
     Logger.log('### -> ' + facade);
   });
 
-  describe('상품 조회 요청시', () => {
+  describe('올바른 상품 코드로 조회 시', () => {
     const expectedResult = {
       productInfo: {
-        productName: faker.commerce.price,
-        productPrice: 30000,
-        productCode: 'bca28eff-ce6c-490a-b926-173375856828',
+        productName: faker.commerce.productName(),
+        productPrice: faker.commerce.price(),
+        productCode: faker.datatype.uuid(),
         status: '준비중',
         productOptionGroupList: [
           {
-            productOptionGroupName: '사이즈',
+            productOptionGroupName: faker.commerce.productName(),
             ordering: 1,
             productOptionList: [
               {
-                productOptionName: 'LARGE',
-                productOptionPrice: 0,
+                productOptionName: faker.commerce.color(),
+                productOptionPrice: faker.commerce.price(),
                 ordering: 3,
               },
               {
-                productOptionName: 'MEDIUM',
-                productOptionPrice: 0,
+                productOptionName: faker.commerce.color(),
+                productOptionPrice: faker.commerce.price(),
                 ordering: 2,
               },
               {
-                productOptionName: 'SMALL',
-                productOptionPrice: 0,
+                productOptionName: faker.commerce.color(),
+                productOptionPrice: faker.commerce.price(),
                 ordering: 1,
               },
             ],
           },
           {
-            productOptionGroupName: '컬러',
+            productOptionGroupName: faker.commerce.productName(),
             ordering: 2,
             productOptionList: [
               {
-                productOptionName: 'GOLD',
-                productOptionPrice: 1000,
+                productOptionName: faker.commerce.color(),
+                productOptionPrice: faker.commerce.price(),
                 ordering: 2,
               },
               {
-                productOptionName: 'RED',
-                productOptionPrice: 0,
+                productOptionName: faker.commerce.color(),
+                productOptionPrice: faker.commerce.price(),
                 ordering: 1,
               },
             ],
@@ -86,9 +84,8 @@ describe('ProductsController', () => {
     it('should be defined', async () => {
       mockFacade.getProduct.mockReturnValue(expectedResult);
       const res = await controller.findOne(productCode);
-      console.log('@@@@@@@@@@' + JSON.stringify(res));
-      console.log('@@@@@@@@@@' + faker.commerce.price());
       Logger.log('res -> ' + res);
+      console.log('res -> ' + JSON.stringify(res));
       // expect(controller.create()).toBeDefined();
       // expect().toBe('tt3');
     });

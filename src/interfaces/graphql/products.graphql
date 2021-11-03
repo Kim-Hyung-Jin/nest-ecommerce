@@ -1,0 +1,23 @@
+type ProductsOption {
+    productOptionName: String!
+    productOptionPrice: Int!
+    ordering: Int!
+}
+
+type ProductsOptionGroup {
+    productOptionGroupName: String!
+    ordering: Int!
+    productOptionList: [ProductsOption]
+}
+
+type Products {
+    productName: String!
+    productCode: String!
+    productPrice: Int!
+    status: String!
+    productOptionGroupList: [ProductsOptionGroup]
+}
+
+type Query{
+    getProduct(productCode: String!): Products
+}
