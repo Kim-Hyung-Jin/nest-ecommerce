@@ -1,7 +1,7 @@
 import { ProductsReader } from '../domain/products.reader';
-import { Product } from '../domain/entity/product.entity';
+import { Products } from '../domain/entity/product.entity';
 import { ProductsOptionGroupInfo } from '../domain/dto/products.info';
-import { Repository } from 'typeorm';
+import { Entity, EntityNotFoundError, Repository } from 'typeorm';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import ProductOptionGroup from '../domain/entity/product-option-group.entity';
@@ -11,22 +11,27 @@ import ProductOption from '../domain/entity/product-option.entity';
 @Injectable()
 export class ProductsReaderImpl implements ProductsReader {
   constructor(
-    @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
+    @InjectRepository(Products)
+    private readonly productRepository: Repository<Products>,
     private readonly productsCommandMapper: ProductsCommandMapper,
   ) {}
 
-  async getProductByCode(productCode: string): Promise<Product> {
-    return await this.productRepository.findOne({
+  async getByProductCode(productCode: string): Promise<Products> {
+    const product = await this.productRepository.findOne({
       relations: [
         'productOptionGroupList',
         'productOptionGroupList.productOptionList',
       ],
       where: [{ productCode: productCode }],
     });
+
+    if (!product) {
+      throw new EntityNotFoundError(Products, productCode);
+    }
+    return product;
   }
 
-  getProductOptionGroupInfoList(product: Product): ProductsOptionGroupInfo[] {
+  getProductOptionGroupInfoList(product: Products): ProductsOptionGroupInfo[] {
     Logger.log(
       'getProductOptionGroupInfoList -> ' +
         JSON.stringify(product.productOptionGroupList, null, 2),

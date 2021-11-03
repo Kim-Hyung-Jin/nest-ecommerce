@@ -12,15 +12,13 @@ export default class ProductsFacade {
     @Inject('ProductsService') private productsService: ProductsService,
   ) {}
 
-  async registerProduct(
-    command: CreateProductCommand,
-  ): Promise<ProductsResult> {
-    const productInfo = await this.productsService.create(command);
+  async register(command: CreateProductCommand): Promise<ProductsResult> {
+    const productInfo = await this.productsService.register(command);
     return this.productsCommandMapper.ofResult(productInfo);
   }
 
-  async getProduct(productCode: string): Promise<ProductsResult> {
-    const productInfo = await this.productsService.findOne(productCode);
+  async getOne(productCode: string): Promise<ProductsResult> {
+    const productInfo = await this.productsService.getOne(productCode);
     return this.productsCommandMapper.ofResult(productInfo);
   }
 }

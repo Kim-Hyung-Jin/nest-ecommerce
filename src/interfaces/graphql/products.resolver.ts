@@ -13,6 +13,6 @@ export class ProductsResolver {
   async getProduct(
     @Args('productCode', { type: () => String }) productCode: string,
   ) {
-    return this.productsService.findOne(productCode);
+    return this.productsService.getOne(productCode);
   }
 }

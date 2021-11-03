@@ -1,31 +1,144 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductsServiceImpl } from './products.service-impl';
 import { ProductsService } from './products.service';
-import { ProductsReaderImpl } from '../infra/products.reader-impl';
-import { ProductsStoreImpl } from '../infra/products.store-impl';
-import { MockType } from '../common/mock.helper';
-import { ProductsReader } from './products.reader';
+import { ProductsCommandMapper } from './products.command.mapper';
+import { ProductsServiceImpl } from './products.service-impl';
+import * as faker from 'faker';
 
-describe('ProductsService', () => {
+const mockReader = {
+  getByProductCode: jest.fn(),
+  getProductOptionGroupInfoList: jest.fn(),
+};
+
+const mockStore = {
+  store: jest.fn(),
+};
+
+describe('register() 호출시', () => {
   let service: ProductsService;
-  // let mockReader: MockType<ProductsReaderImpl>;
-  // let mockStore: MockType<ProductsStoreImpl>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        { provide: ProductsServiceImpl, useValue: ProductsServiceImpl },
-        { provide: ProductsReaderImpl, useValue: ProductsReaderImpl },
-        { provide: ProductsStoreImpl, useValue: ProductsStoreImpl },
+        // ProductsServiceImpl,
+        { provide: 'test', useValue: ProductsServiceImpl }, // TODO 왜 프로바이드를 바꾸면 안되는지 확인
+        ProductsCommandMapper,
+        { provide: 'ProductsReader', useValue: mockReader },
+        { provide: 'ProductsStore', useValue: mockStore },
       ],
     }).compile();
 
-    service = module.get<ProductsServiceImpl>(ProductsServiceImpl);
-    // mockReader = graphql.get<MockType<ProductsReader>>(ProductsReaderImpl);
-    // mockStore = graphql.get<MockType<ProductsStoreImpl>>(ProductsStoreImpl);
+    service = module.get<ProductsServiceImpl>('test');
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('올바른 데이터가 주어지면', () => {
+    const command = {
+      productName: faker.commerce.productName(),
+      productPrice: faker.commerce.price(),
+      productCode: faker.datatype.uuid(),
+      productOptionGroupList: [
+        {
+          productOptionGroupName: faker.commerce.productName(),
+          ordering: 1,
+          productOptionList: [
+            {
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
+              ordering: 3,
+            },
+            {
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
+              ordering: 2,
+            },
+            {
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
+              ordering: 1,
+            },
+          ],
+        },
+        {
+          productOptionGroupName: faker.commerce.productName(),
+          ordering: 2,
+          productOptionList: [
+            {
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
+              ordering: 2,
+            },
+            {
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
+              ordering: 1,
+            },
+          ],
+        },
+      ],
+    };
+    console.log('@@@@@@@ -> ' + service);
+    it('should be defined', async () => {
+      const res = await service.register(command);
+    });
   });
 });
+
+//
+//
+// const command = {
+//   productName: faker.commerce.productName(),
+//   productPrice: faker.commerce.price(),
+//   productCode: faker.datatype.uuid(),
+//   productOptionGroupList: [
+//     {
+//       productOptionGroupName: faker.commerce.productName(),
+//       ordering: 1,
+//       productOptionList: [
+//         {
+//           productOptionName: faker.commerce.color(),
+//           productOptionPrice: faker.commerce.price(),
+//           ordering: 3,
+//         },
+//         {
+//           productOptionName: faker.commerce.color(),
+//           productOptionPrice: faker.commerce.price(),
+//           ordering: 2,
+//         },
+//         {
+//           productOptionName: faker.commerce.color(),
+//           productOptionPrice: faker.commerce.price(),
+//           ordering: 1,
+//         },
+//       ],
+//     },
+//     {
+//       productOptionGroupName: faker.commerce.productName(),
+//       ordering: 2,
+//       productOptionList: [
+//         {
+//           productOptionName: faker.commerce.color(),
+//           productOptionPrice: faker.commerce.price(),
+//           ordering: 2,
+//         },
+//         {
+//           productOptionName: faker.commerce.color(),
+//           productOptionPrice: faker.commerce.price(),
+//           ordering: 1,
+//         },
+//       ],
+//     },
+//   ],
+// };
+//
+// const mockedEntity = {
+//   productName: command.productName,
+//   productPrice: command.productPrice,
+//   productCode: command.productCode,
+//   productOptionGroupList: command.productOptionGroupList,
+// };
+//
+// const expectedInfo = {
+//   productName: mockedEntity.productName,
+//   productPrice: mockedEntity.productPrice,
+//   productCode: mockedEntity.productCode,
+//   productOptionGroupList: mockedEntity,
+// };

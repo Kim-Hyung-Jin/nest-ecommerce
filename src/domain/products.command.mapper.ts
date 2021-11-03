@@ -1,4 +1,4 @@
-import { Product } from './entity/product.entity';
+import { Products } from './entity/product.entity';
 import {
   CreateProductCommand,
   CreateProductOptionCommand,
@@ -17,8 +17,8 @@ import { LoggerService } from '@nestjs/common';
 
 @Injectable()
 export class ProductsCommandMapper {
-  toProductEntity(command: CreateProductCommand): Product {
-    const product = new Product();
+  toProductEntity(command: CreateProductCommand): Products {
+    const product = new Products();
     product.productPrice = command.productPrice;
     product.productName = command.productName;
     product.productOptionGroupList = command.productOptionGroupList.map(
@@ -49,7 +49,7 @@ export class ProductsCommandMapper {
   }
 
   ofPaymentInfo(
-    entity: Product,
+    entity: Products,
     productOptionGroupInfoList: ProductsOptionGroupInfo[],
   ): ProductsInfo {
     Logger.log('## -> ' + productOptionGroupInfoList);

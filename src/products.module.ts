@@ -7,12 +7,12 @@ import { ProductsReaderImpl } from './infra/products.reader-impl';
 import { ProductsDtoMapper } from './interfaces/products-dto.mapper';
 import { ProductsCommandMapper } from './domain/products.command.mapper';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from './domain/entity/product.entity';
+import { Products } from './domain/entity/product.entity';
 import ProductOptionGroup from './domain/entity/product-option-group.entity';
 import { ProductsResolver } from './interfaces/graphql/products.resolver';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, ProductOptionGroup])],
+  imports: [TypeOrmModule.forFeature([Products, ProductOptionGroup])],
   controllers: [ProductsController],
   providers: [
     ProductsFacade,

@@ -18,7 +18,7 @@ export default class ProductsController {
   ): Promise<CreateProductResponse> {
     const command =
       this.productsDtoMapper.toCreateProductCommand(createProductDto);
-    const result = await this.productsFacade.registerProduct(command);
+    const result = await this.productsFacade.register(command);
     return this.productsDtoMapper.ofResponse(result);
   }
 
@@ -29,10 +29,10 @@ export default class ProductsController {
   // }
   //
   @Get(':productCode')
-  async findOne(
+  async getOne(
     @Param('productCode') productCode: string,
   ): Promise<ProductsResult> {
-    const result = await this.productsFacade.getProduct(productCode);
+    const result = await this.productsFacade.getOne(productCode);
     return result;
   }
 

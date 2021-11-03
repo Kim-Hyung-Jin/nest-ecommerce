@@ -1,9 +1,9 @@
-import { Product } from './entity/product.entity';
+import { Products } from './entity/product.entity';
 import { ProductsOptionGroupInfo } from './dto/products.info';
 
 export interface ProductsReader {
-  getProductByCode: (productCode: string) => Promise<Product>;
+  getByProductCode: (productCode: string) => Promise<Products>;
   getProductOptionGroupInfoList: (
-    product: Product,
+    product: Products,
   ) => ProductsOptionGroupInfo[];
 }

@@ -16,7 +16,7 @@ export enum ProductStatus {
 }
 
 @Entity()
-export class Product extends BaseEntity {
+export class Products extends BaseEntity {
   @PrimaryGeneratedColumn() id: number;
 
   @Column({ type: 'varchar', nullable: false })

@@ -15,7 +15,7 @@ export class ProductsServiceImpl implements ProductsService {
     @Inject('ProductsStore') private productStore: ProductsStore,
   ) {}
 
-  async create(command: CreateProductCommand): Promise<ProductsInfo> {
+  async register(command: CreateProductCommand): Promise<ProductsInfo> {
     const initProduct = this.productsCommandMapper.toProductEntity(command);
     Logger.log('initProduct ->' + JSON.stringify(initProduct, null, 2));
     const product = await this.productStore.store(initProduct);
@@ -31,8 +31,8 @@ export class ProductsServiceImpl implements ProductsService {
     return `This action returns all products`;
   }
 
-  async findOne(productCode: string): Promise<ProductsInfo> {
-    const product = await this.productReader.getProductByCode(productCode);
+  async getOne(productCode: string): Promise<ProductsInfo> {
+    const product = await this.productReader.getByProductCode(productCode);
     Logger.log('product -> ' + JSON.stringify(product, null, 2));
     const productionOptionGroupList =
       this.productReader.getProductOptionGroupInfoList(product);
