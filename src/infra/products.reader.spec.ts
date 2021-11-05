@@ -8,7 +8,7 @@ import { ProductsServiceImpl } from '../domain/products.service-impl';
 import { ProductsReaderImpl } from './products.reader-impl';
 import { Products } from '../domain/entity/product.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import ProductOptionGroup from '../domain/entity/product-option-group.entity';
 import ProductOption from '../domain/entity/product-option.entity';
 import { ProductsReader } from '../domain/products.reader';
@@ -24,54 +24,55 @@ describe('getByProductCode() 호출시', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProductsCommandMapper,
-        { provide: ProductsReaderImpl, useValue: ProductsReaderImpl }, // TODO provice랑 밑에 imple인지 클래스 원형인지 헷갈리는거 정리
+        { provide: ProductsReaderImpl, useClass: ProductsReaderImpl },
         { provide: getRepositoryToken(Products), useValue: mockRepo },
       ],
     }).compile();
 
-    reader = module.get<ProductsReaderImpl>(ProductsReaderImpl);
+    reader = module.get<ProductsReader>(ProductsReaderImpl);
   });
 
   describe('올바른 productCode 가 주어졌으면', () => {
     const productCode = faker.datatype.uuid();
     const mockedEntity = {
       productCode: productCode,
-      productPrice: 30000,
-      productName: '티셔츠',
+      productName: faker.commerce.productName(),
+      productPrice: faker.commerce.price(),
+      status: '준비중',
       productOptionGroupList: [
         {
-          productOptionGroupName: '사이즈',
+          productOptionGroupName: faker.commerce.productName(),
           ordering: 1,
           productOptionList: [
             {
-              productOptionName: 'SMALL',
-              productOptionPrice: 0,
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
               ordering: 1,
             },
             {
-              productOptionName: 'MEDIUM',
-              productOptionPrice: 0,
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
               ordering: 2,
             },
             {
-              productOptionName: 'LARGE',
-              productOptionPrice: 0,
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
               ordering: 3,
             },
           ],
         },
         {
-          productOptionGroupName: '컬러',
+          productOptionGroupName: faker.commerce.productName(),
           ordering: 2,
           productOptionList: [
             {
-              productOptionName: 'RED',
-              productOptionPrice: 0,
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
               ordering: 1,
             },
             {
-              productOptionName: 'GOLD',
-              productOptionPrice: 1000,
+              productOptionName: faker.commerce.color(),
+              productOptionPrice: faker.commerce.price(),
               ordering: 2,
             },
           ],
@@ -82,11 +83,24 @@ describe('getByProductCode() 호출시', () => {
       productCode: mockedEntity.productCode,
       productPrice: mockedEntity.productPrice,
       productName: mockedEntity.productName,
+      status: mockedEntity.status,
+      productOptionGroupList: mockedEntity.productOptionGroupList,
     };
     it('조회한 상품 정보 응답', async () => {
       mockRepo.findOne.mockReturnValue(mockedEntity);
       const res = await reader.getByProductCode(productCode);
       expect(res).toStrictEqual(expectedEntity);
+    });
+  });
+
+  describe('존재하지 않는 productCode 가 주어졌으면', () => {
+    const productCode = faker.datatype.uuid();
+    it('조회한 상품 정보 응답', async () => {
+      mockRepo.findOne.mockReturnValue(undefined);
+      await expect(async () => {
+        //TODO 왜 여기만 await except지
+        await reader.getByProductCode(productCode);
+      }).rejects.toThrowError(new EntityNotFoundError(Products, productCode));
     });
   });
 });
