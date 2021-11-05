@@ -115,6 +115,7 @@ describe('[GET] /products', () => {
 describe('[POST] /products', () => {
   let controller: ProductsController;
   let facade: ProductsFacade;
+  let mapper: ProductsDtoMapper;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -130,6 +131,7 @@ describe('[POST] /products', () => {
 
     controller = module.get<ProductsController>(ProductsController);
     facade = module.get<ProductsFacade>(ProductsFacade);
+    mapper = module.get<ProductsDtoMapper>(ProductsDtoMapper);
   });
 
   describe('올바른 상품 코드로 등록 시', () => {
@@ -179,6 +181,12 @@ describe('[POST] /products', () => {
       ],
     };
 
+    const command = {
+      productName: request.productName,
+      productPrice: request.productPrice,
+      productOptionGroupList: request.productOptionGroupList,
+    };
+
     const expectedResult = {
       productInfo: {
         productName: request.productName,
@@ -196,7 +204,7 @@ describe('[POST] /products', () => {
     it('등록된 상품 코드 응답', async () => {
       mockFacade.register.mockReturnValue(expectedResult);
       const res = await controller.create(request);
-      console.log('res -> ' + JSON.stringify(res));
+      expect(mockFacade.register).toHaveBeenCalledWith(command);
       expect(res).toStrictEqual(expectedResponse);
     });
   });

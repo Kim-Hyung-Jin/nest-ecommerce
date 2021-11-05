@@ -7,6 +7,10 @@ import { ProductsCommandMapper } from './products.command.mapper';
 import { ProductsInfo } from './dto/products.info';
 import { ProductsService } from './products.service';
 
+export function tempLog(message: string, obj: object) {
+  Logger.log(message + JSON.stringify(obj, null, 2));
+}
+
 @Injectable()
 export class ProductsServiceImpl implements ProductsService {
   constructor(
@@ -18,13 +22,10 @@ export class ProductsServiceImpl implements ProductsService {
   async register(command: CreateProductCommand): Promise<ProductsInfo> {
     const initProduct = this.productsCommandMapper.toProductEntity(command);
     Logger.log('initProduct ->' + JSON.stringify(initProduct, null, 2));
+    console.log('@@@ -> ' + JSON.stringify(initProduct));
     const product = await this.productStore.store(initProduct);
-    const productOptionGroupInfoList =
-      this.productReader.getProductOptionGroupInfoList(product);
-    return this.productsCommandMapper.ofPaymentInfo(
-      product,
-      productOptionGroupInfoList,
-    );
+    const allOptionInfoList = this.productReader.getAllOptionInfoList(product);
+    return this.productsCommandMapper.ofPaymentInfo(product, allOptionInfoList);
   }
 
   findAll() {
@@ -33,16 +34,10 @@ export class ProductsServiceImpl implements ProductsService {
 
   async getOne(productCode: string): Promise<ProductsInfo> {
     const product = await this.productReader.getByProductCode(productCode);
-    Logger.log('product -> ' + JSON.stringify(product, null, 2));
-    const productionOptionGroupList =
-      this.productReader.getProductOptionGroupInfoList(product);
-    Logger.log(
-      'product -> ' + JSON.stringify(productionOptionGroupList, null, 2),
-    );
-    return this.productsCommandMapper.ofPaymentInfo(
-      product,
-      productionOptionGroupList,
-    );
+    tempLog('product -> ', product);
+    const allOptionInfoList = this.productReader.getAllOptionInfoList(product);
+    tempLog('allOptionInfoList -> ', allOptionInfoList);
+    return this.productsCommandMapper.ofPaymentInfo(product, allOptionInfoList);
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {

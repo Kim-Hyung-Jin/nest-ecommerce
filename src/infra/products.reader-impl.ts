@@ -31,7 +31,7 @@ export class ProductsReaderImpl implements ProductsReader {
     return product;
   }
 
-  getProductOptionGroupInfoList(product: Products): ProductsOptionGroupInfo[] {
+  getAllOptionInfoList(product: Products): ProductsOptionGroupInfo[] {
     Logger.log(
       'getProductOptionGroupInfoList -> ' +
         JSON.stringify(product.productOptionGroupList, null, 2),

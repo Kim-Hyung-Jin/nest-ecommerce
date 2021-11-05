@@ -3,7 +3,5 @@ import { ProductsOptionGroupInfo } from './dto/products.info';
 
 export interface ProductsReader {
   getByProductCode: (productCode: string) => Promise<Products>;
-  getProductOptionGroupInfoList: (
-    product: Products,
-  ) => ProductsOptionGroupInfo[];
+  getAllOptionInfoList: (product: Products) => ProductsOptionGroupInfo[];
 }
