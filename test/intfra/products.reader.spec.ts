@@ -1,18 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import ProductsFacade from '../../src/application/products.facade';
 import * as faker from 'faker';
 import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
-import { MockType } from '../../src/common/mock.helper';
-import { ProductsService } from '../../src/domain/products.service';
-import { ProductsServiceImpl } from '../../src/domain/products.service-impl';
 import { ProductsReaderImpl } from '../../src/infra/products.reader-impl';
 import { Products } from '../../src/domain/entity/product.entity';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { EntityNotFoundError, Repository } from 'typeorm';
-import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
-import ProductOption from '../../src/domain/entity/product-option.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { EntityNotFoundError } from 'typeorm';
 import { ProductsReader } from '../../src/domain/products.reader';
-import { fixtureProduct, fixtureProductOptionGroup } from '../fixture';
+import { fixtureProduct } from '../fixture';
 
 const mockRepo = {
   findOne: jest.fn(),
@@ -99,7 +93,6 @@ describe('getByProductCode() 호출시', () => {
     it('조회한 상품 정보 응답', async () => {
       mockRepo.findOne.mockReturnValue(undefined);
       await expect(async () => {
-        //TODO 왜 여기만 await except지
         await reader.getByProductCode(productCode);
       }).rejects.toThrowError(new EntityNotFoundError(Products, productCode));
     });
@@ -122,7 +115,6 @@ describe('getAllOptionInfoList() 호출시', () => {
   });
 
   describe('올바른 Products 가 주어졌으면', () => {
-    const productCode = faker.datatype.uuid();
     const entity = fixtureProduct();
     const expectedInfo = entity.productOptionGroupList.map(
       productionOptionGroup => {
