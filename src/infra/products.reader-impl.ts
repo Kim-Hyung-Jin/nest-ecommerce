@@ -44,15 +44,6 @@ export class ProductsReaderImpl implements ProductsReader {
   getProductOptionInfo(
     productOptionGroup: ProductOptionGroup,
   ): ProductsOptionGroupInfo {
-    const a = {
-      productOptionGroupName: productOptionGroup.productOptionGroupName,
-      ordering: productOptionGroup.ordering,
-      productOptionList: productOptionGroup.productOptionList.map(
-        productOption =>
-          this.productsCommandMapper.ofPaymentOptionInfo(productOption),
-      ),
-    };
-    Logger.log('getProductOptionInfo -> ' + a);
     return {
       productOptionGroupName: productOptionGroup.productOptionGroupName,
       ordering: productOptionGroup.ordering,

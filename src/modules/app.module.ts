@@ -1,14 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ProductsModule } from './products.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Products } from './domain/entity/product.entity';
-import ProductOptionGroup from './domain/entity/product-option-group.entity';
-import ProductOption from './domain/entity/product-option.entity';
+import { Products } from '../domain/entity/product.entity';
+import ProductOptionGroup from '../domain/entity/product-option-group.entity';
+import ProductOption from '../domain/entity/product-option.entity';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'lodash';
-import { ProductsResolver } from './interfaces/graphql/products.resolver';
+import { ProductsResolver } from '../interfaces/graphql/products.resolver';
 import { takeUntil } from 'rxjs';
 
 @Module({
@@ -35,8 +33,6 @@ import { takeUntil } from 'rxjs';
       logging: ['query', 'error'],
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
 

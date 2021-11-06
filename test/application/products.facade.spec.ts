@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import ProductsFacade from '../application/products.facade';
+import ProductsFacade from '../../src/application/products.facade';
 import * as faker from 'faker';
-import { ProductsCommandMapper } from '../domain/products.command.mapper';
-import { MockType } from '../common/mock.helper';
-import { ProductsService } from '../domain/products.service';
-import { ProductsServiceImpl } from '../domain/products.service-impl';
+import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
+import { MockType } from '../../src/common/mock.helper';
+import { ProductsService } from '../../src/domain/products.service';
+import { ProductsServiceImpl } from '../../src/domain/products.service-impl';
 
 const mockService = {
   register: jest.fn(),

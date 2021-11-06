@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import ProductsController from './products.controller';
-import ProductsFacade from '../application/products.facade';
+import ProductsController from '../../src/interfaces/products.controller';
+import ProductsFacade from '../../src/application/products.facade';
 import * as faker from 'faker';
-import { ProductsDtoMapper } from './products-dto.mapper';
+import { ProductsDtoMapper } from '../../src/interfaces/products-dto.mapper';
 import { Logger } from '@nestjs/common';
 import { EntityNotFoundError } from 'typeorm';
-import { Products } from '../domain/entity/product.entity';
+import { Products } from '../../src/domain/entity/product.entity';
 
 const mockFacade = {
   register: jest.fn(),

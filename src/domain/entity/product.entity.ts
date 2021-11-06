@@ -23,7 +23,7 @@ export class Products extends BaseEntity {
   productName: string;
 
   @Column({ type: 'varchar', nullable: false })
-  productCode: string = v4.uuidv4();
+  productCode: string = v4();
 
   @Column({ type: 'int', nullable: false })
   productPrice: number;

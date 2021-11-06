@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductsService } from './products.service';
-import { ProductsCommandMapper } from './products.command.mapper';
-import { ProductsServiceImpl } from './products.service-impl';
+import { ProductsService } from '../../src/domain/products.service';
+import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
+import { ProductsServiceImpl } from '../../src/domain/products.service-impl';
 import * as faker from 'faker';
 import { v4 } from 'uuid';
-import { async } from 'rxjs';
 
 const mockReader = {
   getByProductCode: jest.fn(),
