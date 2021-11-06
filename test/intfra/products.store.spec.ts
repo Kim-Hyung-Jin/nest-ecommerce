@@ -14,9 +14,10 @@ import ProductOption from '../../src/domain/entity/product-option.entity';
 import { ProductsReader } from '../../src/domain/products.reader';
 import ProductsStore from '../../src/domain/products.store';
 import { ProductsStoreImpl } from '../../src/infra/products.store-impl';
+import { fixtureProduct } from '../fixture';
 
 const mockRepo = {
-  findOne: jest.fn(),
+  save: jest.fn(),
 };
 
 describe('store() 호출시', () => {
@@ -33,5 +34,15 @@ describe('store() 호출시', () => {
     productsStore = module.get<ProductsStore>(ProductsStoreImpl);
   });
 
-  describe('올바른 product 가 주어졌으면', () => {});
+  //TODO 이게 맞나 ;;
+  describe('올바른 product 가 주어졌으면', () => {
+    const entity = fixtureProduct();
+    const mockedEntity = entity;
+    const expectedEntity = entity;
+    it('등록된 product 응답', async () => {
+      mockRepo.save.mockReturnValue(mockedEntity);
+      const res = await productsStore.store(entity);
+      expect(res).toStrictEqual(expectedEntity);
+    });
+  });
 });
