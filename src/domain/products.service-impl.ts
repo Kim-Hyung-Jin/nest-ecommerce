@@ -6,10 +6,7 @@ import { CreateProductCommand } from './dto/create-product.command';
 import { ProductsCommandMapper } from './products.command.mapper';
 import { ProductsInfo } from './dto/products.info';
 import { ProductsService } from './products.service';
-
-export function tempLog(message: string, obj: object) {
-  Logger.log(message + JSON.stringify(obj, null, 2));
-}
+import { logger } from '../common/logger';
 
 @Injectable()
 export class ProductsServiceImpl implements ProductsService {
@@ -22,7 +19,6 @@ export class ProductsServiceImpl implements ProductsService {
   async register(command: CreateProductCommand): Promise<ProductsInfo> {
     const initProduct = this.productsCommandMapper.toProductEntity(command);
     Logger.log('initProduct ->' + JSON.stringify(initProduct, null, 2));
-    console.log('@@@ -> ' + JSON.stringify(initProduct));
     const product = await this.productStore.store(initProduct);
     const allOptionInfoList = this.productReader.getAllOptionInfoList(product);
     return this.productsCommandMapper.ofPaymentInfo(product, allOptionInfoList);
@@ -34,9 +30,9 @@ export class ProductsServiceImpl implements ProductsService {
 
   async getOne(productCode: string): Promise<ProductsInfo> {
     const product = await this.productReader.getByProductCode(productCode);
-    tempLog('product -> ', product);
+    logger('product -> ', product);
     const allOptionInfoList = this.productReader.getAllOptionInfoList(product);
-    tempLog('allOptionInfoList -> ', allOptionInfoList);
+    logger('allOptionInfoList -> ', allOptionInfoList);
     return this.productsCommandMapper.ofPaymentInfo(product, allOptionInfoList);
   }
 

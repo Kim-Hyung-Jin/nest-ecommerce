@@ -30,7 +30,6 @@ describe('[GET] /products', () => {
 
     controller = module.get<ProductsController>(ProductsController);
     facade = module.get<ProductsFacade>(ProductsFacade);
-    Logger.log('### -> ' + facade);
   });
 
   describe('올바른 상품 코드로 조회 시', () => {
@@ -87,9 +86,6 @@ describe('[GET] /products', () => {
       mockFacade.getOne.mockReturnValue(expectedResult);
       const res = await controller.getOne(productCode);
       Logger.log('res -> ' + res);
-      console.log('res -> ' + JSON.stringify(res));
-      // expect(controller.create()).toBeDefined();
-      // expect().toBe('tt3');
     });
   });
 
