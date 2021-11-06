@@ -17,19 +17,47 @@ export enum ProductStatus {
 
 @Entity()
 export class Products extends BaseEntity {
-  @PrimaryGeneratedColumn() id: number;
+  get id(): number {
+    return this._id;
+  }
+
+  get productName(): string {
+    return this._productName;
+  }
+
+  get productCode(): string {
+    return this._productCode;
+  }
+
+  get productPrice(): number {
+    return this._productPrice;
+  }
+
+  get status(): ProductStatus {
+    return this._status;
+  }
+
+  get productOptionGroupList(): ProductOptionGroup[] {
+    return this._productOptionGroupList;
+  }
+
+  @PrimaryGeneratedColumn() private _id: number;
 
   @Column({ type: 'varchar', nullable: false })
-  productName: string;
+  private readonly _productName: string;
 
   @Column({ type: 'varchar', nullable: false })
-  productCode: string = v4();
+  private _productCode: string = v4();
 
   @Column({ type: 'int', nullable: false })
-  productPrice: number;
+  private readonly _productPrice: number;
 
-  @Column({ type: 'enum', enum: ProductStatus, default: ProductStatus.PREPARE })
-  status: ProductStatus = ProductStatus.PREPARE;
+  @Column({
+    type: 'enum',
+    enum: ProductStatus,
+    default: ProductStatus.PREPARE,
+  })
+  private _status: ProductStatus = ProductStatus.PREPARE;
 
   @OneToMany(
     type => ProductOptionGroup,
@@ -38,5 +66,16 @@ export class Products extends BaseEntity {
       cascade: true,
     },
   )
-  productOptionGroupList: ProductOptionGroup[];
+  private readonly _productOptionGroupList: ProductOptionGroup[];
+
+  constructor(
+    productName: string,
+    productPrice: number,
+    productOptionGroupList: ProductOptionGroup[],
+  ) {
+    super();
+    this._productName = productName;
+    this._productPrice = productPrice;
+    this._productOptionGroupList = productOptionGroupList;
+  }
 }

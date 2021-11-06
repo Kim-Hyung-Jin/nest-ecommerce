@@ -18,34 +18,33 @@ import { LoggerService } from '@nestjs/common';
 @Injectable()
 export class ProductsCommandMapper {
   toProductEntity(command: CreateProductCommand): Products {
-    const product = new Products();
-    product.productPrice = command.productPrice;
-    product.productName = command.productName;
-    product.productOptionGroupList = command.productOptionGroupList.map(
-      productOptionGroupCommand =>
+    return new Products(
+      command.productName,
+      command.productPrice,
+      command.productOptionGroupList.map(productOptionGroupCommand =>
         this.toProductOptionGroupEntity(productOptionGroupCommand),
+      ),
     );
-    return product;
   }
 
   toProductOptionGroupEntity(
     command: CreateProductOptionGroupCommand,
   ): ProductOptionGroup {
-    const productOptionGroup = new ProductOptionGroup();
-    productOptionGroup.productOptionGroupName = command.productOptionGroupName;
-    productOptionGroup.ordering = command.ordering;
-    productOptionGroup.productOptionList = command.productOptionList.map(
-      productOptionCommand => this.toProductOptionEntity(productOptionCommand),
+    return new ProductOptionGroup(
+      command.productOptionGroupName,
+      command.ordering,
+      command.productOptionList.map(productOptionCommand =>
+        this.toProductOptionEntity(productOptionCommand),
+      ),
     );
-    return productOptionGroup;
   }
 
   toProductOptionEntity(command: CreateProductOptionCommand): ProductOption {
-    const productOption = new ProductOption();
-    productOption.productOptionName = command.productOptionName;
-    productOption.productOptionPrice = command.productOptionPrice;
-    productOption.ordering = command.ordering;
-    return productOption;
+    return new ProductOption(
+      command.productOptionName,
+      command.ordering,
+      command.productOptionPrice,
+    );
   }
 
   ofPaymentInfo(

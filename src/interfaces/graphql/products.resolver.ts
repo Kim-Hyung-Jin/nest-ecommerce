@@ -1,4 +1,11 @@
-import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { Inject } from '@nestjs/common';
 import { ProductsService } from '../../domain/products.service';
 import { ProductsInfo } from '../../domain/dto/products.info';
@@ -15,4 +22,7 @@ export class ProductsResolver {
   ) {
     return this.productsService.getOne(productCode);
   }
+
+  @Mutation()
+  async register() {}
 }
