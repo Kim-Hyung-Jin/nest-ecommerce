@@ -1,4 +1,3 @@
-import { ProductsReader } from '../domain/products.reader';
 import ProductsStore from '../domain/products.store';
 import { Products } from '../domain/entity/product.entity';
 import { Repository } from 'typeorm';
