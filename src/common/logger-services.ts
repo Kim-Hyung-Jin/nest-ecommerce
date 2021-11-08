@@ -1,11 +1,12 @@
-import { LoggerService as LS } from '@nestjs/common';
+import { LoggerService as LS, LogLevel } from '@nestjs/common';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import * as winston from 'winston';
 import * as moment from 'moment';
+import { Logger, QueryRunner } from 'typeorm';
 
 const { errors, combine, json, timestamp, ms, prettyPrint } = winston.format;
 
-export class LoggerService implements LS {
+export class LoggerService implements LS, Logger {
   private logger: winston.Logger;
 
   constructor(service) {
@@ -67,5 +68,41 @@ export class LoggerService implements LS {
 
   query(message: string) {
     this.logger.info(message);
+  }
+
+  logMigration(message: string, queryRunner?: QueryRunner): any {
+    this.logger.info('logMigration: ' + message);
+  }
+
+  logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner): any {
+    this.logger.info(`[Query]: ${query} [Params]: ${parameters}`);
+  }
+
+  logQueryError(
+    error: string | Error,
+    query: string,
+    parameters?: any[],
+    queryRunner?: QueryRunner,
+  ): any {
+    this.logger.error(`[Query Error]: ${error}  [Params]: ${parameters}`);
+  }
+
+  logQuerySlow(
+    time: number,
+    query: string,
+    parameters?: any[],
+    queryRunner?: QueryRunner,
+  ): any {
+    this.logger.warn(
+      `[Slow Query] [time]: ${time} [Query]: ${query} [Params]: ${parameters}`,
+    );
+  }
+
+  logSchemaBuild(message: string, queryRunner?: QueryRunner): any {
+    this.logger.info(`[SchemaBuild]: ${message}`);
+  }
+
+  setLogLevels(levels: LogLevel[]): any {
+    this.logger.info(`[SetLogLevels]: ${levels}`);
   }
 }

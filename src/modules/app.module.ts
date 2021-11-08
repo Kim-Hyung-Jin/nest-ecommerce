@@ -8,36 +8,25 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'lodash';
 import { ProductsResolver } from '../interfaces/graphql/products.resolver';
 import { takeUntil } from 'rxjs';
+import { TypeOrmService } from '../config/typeorm';
+import { LoggerService } from '../common/logger-services';
+import { GraphQLService } from '../config/graphql';
+import { LoggerMiddleware } from '../common/logger.middleware';
+import ProductsController from '../interfaces/products.controller';
 
 @Module({
   imports: [
     ProductsModule,
-    GraphQLModule.forRoot({
-      typePaths: ['./**/*.graphql'],
-      playground: true,
-      debug: true,
-      // definitions: {
-      //   path: join(process.cwd(), 'src/graphql.ts'),
-      //   outputAs: 'class',
-      // },
+    GraphQLModule.forRootAsync({
+      useClass: GraphQLService,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'jin',
-      database: 'test',
-      entities: [Products, ProductOptionGroup, ProductOption],
-      synchronize: true,
-      logging: ['query', 'error'],
+    TypeOrmModule.forRootAsync({
+      useClass: TypeOrmService,
     }),
   ],
 })
-export class AppModule {}
-
-// export class AppModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer.apply(LoggerMiddleware).forRoutes(ProductsController);
-//   }
-// }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes(ProductsController);
+  }
+}
