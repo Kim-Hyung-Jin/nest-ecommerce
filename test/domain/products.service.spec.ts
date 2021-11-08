@@ -8,6 +8,7 @@ import * as uuid from 'uuid';
 import { ProductsPersist } from '../../src/domain/entity/persist/product.persist-entity';
 import ProductOptionGroupPersist from '../../src/domain/entity/persist/product-option-group.persist-entity';
 import ProductOptionPersist from '../../src/domain/entity/persist/product-option.persist-entity';
+import { Products } from '../../src/domain/entity/product.entity';
 
 jest.mock('uuid');
 
@@ -83,7 +84,7 @@ describe('register() 호출시', () => {
           },
         ],
       };
-      const expectedEntity = new ProductsPersist(
+      const expectedPersistEntity = new ProductsPersist(
         command.productName,
         command.productPrice,
         command.productOptionGroupList.map(
@@ -102,93 +103,8 @@ describe('register() 호출시', () => {
             ),
         ),
       );
-      // const expectedEntity = {
-      //   productCode: productCode,
-      //   productPrice: command.productPrice,
-      //   productName: command.productName,
-      //   status: '준비중',
-      //   productOptionGroupList: [
-      //     {
-      //       productOptionGroupName:
-      //         command.productOptionGroupList[0].productOptionGroupName,
-      //       ordering: 1,
-      //       productOptionList: [
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[0].productOptionList[0]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[0].productOptionList[0]
-      //               .productOptionPrice,
-      //           ordering: 1,
-      //         },
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[0].productOptionList[1]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[0].productOptionList[1]
-      //               .productOptionPrice,
-      //           ordering: 2,
-      //         },
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[0].productOptionList[2]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[0].productOptionList[2]
-      //               .productOptionPrice,
-      //           ordering: 3,
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       productOptionGroupName:
-      //         command.productOptionGroupList[1].productOptionGroupName,
-      //       ordering: 2,
-      //       productOptionList: [
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[1].productOptionList[0]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[1].productOptionList[0]
-      //               .productOptionPrice,
-      //           ordering: 1,
-      //         },
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[1].productOptionList[1]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[1].productOptionList[1]
-      //               .productOptionPrice,
-      //           ordering: 2,
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // };
 
-      const mockedEntity = new ProductsPersist(
-        expectedEntity.productName,
-        expectedEntity.productPrice,
-        expectedEntity.productOptionGroupList.map(
-          value =>
-            new ProductOptionGroupPersist(
-              value.productOptionGroupName,
-              value.ordering,
-              value.productOptionList.map(
-                value1 =>
-                  new ProductOptionPersist(
-                    value1.productOptionName,
-                    value1.ordering,
-                    value1.productOptionPrice,
-                  ),
-              ),
-            ),
-        ),
-      );
+      const mockedEntity = new Products(expectedPersistEntity);
 
       const expectedInfo = {
         productName: mockedEntity.productName,
@@ -203,7 +119,7 @@ describe('register() 호출시', () => {
       );
 
       const res = await service.register(command);
-      expect(mockStore.store).toHaveBeenCalledWith(expectedEntity);
+      expect(mockStore.store).toHaveBeenCalledWith(mockedEntity);
       expect(mockReader.getAllOptionInfoList).toHaveBeenCalledWith(
         mockedEntity,
       );

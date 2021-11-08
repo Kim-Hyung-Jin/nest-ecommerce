@@ -20,36 +20,6 @@ import ProductOption from './entity/product-option.entity';
 
 @Injectable()
 export class ProductsCommandMapper {
-  // toProductEntity(command: CreateProductCommand): Products {
-  //   return new Products(
-  //     command.productName,
-  //     command.productPrice,
-  //     command.productOptionGroupList.map(productOptionGroupCommand =>
-  //       this.toProductOptionGroupEntity(productOptionGroupCommand),
-  //     ),
-  //   );
-  // }
-
-  // toProductOptionGroupEntity(
-  //   command: CreateProductOptionGroupCommand,
-  // ): ProductOptionGroup {
-  //   return new ProductOptionGroup(
-  //     command.productOptionGroupName,
-  //     command.ordering,
-  //     command.productOptionList.map(productOptionCommand =>
-  //       this.toProductOptionEntity(productOptionCommand),
-  //     ),
-  //   );
-  // }
-
-  toProductOptionEntity(command: CreateProductOptionCommand): ProductOption{
-    return new ProductOption(
-      command.productOptionName,
-      command.ordering,
-      command.productOptionPrice,
-    );
-  }
-
   ofPaymentInfo(
     entity: Products,
     productOptionGroupInfoList: ProductsOptionGroupInfo[],

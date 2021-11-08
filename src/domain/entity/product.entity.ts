@@ -1,16 +1,6 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { randomUUID } from 'crypto';
-import { v4 } from 'uuid';
 import ProductOptionGroup from './product-option-group.entity';
 import { ProductsPersist } from './persist/product.persist-entity';
 import ProductOption from './product-option.entity';
-import { Expose } from 'class-transformer';
 
 export enum ProductStatus {
   PREPARE = '준비중',
@@ -65,20 +55,8 @@ export class Products {
     this._productCode = persist.productCode;
     this._productPrice = persist.productPrice;
     this._status = persist.status;
-    const test = persist.productOptionGroupList.map(value => {
-      return new ProductOptionGroup(
-        value.productOptionGroupName,
-        value.productOptionList.map(value1 => {
-          return new ProductOption(
-            value1.productOptionName,
-            value1.ordering,
-            value1.productOptionPrice,
-          );
-        }),
-        value.ordering,
-      );
+    this._productOptionGroupList = persist.productOptionGroupList.map(value => {
+      return new ProductOptionGroup(value);
     });
-    this._productOptionGroupList = test;
   }
-
 }

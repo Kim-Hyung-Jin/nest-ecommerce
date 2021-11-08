@@ -8,19 +8,17 @@ import {
 } from 'typeorm';
 import ProductOption from './product-option.entity';
 import { ProductsPersist } from './persist/product.persist-entity';
+import { Products } from './product.entity';
+import ProductOptionGroupPersist from './persist/product-option-group.persist-entity';
 
-@Entity()
 export default class ProductOptionGroup {
-  set productOptionList(value: ProductOption[]) {
-    this._productOptionList = value;
-  }
   private readonly _id: number;
 
   private readonly _productOptionGroupName: string;
 
   private _productOptionList: ProductOption[];
 
-  private readonly _product: ProductsPersist;
+  private readonly _product: Products;
 
   private readonly _ordering: number;
 
@@ -36,7 +34,11 @@ export default class ProductOptionGroup {
     return this._productOptionList;
   }
 
-  get product(): ProductsPersist {
+  set productOptionList(value: ProductOption[]) {
+    this._productOptionList = value;
+  }
+
+  get product(): Products {
     return this._product;
   }
 
@@ -44,13 +46,13 @@ export default class ProductOptionGroup {
     return this._ordering;
   }
 
-  constructor(
-    productOptionGroupName: string,
-    productOptionList: ProductOption[],
-    ordering: number,
-  ) {
-    this._productOptionGroupName = productOptionGroupName;
-    this._productOptionList = productOptionList;
-    this._ordering = ordering;
+  constructor(persist: ProductOptionGroupPersist) {
+    this._id = persist.id;
+    this._productOptionGroupName = persist.productOptionGroupName;
+    this._product = new Products(persist.product);
+    this._ordering = persist.ordering;
+    this._productOptionList = persist.productOptionList.map(value => {
+      return new ProductOption(value);
+    });
   }
 }

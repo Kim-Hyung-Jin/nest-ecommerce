@@ -1,4 +1,5 @@
 import ProductOptionGroup from './product-option-group.entity';
+import ProductOptionPersist from './persist/product-option.persist-entity';
 
 export default class ProductOption {
   get id(): number {
@@ -21,14 +22,10 @@ export default class ProductOption {
     return this._productOptionGroup;
   }
 
-  constructor(
-    productOptionName: string,
-    ordering: number,
-    productOptionPrice: number,
-  ) {
-    this._productOptionName = productOptionName;
-    this._ordering = ordering;
-    this._productOptionPrice = productOptionPrice;
+  constructor(persist: ProductOptionPersist) {
+    this._productOptionName = persist.productOptionName;
+    this._ordering = persist.ordering;
+    this._productOptionPrice = persist.productOptionPrice;
   }
 
   private readonly _id: number;

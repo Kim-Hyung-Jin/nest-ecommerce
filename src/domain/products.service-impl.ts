@@ -20,23 +20,7 @@ export class ProductsServiceImpl implements ProductsService {
   ) {}
 
   async register(command: CreateProductCommand): Promise<ProductsInfo> {
-    const product = await this.productStore.store(
-      command.productName,
-      command.productPrice,
-      command.productOptionGroupList.map(value => {
-        return new ProductOptionGroup(
-          value.productOptionGroupName,
-          value.productOptionList.map(value1 => {
-            return new ProductOption(
-              value1.productOptionName,
-              value1.ordering,
-              value1.productOptionPrice,
-            );
-          }),
-          value.ordering,
-        );
-      }),
-    );
+    const product = await this.productStore.store(command);
     const allOptionInfoList = this.productReader.getAllOptionInfoList(product);
     return this.productsCommandMapper.ofPaymentInfo(product, allOptionInfoList);
   }
