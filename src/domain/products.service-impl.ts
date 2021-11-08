@@ -7,6 +7,9 @@ import { ProductsCommandMapper } from './products.command.mapper';
 import { ProductsInfo } from './dto/products.info';
 import { ProductsService } from './products.service';
 import { logger } from '../common/logger';
+import { Products } from './entity/product.entity';
+import ProductOptionGroup from './entity/product-option-group.entity';
+import ProductOption from './entity/product-option.entity';
 
 @Injectable()
 export class ProductsServiceImpl implements ProductsService {
@@ -17,9 +20,23 @@ export class ProductsServiceImpl implements ProductsService {
   ) {}
 
   async register(command: CreateProductCommand): Promise<ProductsInfo> {
-    const initProduct = this.productsCommandMapper.toProductEntity(command);
-    Logger.log('initProduct ->' + JSON.stringify(initProduct, null, 2));
-    const product = await this.productStore.store(initProduct);
+    const product = await this.productStore.store(
+      command.productName,
+      command.productPrice,
+      command.productOptionGroupList.map(value => {
+        return new ProductOptionGroup(
+          value.productOptionGroupName,
+          value.productOptionList.map(value1 => {
+            return new ProductOption(
+              value1.productOptionName,
+              value1.ordering,
+              value1.productOptionPrice,
+            );
+          }),
+          value.ordering,
+        );
+      }),
+    );
     const allOptionInfoList = this.productReader.getAllOptionInfoList(product);
     return this.productsCommandMapper.ofPaymentInfo(product, allOptionInfoList);
   }

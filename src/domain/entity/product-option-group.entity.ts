@@ -7,28 +7,22 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import ProductOption from './product-option.entity';
-import { Products } from './product.entity';
+import { ProductsPersist } from './persist/product.persist-entity';
 
 @Entity()
-export default class ProductOptionGroup extends BaseEntity {
-  @PrimaryGeneratedColumn() private _id: number;
+export default class ProductOptionGroup {
+  set productOptionList(value: ProductOption[]) {
+    this._productOptionList = value;
+  }
+  private readonly _id: number;
 
-  @Column({ type: 'varchar', nullable: false })
   private readonly _productOptionGroupName: string;
 
-  @Column({ type: 'int', nullable: false }) private readonly _ordering: number;
+  private _productOptionList: ProductOption[];
 
-  @OneToMany(
-    type => ProductOption,
-    productOption => productOption.productOptionGroup,
-    {
-      cascade: true,
-    },
-  )
-  private readonly _productOptionList: ProductOption[];
+  private readonly _product: ProductsPersist;
 
-  @ManyToOne(type => Products, product => product.productOptionGroupList)
-  private _product: Products;
+  private readonly _ordering: number;
 
   get id(): number {
     return this._id;
@@ -38,26 +32,25 @@ export default class ProductOptionGroup extends BaseEntity {
     return this._productOptionGroupName;
   }
 
-  get ordering(): number {
-    return this._ordering;
-  }
-
   get productOptionList(): ProductOption[] {
     return this._productOptionList;
   }
 
-  get product(): Products {
+  get product(): ProductsPersist {
     return this._product;
+  }
+
+  get ordering(): number {
+    return this._ordering;
   }
 
   constructor(
     productOptionGroupName: string,
-    ordering: number,
     productOptionList: ProductOption[],
+    ordering: number,
   ) {
-    super();
     this._productOptionGroupName = productOptionGroupName;
-    this._ordering = ordering;
     this._productOptionList = productOptionList;
+    this._ordering = ordering;
   }
 }

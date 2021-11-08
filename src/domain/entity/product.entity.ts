@@ -5,18 +5,32 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import ProductOptionGroup from './product-option-group.entity';
 import { randomUUID } from 'crypto';
 import { v4 } from 'uuid';
+import ProductOptionGroup from './product-option-group.entity';
+import { ProductsPersist } from './persist/product.persist-entity';
+import ProductOption from './product-option.entity';
+import { Expose } from 'class-transformer';
 
 export enum ProductStatus {
   PREPARE = '준비중',
-  ON_SALE = '판매중',
-  END_OF_SALE = '판매종료',
+  ONSALE = '판매중',
+  ENDOFSALE = '판매종료',
 }
 
-@Entity()
-export class Products extends BaseEntity {
+export class Products {
+  private readonly _id: number;
+
+  private readonly _productName: string;
+
+  private readonly _productCode: string;
+
+  private readonly _productPrice: number;
+
+  private readonly _status: ProductStatus;
+
+  private _productOptionGroupList: ProductOptionGroup[]; // TODO setter 안열면 안되나
+
   get id(): number {
     return this._id;
   }
@@ -41,41 +55,30 @@ export class Products extends BaseEntity {
     return this._productOptionGroupList;
   }
 
-  @PrimaryGeneratedColumn() private _id: number;
-
-  @Column({ type: 'varchar', nullable: false })
-  private readonly _productName: string;
-
-  @Column({ type: 'varchar', nullable: false })
-  private _productCode: string = v4();
-
-  @Column({ type: 'int', nullable: false })
-  private readonly _productPrice: number;
-
-  @Column({
-    type: 'enum',
-    enum: ProductStatus,
-    default: ProductStatus.PREPARE,
-  })
-  private _status: ProductStatus = ProductStatus.PREPARE;
-
-  @OneToMany(
-    type => ProductOptionGroup,
-    ProductOptionGroup => ProductOptionGroup.product,
-    {
-      cascade: true,
-    },
-  )
-  private readonly _productOptionGroupList: ProductOptionGroup[];
-
-  constructor(
-    productName: string,
-    productPrice: number,
-    productOptionGroupList: ProductOptionGroup[],
-  ) {
-    super();
-    this._productName = productName;
-    this._productPrice = productPrice;
-    this._productOptionGroupList = productOptionGroupList;
+  set productOptionGroupList(value: ProductOptionGroup[]) {
+    this._productOptionGroupList = value;
   }
+
+  constructor(persist: ProductsPersist) {
+    console.log('@@@!! ' + JSON.stringify(persist));
+    this._productName = persist.productName;
+    this._productCode = persist.productCode;
+    this._productPrice = persist.productPrice;
+    this._status = persist.status;
+    const test = persist.productOptionGroupList.map(value => {
+      return new ProductOptionGroup(
+        value.productOptionGroupName,
+        value.productOptionList.map(value1 => {
+          return new ProductOption(
+            value1.productOptionName,
+            value1.ordering,
+            value1.productOptionPrice,
+          );
+        }),
+        value.ordering,
+      );
+    });
+    this._productOptionGroupList = test;
+  }
+
 }

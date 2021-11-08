@@ -1,9 +1,9 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ProductsModule } from './products.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Products } from '../domain/entity/product.entity';
-import ProductOptionGroup from '../domain/entity/product-option-group.entity';
-import ProductOption from '../domain/entity/product-option.entity';
+import { ProductsPersist } from '../domain/entity/persist/product.persist-entity';
+import ProductOptionGroupPersist from '../domain/entity/persist/product-option-group.persist-entity';
+import ProductOptionPersist from '../domain/entity/persist/product-option.persist-entity';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'lodash';
 import { ProductsResolver } from '../interfaces/graphql/products.resolver';

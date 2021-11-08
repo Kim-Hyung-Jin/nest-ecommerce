@@ -2,11 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
 import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
 import { ProductsReaderImpl } from '../../src/infra/products.reader-impl';
-import { Products } from '../../src/domain/entity/product.entity';
+import { ProductsPersist } from '../../src/domain/entity/persist/product.persist-entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityNotFoundError } from 'typeorm';
 import { ProductsReader } from '../../src/domain/products.reader';
 import { fixtureProduct } from '../fixture';
+import { Products, ProductStatus } from '../../src/domain/entity/product.entity';
+import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
+import ProductOption from '../../src/domain/entity/product-option.entity';
 
 const mockRepo = {
   findOne: jest.fn(),
@@ -20,7 +23,7 @@ describe('getByProductCode() 호출시', () => {
       providers: [
         ProductsCommandMapper,
         { provide: ProductsReaderImpl, useClass: ProductsReaderImpl },
-        { provide: getRepositoryToken(Products), useValue: mockRepo },
+        { provide: getRepositoryToken(ProductsPersist), useValue: mockRepo },
       ],
     }).compile();
 
@@ -29,62 +32,13 @@ describe('getByProductCode() 호출시', () => {
 
   describe('올바른 productCode 가 주어졌으면', () => {
     const productCode = faker.datatype.uuid();
-    const mockedEntity = {
-      productCode: productCode,
-      productName: faker.commerce.productName(),
-      productPrice: faker.commerce.price(),
-      status: '준비중',
-      productOptionGroupList: [
-        {
-          productOptionGroupName: faker.commerce.productName(),
-          ordering: 1,
-          productOptionList: [
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 1,
-            },
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 2,
-            },
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 3,
-            },
-          ],
-        },
-        {
-          productOptionGroupName: faker.commerce.productName(),
-          ordering: 2,
-          productOptionList: [
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 1,
-            },
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 2,
-            },
-          ],
-        },
-      ],
-    };
-    const expectedEntity = {
-      productCode: mockedEntity.productCode,
-      productPrice: mockedEntity.productPrice,
-      productName: mockedEntity.productName,
-      status: mockedEntity.status,
-      productOptionGroupList: mockedEntity.productOptionGroupList,
-    };
+    const mockedPersistEntity = fixtureProduct();
+    const expectedEntity = new Products(mockedPersistEntity);
+
     it('조회한 상품 정보 응답', async () => {
-      mockRepo.findOne.mockReturnValue(mockedEntity);
+      mockRepo.findOne.mockReturnValue(mockedPersistEntity);
       const res = await reader.getByProductCode(productCode);
-      expect(res).toStrictEqual(expectedEntity);
+      expect(res).toStrictEqual(expectedEntity); // TODO strcitEqual이 아니여도 되나
     });
   });
 
@@ -94,7 +48,9 @@ describe('getByProductCode() 호출시', () => {
       mockRepo.findOne.mockReturnValue(undefined);
       await expect(async () => {
         await reader.getByProductCode(productCode);
-      }).rejects.toThrowError(new EntityNotFoundError(Products, productCode));
+      }).rejects.toThrowError(
+        new EntityNotFoundError(ProductsPersist, productCode),
+      );
     });
   });
 });
@@ -107,7 +63,7 @@ describe('getAllOptionInfoList() 호출시', () => {
       providers: [
         ProductsCommandMapper,
         { provide: ProductsReaderImpl, useClass: ProductsReaderImpl },
-        { provide: getRepositoryToken(Products), useValue: mockRepo },
+        { provide: getRepositoryToken(ProductsPersist), useValue: mockRepo },
       ],
     }).compile();
 
@@ -115,8 +71,9 @@ describe('getAllOptionInfoList() 호출시', () => {
   });
 
   describe('올바른 Products 가 주어졌으면', () => {
-    const entity = fixtureProduct();
-    const expectedInfo = entity.productOptionGroupList.map(
+    const persistEntity = fixtureProduct();
+    const entity = new Products(persistEntity);
+    const expectedInfo = persistEntity.productOptionGroupList.map(
       productionOptionGroup => {
         return {
           productOptionGroupName: productionOptionGroup.productOptionGroupName,

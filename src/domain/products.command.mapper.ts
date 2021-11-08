@@ -1,11 +1,11 @@
-import { Products } from './entity/product.entity';
+import { ProductsPersist } from './entity/persist/product.persist-entity';
 import {
   CreateProductCommand,
   CreateProductOptionCommand,
   CreateProductOptionGroupCommand,
 } from './dto/create-product.command';
-import ProductOption from './entity/product-option.entity';
-import ProductOptionGroup from './entity/product-option-group.entity';
+import ProductOptionPersist from './entity/persist/product-option.persist-entity';
+import ProductOptionGroupPersist from './entity/persist/product-option-group.persist-entity';
 import {
   ProductsInfo,
   ProductsOptionGroupInfo,
@@ -14,32 +14,35 @@ import {
 import { ProductsResult } from './products.result';
 import { Injectable, Logger } from '@nestjs/common';
 import { LoggerService } from '@nestjs/common';
+import { Products } from './entity/product.entity';
+import ProductOptionGroup from './entity/product-option-group.entity';
+import ProductOption from './entity/product-option.entity';
 
 @Injectable()
 export class ProductsCommandMapper {
-  toProductEntity(command: CreateProductCommand): Products {
-    return new Products(
-      command.productName,
-      command.productPrice,
-      command.productOptionGroupList.map(productOptionGroupCommand =>
-        this.toProductOptionGroupEntity(productOptionGroupCommand),
-      ),
-    );
-  }
+  // toProductEntity(command: CreateProductCommand): Products {
+  //   return new Products(
+  //     command.productName,
+  //     command.productPrice,
+  //     command.productOptionGroupList.map(productOptionGroupCommand =>
+  //       this.toProductOptionGroupEntity(productOptionGroupCommand),
+  //     ),
+  //   );
+  // }
 
-  toProductOptionGroupEntity(
-    command: CreateProductOptionGroupCommand,
-  ): ProductOptionGroup {
-    return new ProductOptionGroup(
-      command.productOptionGroupName,
-      command.ordering,
-      command.productOptionList.map(productOptionCommand =>
-        this.toProductOptionEntity(productOptionCommand),
-      ),
-    );
-  }
+  // toProductOptionGroupEntity(
+  //   command: CreateProductOptionGroupCommand,
+  // ): ProductOptionGroup {
+  //   return new ProductOptionGroup(
+  //     command.productOptionGroupName,
+  //     command.ordering,
+  //     command.productOptionList.map(productOptionCommand =>
+  //       this.toProductOptionEntity(productOptionCommand),
+  //     ),
+  //   );
+  // }
 
-  toProductOptionEntity(command: CreateProductOptionCommand): ProductOption {
+  toProductOptionEntity(command: CreateProductOptionCommand): ProductOption{
     return new ProductOption(
       command.productOptionName,
       command.ordering,
@@ -62,7 +65,7 @@ export class ProductsCommandMapper {
   }
 
   ofPaymentOptionGroupInfo(
-    productOptionGroup: ProductOptionGroup,
+    productOptionGroup: ProductOptionGroupPersist,
     productOptionList: ProductsOptionInfo[],
   ): ProductsOptionGroupInfo {
     return {

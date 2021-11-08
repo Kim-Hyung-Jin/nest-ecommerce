@@ -1,6 +1,6 @@
-import { Products } from '../src/domain/entity/product.entity';
-import ProductOptionGroup from '../src/domain/entity/product-option-group.entity';
-import ProductOption from '../src/domain/entity/product-option.entity';
+import { ProductsPersist } from '../src/domain/entity/persist/product.persist-entity';
+import ProductOptionGroupPersist from '../src/domain/entity/persist/product-option-group.persist-entity';
+import ProductOptionPersist from '../src/domain/entity/persist/product-option.persist-entity';
 import * as faker from 'faker';
 
 export function fixtureProduct() {
@@ -8,7 +8,7 @@ export function fixtureProduct() {
   for (let i = 0; i < randomNumberWithRange(0, 5); i++) {
     productOptionGroupList.push(fixtureProductOptionGroup());
   }
-  return new Products(
+  return new ProductsPersist(
     faker.commerce.productName(),
     faker.datatype.number(),
     productOptionGroupList,
@@ -20,7 +20,7 @@ export function fixtureProductOptionGroup() {
   for (let i = 0; i < randomNumberWithRange(0, 5); i++) {
     productOptionList.push(fixtureProductOption());
   }
-  return new ProductOptionGroup(
+  return new ProductOptionGroupPersist(
     faker.commerce.productName(),
     faker.datatype.number(),
     productOptionList,
@@ -33,7 +33,7 @@ function randomNumberWithRange(min = 0, max: number) {
 }
 
 export function fixtureProductOption() {
-  return new ProductOption(
+  return new ProductOptionPersist(
     faker.commerce.productName(),
     faker.datatype.number(),
     faker.commerce.price(),

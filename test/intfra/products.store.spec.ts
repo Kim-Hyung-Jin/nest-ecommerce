@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Products } from '../../src/domain/entity/product.entity';
+import { ProductsPersist } from '../../src/domain/entity/persist/product.persist-entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import ProductsStore from '../../src/domain/products.store';
 import { ProductsStoreImpl } from '../../src/infra/products.store-impl';
@@ -16,7 +16,7 @@ describe('store() 호출시', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProductsStoreImpl,
-        { provide: getRepositoryToken(Products), useValue: mockRepo },
+        { provide: getRepositoryToken(ProductsPersist), useValue: mockRepo },
       ],
     }).compile();
 

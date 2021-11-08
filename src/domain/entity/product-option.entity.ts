@@ -1,30 +1,6 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
 import ProductOptionGroup from './product-option-group.entity';
 
-@Entity()
-export default class ProductOption extends BaseEntity {
-  @PrimaryGeneratedColumn() private _id: number;
-
-  @Column({ type: 'varchar', nullable: false })
-  private readonly _productOptionName: string;
-
-  @Column({ type: 'int', nullable: false }) private readonly _ordering: number;
-
-  @Column({ type: 'int', nullable: false }) private _productOptionPrice: number;
-
-  @ManyToOne(
-    type => ProductOptionGroup,
-    productOptionGroup => productOptionGroup.productOptionList,
-  )
-  private readonly _productOptionGroup: ProductOptionGroup;
-
+export default class ProductOption {
   get id(): number {
     return this._id;
   }
@@ -50,9 +26,18 @@ export default class ProductOption extends BaseEntity {
     ordering: number,
     productOptionPrice: number,
   ) {
-    super();
     this._productOptionName = productOptionName;
     this._ordering = ordering;
     this._productOptionPrice = productOptionPrice;
   }
+
+  private readonly _id: number;
+
+  private readonly _productOptionName: string;
+
+  private readonly _ordering: number;
+
+  private readonly _productOptionPrice: number;
+
+  private readonly _productOptionGroup: ProductOptionGroup;
 }

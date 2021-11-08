@@ -5,9 +5,9 @@ import { ProductsServiceImpl } from '../../src/domain/products.service-impl';
 import * as faker from 'faker';
 // import { v4 } from 'uuid';
 import * as uuid from 'uuid';
-import { Products } from '../../src/domain/entity/product.entity';
-import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
-import ProductOption from '../../src/domain/entity/product-option.entity';
+import { ProductsPersist } from '../../src/domain/entity/persist/product.persist-entity';
+import ProductOptionGroupPersist from '../../src/domain/entity/persist/product-option-group.persist-entity';
+import ProductOptionPersist from '../../src/domain/entity/persist/product-option.persist-entity';
 
 jest.mock('uuid');
 
@@ -83,17 +83,17 @@ describe('register() 호출시', () => {
           },
         ],
       };
-      const expectedEntity = new Products(
+      const expectedEntity = new ProductsPersist(
         command.productName,
         command.productPrice,
         command.productOptionGroupList.map(
           value =>
-            new ProductOptionGroup(
+            new ProductOptionGroupPersist(
               value.productOptionGroupName,
               value.ordering,
               value.productOptionList.map(
                 value1 =>
-                  new ProductOption(
+                  new ProductOptionPersist(
                     value1.productOptionName,
                     value1.ordering,
                     value1.productOptionPrice,
@@ -170,17 +170,17 @@ describe('register() 호출시', () => {
       //   ],
       // };
 
-      const mockedEntity = new Products(
+      const mockedEntity = new ProductsPersist(
         expectedEntity.productName,
         expectedEntity.productPrice,
         expectedEntity.productOptionGroupList.map(
           value =>
-            new ProductOptionGroup(
+            new ProductOptionGroupPersist(
               value.productOptionGroupName,
               value.ordering,
               value.productOptionList.map(
                 value1 =>
-                  new ProductOption(
+                  new ProductOptionPersist(
                     value1.productOptionName,
                     value1.ordering,
                     value1.productOptionPrice,
