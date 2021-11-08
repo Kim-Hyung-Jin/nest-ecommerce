@@ -3,7 +3,7 @@ import { ProductsPersist } from '../../src/domain/entity/persist/product.persist
 import { getRepositoryToken } from '@nestjs/typeorm';
 import ProductsStore from '../../src/domain/products.store';
 import { ProductsStoreImpl } from '../../src/infra/products.store-impl';
-import { fixtureProduct } from '../fixture';
+import { fixtureCreateProductCommand, fixtureProduct } from '../fixture';
 import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
 import ProductOption from '../../src/domain/entity/product-option.entity';
 import { Products } from '../../src/domain/entity/product.entity';
@@ -30,50 +30,7 @@ describe('store() 호출시', () => {
 
   //TODO 이게 맞나 ;;
   describe('올바른 product 가 주어졌으면', () => {
-    const command = {
-      productName: faker.commerce.productName(),
-      productPrice: faker.commerce.price(),
-      productCode: faker.datatype.uuid(),
-      productOptionGroupList: [
-        {
-          productOptionGroupName: faker.commerce.productName(),
-          ordering: 1,
-          productOptionList: [
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 3,
-            },
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 2,
-            },
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 1,
-            },
-          ],
-        },
-        {
-          productOptionGroupName: faker.commerce.productName(),
-          ordering: 2,
-          productOptionList: [
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 2,
-            },
-            {
-              productOptionName: faker.commerce.color(),
-              productOptionPrice: faker.commerce.price(),
-              ordering: 1,
-            },
-          ],
-        },
-      ],
-    };
+    const command = fixtureCreateProductCommand();
     const persistEntity = new ProductsPersist(
       command.productName,
       command.productPrice,
@@ -91,16 +48,13 @@ describe('store() 호출시', () => {
         );
       }),
     );
-    console.log('@@ -> ' + JSON.stringify(persistEntity));
     const mockedEntity = new Products(persistEntity);
-    console.log('@@33 -> ' + JSON.stringify(mockedEntity));
     const expectedEntity = mockedEntity;
-    console.log('@@44 -> ' + JSON.stringify(expectedEntity));
     it('등록된 product 응답', async () => {
       mockRepo.save.mockReturnValue(mockedEntity);
       const res = await productsStore.store(command);
-      console.log('@@22 -> ' + JSON.stringify(res));
-      expect(res).toStrictEqual(expectedEntity);
+      // expect(res).toStrictEqual(expectedEntity);
+      expect(res).toStrictEqual(mockedEntity);
     });
   });
 });

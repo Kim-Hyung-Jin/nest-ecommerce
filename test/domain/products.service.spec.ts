@@ -9,6 +9,7 @@ import { ProductsPersist } from '../../src/domain/entity/persist/product.persist
 import ProductOptionGroupPersist from '../../src/domain/entity/persist/product-option-group.persist-entity';
 import ProductOptionPersist from '../../src/domain/entity/persist/product-option.persist-entity';
 import { Products } from '../../src/domain/entity/product.entity';
+import { fixtureCreateProductCommand } from '../fixture';
 
 jest.mock('uuid');
 
@@ -41,68 +42,7 @@ describe('register() 호출시', () => {
     it('등록된 productCode 응답', async () => {
       const productCode = faker.datatype.uuid();
       jest.spyOn(uuid, 'v4').mockReturnValue(productCode);
-      const command = {
-        productName: faker.commerce.productName(),
-        productPrice: faker.commerce.price(),
-        productOptionGroupList: [
-          {
-            productOptionGroupName: faker.commerce.productName(),
-            ordering: 1,
-            productOptionList: [
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 1,
-              },
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 2,
-              },
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 3,
-              },
-            ],
-          },
-          {
-            productOptionGroupName: faker.commerce.productName(),
-            ordering: 2,
-            productOptionList: [
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 1,
-              },
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 2,
-              },
-            ],
-          },
-        ],
-      };
-      // const expectedPersistEntity = new ProductsPersist(
-      //   command.productName,
-      //   command.productPrice,
-      //   command.productOptionGroupList.map(
-      //     value =>
-      //       new ProductOptionGroupPersist(
-      //         value.productOptionGroupName,
-      //         value.ordering,
-      //         value.productOptionList.map(
-      //           value1 =>
-      //             new ProductOptionPersist(
-      //               value1.productOptionName,
-      //               value1.ordering,
-      //               value1.productOptionPrice,
-      //             ),
-      //         ),
-      //       ),
-      //   ),
-      // );
+      const command = fixtureCreateProductCommand();
       const expectedPersistEntity = new ProductsPersist(
         command.productName,
         command.productPrice,

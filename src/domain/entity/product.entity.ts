@@ -9,54 +9,35 @@ export enum ProductStatus {
 }
 
 export class Products {
-  private readonly _id: number;
-
-  private readonly _productName: string;
-
-  private readonly _productCode: string;
-
-  private readonly _productPrice: number;
-
-  private readonly _status: ProductStatus;
-
-  private _productOptionGroupList: ProductOptionGroup[]; // TODO setter 안열면 안되나
+  private persist: ProductsPersist;
 
   get id(): number {
-    return this._id;
+    return this.persist.id;
   }
 
   get productName(): string {
-    return this._productName;
+    return this.persist.productName;
   }
 
   get productCode(): string {
-    return this._productCode;
+    return this.persist.productCode;
   }
 
   get productPrice(): number {
-    return this._productPrice;
+    return this.persist.productPrice;
   }
 
   get status(): ProductStatus {
-    return this._status;
+    return this.persist.status;
   }
 
   get productOptionGroupList(): ProductOptionGroup[] {
-    return this._productOptionGroupList;
-  }
-
-  set productOptionGroupList(value: ProductOptionGroup[]) {
-    this._productOptionGroupList = value;
+    return this.persist.productOptionGroupList.map(value => {
+      return new ProductOptionGroup(value);
+    });
   }
 
   constructor(persist: ProductsPersist) {
-    console.log('@@@!! ' + JSON.stringify(persist));
-    this._productName = persist.productName;
-    this._productCode = persist.productCode;
-    this._productPrice = persist.productPrice;
-    this._status = persist.status;
-    this._productOptionGroupList = persist.productOptionGroupList.map(value => {
-      return new ProductOptionGroup(value);
-    });
+    this.persist = persist;
   }
 }

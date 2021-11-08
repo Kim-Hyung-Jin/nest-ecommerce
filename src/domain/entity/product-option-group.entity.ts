@@ -12,46 +12,32 @@ import { Products } from './product.entity';
 import ProductOptionGroupPersist from './persist/product-option-group.persist-entity';
 
 export default class ProductOptionGroup {
-  private readonly _id: number;
-
-  private readonly _productOptionGroupName: string;
-
-  private _productOptionList: ProductOption[];
-
-  private readonly _product: Products;
-
-  private readonly _ordering: number;
+  private persist: ProductOptionGroupPersist;
 
   get id(): number {
-    return this._id;
+    return this.persist.id;
   }
 
   get productOptionGroupName(): string {
-    return this._productOptionGroupName;
+    return this.persist.productOptionGroupName;
   }
 
+  //TODO 왜 setter를 열어야되지
   get productOptionList(): ProductOption[] {
-    return this._productOptionList;
+    return this.persist.productOptionList.map(value => {
+      return new ProductOption(value);
+    });
   }
 
-  set productOptionList(value: ProductOption[]) {
-    this._productOptionList = value;
-  }
-
-  get product(): Products {
-    return this._product;
-  }
+  // set productOptionList(productOptionList: ProductOption[]) {
+  //   this.persist.productOptionList = productOptionList;
+  // }
 
   get ordering(): number {
-    return this._ordering;
+    return this.persist.ordering;
   }
 
   constructor(persist: ProductOptionGroupPersist) {
-    this._id = persist.id;
-    this._productOptionGroupName = persist.productOptionGroupName;
-    this._ordering = persist.ordering;
-    this._productOptionList = persist.productOptionList.map(value => {
-      return new ProductOption(value);
-    });
+    this.persist = persist;
   }
 }

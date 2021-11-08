@@ -7,7 +7,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityNotFoundError } from 'typeorm';
 import { ProductsReader } from '../../src/domain/products.reader';
 import { fixtureProduct } from '../fixture';
-import { Products, ProductStatus } from '../../src/domain/entity/product.entity';
+import {
+  Products,
+  ProductStatus,
+} from '../../src/domain/entity/product.entity';
 import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
 import ProductOption from '../../src/domain/entity/product-option.entity';
 import { ProductsOptionGroupInfo } from '../../src/domain/dto/products.info';
@@ -39,7 +42,7 @@ describe('getByProductCode() 호출시', () => {
     it('조회한 상품 정보 응답', async () => {
       mockRepo.findOne.mockReturnValue(mockedPersistEntity);
       const res = await reader.getByProductCode(productCode);
-      expect(res).toStrictEqual(expectedEntity); // TODO strcitEqual이 아니여도 되나
+      expect(res).toStrictEqual(expectedEntity);
     });
   });
 
@@ -74,30 +77,22 @@ describe('getAllOptionInfoList() 호출시', () => {
   describe('올바른 Products 가 주어졌으면', () => {
     const persistEntity = fixtureProduct();
     const entity = new Products(persistEntity);
-    // const expectedInfo: ProductsOptionGroupInfo[] = {
+
+    console.log('### -> ' + JSON.stringify(entity));
+    const expectedInfo = entity.productOptionGroupList.map(value => {
+      return { ...value };
+    });
+
+    expectedInfo.map(value => delete value['persist']);
+    console.log('expectedInfo: ' + JSON.stringify(expectedInfo));
+
+    // const expectedInfo: ProductsOptionGroupInfo[] = [
     //   ...entity.productOptionGroupList,
-    // };
-    const expectedInfo = persistEntity.productOptionGroupList.map(
-      productionOptionGroup => {
-        return {
-          productOptionGroupName: productionOptionGroup.productOptionGroupName,
-          ordering: productionOptionGroup.ordering,
-          productOptionList: productionOptionGroup.productOptionList.map(
-            productionOptionGroup => {
-              return {
-                productOptionName: productionOptionGroup.productOptionName,
-                productOptionPrice: productionOptionGroup.productOptionPrice,
-                ordering: productionOptionGroup.ordering,
-              };
-            },
-          ),
-        };
-      },
-    );
+    // ];
 
     it('AllOptionInfoList 응답', () => {
       const res = reader.getAllOptionInfoList(entity);
-      expect(res).toStrictEqual(expectedInfo);
+      expect(res).toEqual(expectedInfo);
     });
   });
 });
