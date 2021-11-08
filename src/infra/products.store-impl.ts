@@ -7,7 +7,8 @@ import { Products } from '../domain/entity/product.entity';
 import ProductOptionGroup from '../domain/entity/product-option-group.entity';
 import ProductOptionGroupPersist from '../domain/entity/persist/product-option-group.persist-entity';
 import ProductOptionPersist from '../domain/entity/persist/product-option.persist-entity';
-import { CreateProductCommand } from '../domain/dto/create-product.command';
+import { ProductsCreateCommand } from '../domain/dto/create-product.command';
+import { ProductsCreate } from '../domain/dto/products-create';
 
 @Injectable()
 export class ProductsStoreImpl implements ProductsStore {
@@ -16,11 +17,12 @@ export class ProductsStoreImpl implements ProductsStore {
     private readonly productRepository: Repository<ProductsPersist>,
   ) {}
 
-  async store(command: CreateProductCommand): Promise<Products> {
+  async store(product: ProductsCreate): Promise<Products> {
+    // const initPersistProducts = new ProductsPersist(...product);
     const initPersistProducts = new ProductsPersist(
-      command.productName,
-      command.productPrice,
-      command.productOptionGroupList.map(value => {
+      product.productName,
+      product.productPrice,
+      product.productOptionGroupList.map(value => {
         return new ProductOptionGroupPersist(
           value.productOptionGroupName,
           value.ordering,

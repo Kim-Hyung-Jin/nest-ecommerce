@@ -1,6 +1,6 @@
 import { ProductsPersist } from './entity/persist/product.persist-entity';
 import {
-  CreateProductCommand,
+  ProductsCreateCommand,
   CreateProductOptionCommand,
   CreateProductOptionGroupCommand,
 } from './dto/create-product.command';

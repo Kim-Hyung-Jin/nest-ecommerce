@@ -1,4 +1,4 @@
-export interface CreateProductCommand {
+export interface ProductsCreateCommand {
   productName: string;
   productPrice: number;
   productOptionGroupList: CreateProductOptionGroupCommand[];

@@ -1,5 +1,5 @@
 import {
-  CreateProductCommand,
+  ProductsCreateCommand,
   CreateProductOptionCommand,
   CreateProductOptionGroupCommand,
 } from '../domain/dto/create-product.command';
@@ -10,7 +10,7 @@ import { CreateProductDto, CreateProductOptionDto, CreateProductOptionGroupDto }
 
 @Injectable()
 export class ProductsDtoMapper {
-  toCreateProductCommand(dto: CreateProductDto): CreateProductCommand {
+  toCreateProductCommand(dto: CreateProductDto): ProductsCreateCommand {
     return {
       productName: dto.productName,
       productPrice: dto.productPrice,

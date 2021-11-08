@@ -49,7 +49,6 @@ export default class ProductOptionGroup {
   constructor(persist: ProductOptionGroupPersist) {
     this._id = persist.id;
     this._productOptionGroupName = persist.productOptionGroupName;
-    this._product = new Products(persist.product);
     this._ordering = persist.ordering;
     this._productOptionList = persist.productOptionList.map(value => {
       return new ProductOption(value);

@@ -33,7 +33,6 @@ export class ProductsReaderImpl implements ProductsReader {
     }
 
     return new Products(persistProduct);
-    // return plainToClass(Products, persistProduct);
   }
 
   getAllOptionInfoList(product: Products): ProductsOptionGroupInfo[] {

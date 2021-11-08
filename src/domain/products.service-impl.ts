@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { UpdateProductDto } from '../interfaces/dto/update-product.dto';
 import { ProductsReader } from './products.reader';
 import ProductsStore from './products.store';
-import { CreateProductCommand } from './dto/create-product.command';
+import { ProductsCreateCommand } from './dto/create-product.command';
 import { ProductsCommandMapper } from './products.command.mapper';
 import { ProductsInfo } from './dto/products.info';
 import { ProductsService } from './products.service';
@@ -19,8 +19,8 @@ export class ProductsServiceImpl implements ProductsService {
     @Inject('ProductsStore') private productStore: ProductsStore,
   ) {}
 
-  async register(command: CreateProductCommand): Promise<ProductsInfo> {
-    const product = await this.productStore.store(command);
+  async register(command: ProductsCreateCommand): Promise<ProductsInfo> {
+    const product = await this.productStore.store({ ...command });
     const allOptionInfoList = this.productReader.getAllOptionInfoList(product);
     return this.productsCommandMapper.ofPaymentInfo(product, allOptionInfoList);
   }

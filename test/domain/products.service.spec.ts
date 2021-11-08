@@ -84,6 +84,25 @@ describe('register() 호출시', () => {
           },
         ],
       };
+      // const expectedPersistEntity = new ProductsPersist(
+      //   command.productName,
+      //   command.productPrice,
+      //   command.productOptionGroupList.map(
+      //     value =>
+      //       new ProductOptionGroupPersist(
+      //         value.productOptionGroupName,
+      //         value.ordering,
+      //         value.productOptionList.map(
+      //           value1 =>
+      //             new ProductOptionPersist(
+      //               value1.productOptionName,
+      //               value1.ordering,
+      //               value1.productOptionPrice,
+      //             ),
+      //         ),
+      //       ),
+      //   ),
+      // );
       const expectedPersistEntity = new ProductsPersist(
         command.productName,
         command.productPrice,
@@ -119,7 +138,7 @@ describe('register() 호출시', () => {
       );
 
       const res = await service.register(command);
-      expect(mockStore.store).toHaveBeenCalledWith(mockedEntity);
+      expect(mockStore.store).toHaveBeenCalledWith(command);
       expect(mockReader.getAllOptionInfoList).toHaveBeenCalledWith(
         mockedEntity,
       );

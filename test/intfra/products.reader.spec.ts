@@ -10,6 +10,7 @@ import { fixtureProduct } from '../fixture';
 import { Products, ProductStatus } from '../../src/domain/entity/product.entity';
 import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
 import ProductOption from '../../src/domain/entity/product-option.entity';
+import { ProductsOptionGroupInfo } from '../../src/domain/dto/products.info';
 
 const mockRepo = {
   findOne: jest.fn(),
@@ -73,6 +74,9 @@ describe('getAllOptionInfoList() 호출시', () => {
   describe('올바른 Products 가 주어졌으면', () => {
     const persistEntity = fixtureProduct();
     const entity = new Products(persistEntity);
+    // const expectedInfo: ProductsOptionGroupInfo[] = {
+    //   ...entity.productOptionGroupList,
+    // };
     const expectedInfo = persistEntity.productOptionGroupList.map(
       productionOptionGroup => {
         return {
