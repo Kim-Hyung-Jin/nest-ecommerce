@@ -88,7 +88,42 @@ export function fixtureCreateCommand() {
 }
 
 // TODO nullable
-export function fixtureUpdateCommand() {
+export function fixtureUpdateProductCommand() {
+  return {
+    productName: faker.commerce.productName(),
+    productPrice: faker.commerce.price(),
+    productCode: faker.datatype.uuid(),
+  };
+}
+
+export function fixture<T>(obj: T) {
+  // console.log(T.);
+  const temp = {};
+  console.log('@@!! -> ' + JSON.stringify(obj));
+  if (typeof obj === 'object') {
+    Object.keys(obj).map(k => {
+      if (typeof k === 'string') {
+        temp['k'] = faker.datatype.string();
+      } else if (typeof k === 'number') {
+        temp['k'] = faker.datatype.number();
+      } else if (typeof k === 'boolean') {
+        temp['k'] = faker.datatype.boolean();
+      }
+    });
+  }
+  console.log('@@!! -> ' + JSON.stringify(temp));
+}
+
+export function fixtureUpdateProductOptionGroupCommand() {
+  return {
+    productCode: faker.datatype.uuid(),
+    id: faker.datatype.number(),
+    productOptionGroupName: faker.commerce.productName(),
+    ordering: faker.datatype.number(),
+  };
+}
+
+export function fixtureUpdateProductionOptionCommand() {
   return {
     productName: faker.commerce.productName(),
     productPrice: faker.commerce.price(),
@@ -98,26 +133,31 @@ export function fixtureUpdateCommand() {
 
 export function fixtureInfo(productCode = faker.datatype.uuid()) {
   return {
+    id: faker.datatype.number(),
     productName: faker.commerce.productName(),
     productPrice: faker.commerce.price(),
     productCode: productCode,
     status: '준비중',
     productOptionGroupList: [
       {
+        id: faker.datatype.number(),
         productOptionGroupName: faker.commerce.productName(),
         ordering: 1,
         productOptionList: [
           {
+            id: faker.datatype.number(),
             productOptionName: faker.commerce.color(),
             productOptionPrice: faker.commerce.price(),
             ordering: 3,
           },
           {
+            id: faker.datatype.number(),
             productOptionName: faker.commerce.color(),
             productOptionPrice: faker.commerce.price(),
             ordering: 2,
           },
           {
+            id: faker.datatype.number(),
             productOptionName: faker.commerce.color(),
             productOptionPrice: faker.commerce.price(),
             ordering: 1,
@@ -125,15 +165,18 @@ export function fixtureInfo(productCode = faker.datatype.uuid()) {
         ],
       },
       {
+        id: faker.datatype.number(),
         productOptionGroupName: faker.commerce.productName(),
         ordering: 2,
         productOptionList: [
           {
+            id: faker.datatype.number(),
             productOptionName: faker.commerce.color(),
             productOptionPrice: faker.commerce.price(),
             ordering: 2,
           },
           {
+            id: faker.datatype.number(),
             productOptionName: faker.commerce.color(),
             productOptionPrice: faker.commerce.price(),
             ordering: 1,
