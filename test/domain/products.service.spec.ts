@@ -8,6 +8,8 @@ import * as uuid from 'uuid';
 import { Products } from '../../src/domain/entity/product.entity';
 import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
 import ProductOption from '../../src/domain/entity/product-option.entity';
+import { fixtureCreateCommand } from '../fixture';
+import { CreateProductCommand } from '../../src/domain/dto/create-product.command';
 
 jest.mock('uuid');
 
@@ -37,52 +39,7 @@ describe('register() 호출시', () => {
   });
 
   describe('올바른 데이터가 주어지면', () => {
-    it('등록된 productCode 응답', async () => {
-      const productCode = faker.datatype.uuid();
-      jest.spyOn(uuid, 'v4').mockReturnValue(productCode);
-      const command = {
-        productName: faker.commerce.productName(),
-        productPrice: faker.commerce.price(),
-        productOptionGroupList: [
-          {
-            productOptionGroupName: faker.commerce.productName(),
-            ordering: 1,
-            productOptionList: [
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 1,
-              },
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 2,
-              },
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 3,
-              },
-            ],
-          },
-          {
-            productOptionGroupName: faker.commerce.productName(),
-            ordering: 2,
-            productOptionList: [
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 1,
-              },
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 2,
-              },
-            ],
-          },
-        ],
-      };
+    function makeExpectedEntity(command: CreateProductCommand) {
       const expectedEntity = new Products(
         command.productName,
         command.productPrice,
@@ -102,94 +59,15 @@ describe('register() 호출시', () => {
             ),
         ),
       );
-      // const expectedEntity = {
-      //   productCode: productCode,
-      //   productPrice: command.productPrice,
-      //   productName: command.productName,
-      //   status: '준비중',
-      //   productOptionGroupList: [
-      //     {
-      //       productOptionGroupName:
-      //         command.productOptionGroupList[0].productOptionGroupName,
-      //       ordering: 1,
-      //       productOptionList: [
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[0].productOptionList[0]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[0].productOptionList[0]
-      //               .productOptionPrice,
-      //           ordering: 1,
-      //         },
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[0].productOptionList[1]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[0].productOptionList[1]
-      //               .productOptionPrice,
-      //           ordering: 2,
-      //         },
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[0].productOptionList[2]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[0].productOptionList[2]
-      //               .productOptionPrice,
-      //           ordering: 3,
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       productOptionGroupName:
-      //         command.productOptionGroupList[1].productOptionGroupName,
-      //       ordering: 2,
-      //       productOptionList: [
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[1].productOptionList[0]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[1].productOptionList[0]
-      //               .productOptionPrice,
-      //           ordering: 1,
-      //         },
-      //         {
-      //           productOptionName:
-      //             command.productOptionGroupList[1].productOptionList[1]
-      //               .productOptionName,
-      //           productOptionPrice:
-      //             command.productOptionGroupList[1].productOptionList[1]
-      //               .productOptionPrice,
-      //           ordering: 2,
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // };
+      return expectedEntity;
+    }
 
-      const mockedEntity = new Products(
-        expectedEntity.productName,
-        expectedEntity.productPrice,
-        expectedEntity.productOptionGroupList.map(
-          value =>
-            new ProductOptionGroup(
-              value.productOptionGroupName,
-              value.ordering,
-              value.productOptionList.map(
-                value1 =>
-                  new ProductOption(
-                    value1.productOptionName,
-                    value1.ordering,
-                    value1.productOptionPrice,
-                  ),
-              ),
-            ),
-        ),
-      );
-
+    it('등록된 productCode 응답', async () => {
+      const productCode = faker.datatype.uuid();
+      jest.spyOn(uuid, 'v4').mockReturnValue(productCode);
+      const command = fixtureCreateCommand();
+      const expectedEntity = makeExpectedEntity(command);
+      const mockedEntity = expectedEntity;
       const expectedInfo = {
         productName: mockedEntity.productName,
         productPrice: mockedEntity.productPrice,
@@ -197,6 +75,7 @@ describe('register() 호출시', () => {
         status: mockedEntity.status,
         productOptionGroupList: mockedEntity.productOptionGroupList,
       };
+
       mockStore.store.mockReturnValue(mockedEntity);
       mockReader.getAllOptionInfoList.mockReturnValue(
         mockedEntity.productOptionGroupList,
@@ -229,8 +108,7 @@ describe('getOne() 호출시', () => {
   });
 
   describe('올바른 productCode 가 주어지면', () => {
-    it('product 응답', async () => {
-      const productCode = faker.datatype.uuid();
+    function makeMockedEntity(productCode) {
       const mockedEntity = {
         productCode: productCode,
         productName: faker.commerce.productName(),
@@ -276,84 +154,20 @@ describe('getOne() 호출시', () => {
           },
         ],
       };
+      return mockedEntity;
+    }
+
+    it('product 응답', async () => {
+      const productCode = faker.datatype.uuid();
+      const mockedEntity = makeMockedEntity(productCode);
+      const expectedEntity = { ...mockedEntity };
+      const expectedInfo = { ...mockedEntity };
+
       mockReader.getByProductCode.mockReturnValue(mockedEntity);
       mockReader.getAllOptionInfoList.mockReturnValue(
         mockedEntity.productOptionGroupList,
       );
-      const expectedEntity = {
-        productCode: productCode,
-        productPrice: mockedEntity.productPrice,
-        productName: mockedEntity.productName,
-        status: '준비중',
-        productOptionGroupList: [
-          {
-            productOptionGroupName:
-              mockedEntity.productOptionGroupList[0].productOptionGroupName,
-            ordering: 1,
-            productOptionList: [
-              {
-                productOptionName:
-                  mockedEntity.productOptionGroupList[0].productOptionList[0]
-                    .productOptionName,
-                productOptionPrice:
-                  mockedEntity.productOptionGroupList[0].productOptionList[0]
-                    .productOptionPrice,
-                ordering: 1,
-              },
-              {
-                productOptionName:
-                  mockedEntity.productOptionGroupList[0].productOptionList[1]
-                    .productOptionName,
-                productOptionPrice:
-                  mockedEntity.productOptionGroupList[0].productOptionList[1]
-                    .productOptionPrice,
-                ordering: 2,
-              },
-              {
-                productOptionName:
-                  mockedEntity.productOptionGroupList[0].productOptionList[2]
-                    .productOptionName,
-                productOptionPrice:
-                  mockedEntity.productOptionGroupList[0].productOptionList[2]
-                    .productOptionPrice,
-                ordering: 3,
-              },
-            ],
-          },
-          {
-            productOptionGroupName:
-              mockedEntity.productOptionGroupList[1].productOptionGroupName,
-            ordering: 2,
-            productOptionList: [
-              {
-                productOptionName:
-                  mockedEntity.productOptionGroupList[1].productOptionList[0]
-                    .productOptionName,
-                productOptionPrice:
-                  mockedEntity.productOptionGroupList[1].productOptionList[0]
-                    .productOptionPrice,
-                ordering: 1,
-              },
-              {
-                productOptionName:
-                  mockedEntity.productOptionGroupList[1].productOptionList[1]
-                    .productOptionName,
-                productOptionPrice:
-                  mockedEntity.productOptionGroupList[1].productOptionList[1]
-                    .productOptionPrice,
-                ordering: 2,
-              },
-            ],
-          },
-        ],
-      };
-      const expectedInfo = {
-        productName: mockedEntity.productName,
-        productPrice: mockedEntity.productPrice,
-        productCode: mockedEntity.productCode,
-        status: mockedEntity.status,
-        productOptionGroupList: mockedEntity.productOptionGroupList,
-      };
+
       const res = await service.getOne(productCode);
       expect(mockReader.getAllOptionInfoList).toHaveBeenCalledWith(
         expectedEntity,
