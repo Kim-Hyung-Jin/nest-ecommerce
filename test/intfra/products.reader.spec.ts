@@ -83,7 +83,7 @@ describe('getByProductCode() 호출시', () => {
     };
     it('조회한 상품 정보 응답', async () => {
       mockRepo.findOne.mockReturnValue(mockedEntity);
-      const res = await reader.getByProductCode(productCode);
+      const res = await reader.getProductBy(productCode);
       expect(res).toStrictEqual(expectedEntity);
     });
   });
@@ -93,7 +93,7 @@ describe('getByProductCode() 호출시', () => {
     it('조회한 상품 정보 응답', async () => {
       mockRepo.findOne.mockReturnValue(undefined);
       await expect(async () => {
-        await reader.getByProductCode(productCode);
+        await reader.getProductBy(productCode);
       }).rejects.toThrowError(new EntityNotFoundError(Products, productCode));
     });
   });

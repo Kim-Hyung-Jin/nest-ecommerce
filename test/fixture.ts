@@ -88,11 +88,13 @@ export function fixtureCreateCommand() {
 }
 
 // TODO nullable
-export function fixtureUpdateProductCommand() {
+export function fixtureUpdateProductCommand(
+  productCode = faker.datatype.uuid(),
+) {
   return {
     productName: faker.commerce.productName(),
     productPrice: faker.commerce.price(),
-    productCode: faker.datatype.uuid(),
+    productCode: productCode,
   };
 }
 

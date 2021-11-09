@@ -16,7 +16,7 @@ export class ProductsReaderImpl implements ProductsReader {
     private readonly productsCommandMapper: ProductsCommandMapper,
   ) {}
 
-  async getByProductCode(productCode: string): Promise<Products> {
+  async getProductBy(productCode: string): Promise<Products> {
     const product = await this.productRepository.findOne({
       relations: [
         'productOptionGroupList',

@@ -11,53 +11,29 @@ import { v4 } from 'uuid';
 
 export enum ProductStatus {
   PREPARE = '준비중',
-  ON_SALE = '판매중',
-  END_OF_SALE = '판매종료',
+  ONSALE = '판매중',
+  ENDOFSALE = '판매종료',
 }
 
 @Entity()
 export class Products extends BaseEntity {
-  get id(): number {
-    return this._id;
-  }
-
-  get productName(): string {
-    return this._productName;
-  }
-
-  get productCode(): string {
-    return this._productCode;
-  }
-
-  get productPrice(): number {
-    return this._productPrice;
-  }
-
-  get status(): ProductStatus {
-    return this._status;
-  }
-
-  get productOptionGroupList(): ProductOptionGroup[] {
-    return this._productOptionGroupList;
-  }
-
-  @PrimaryGeneratedColumn() private _id: number;
+  @PrimaryGeneratedColumn() id: number;
 
   @Column({ type: 'varchar', nullable: false })
-  private readonly _productName: string;
+  productName: string;
 
   @Column({ type: 'varchar', nullable: false })
-  private _productCode: string = v4();
+  productCode: string = v4();
 
   @Column({ type: 'int', nullable: false })
-  private readonly _productPrice: number;
+  productPrice: number;
 
   @Column({
     type: 'enum',
     enum: ProductStatus,
     default: ProductStatus.PREPARE,
   })
-  private _status: ProductStatus = ProductStatus.PREPARE;
+  status: ProductStatus = ProductStatus.PREPARE;
 
   @OneToMany(
     type => ProductOptionGroup,
@@ -66,7 +42,7 @@ export class Products extends BaseEntity {
       cascade: true,
     },
   )
-  private readonly _productOptionGroupList: ProductOptionGroup[];
+  readonly productOptionGroupList: ProductOptionGroup[];
 
   constructor(
     productName: string,
@@ -74,8 +50,22 @@ export class Products extends BaseEntity {
     productOptionGroupList: ProductOptionGroup[],
   ) {
     super();
-    this._productName = productName;
-    this._productPrice = productPrice;
-    this._productOptionGroupList = productOptionGroupList;
+    this.productName = productName;
+    this.productPrice = productPrice;
+    this.productOptionGroupList = productOptionGroupList;
+  }
+
+  updateProductInfo(productName: string, productPrice: number) {
+    if (productName == undefined && productPrice == undefined) {
+      throw new Error('업데이트 할 값이 없음');
+    }
+
+    if (productName != undefined) {
+      this.productName = productName;
+    }
+
+    if (productName != undefined) {
+      this.productPrice = productPrice;
+    }
   }
 }

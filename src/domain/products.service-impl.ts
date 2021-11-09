@@ -9,7 +9,8 @@ import { ProductsService } from './products.service';
 import { logger } from '../common/logger';
 import {
   UpdateProductCommand,
-  UpdateProductOptionCommand, UpdateProductOptionGroupCommand,
+  UpdateProductOptionCommand,
+  UpdateProductOptionGroupCommand,
 } from './dto/update-product.command';
 
 @Injectable()
@@ -33,7 +34,7 @@ export class ProductsServiceImpl implements ProductsService {
   }
 
   async getOne(productCode: string): Promise<ProductsInfo> {
-    const product = await this.productReader.getByProductCode(productCode);
+    const product = await this.productReader.getProductBy(productCode);
     logger('product -> ', product);
     const allOptionInfoList = this.productReader.getAllOptionInfoList(product);
     logger('allOptionInfoList -> ', allOptionInfoList);
@@ -48,8 +49,17 @@ export class ProductsServiceImpl implements ProductsService {
     return `This action removes a #${id} product`;
   }
 
-  updateProduct(command: UpdateProductCommand): Promise<ProductsInfo> {
-    return Promise.resolve(undefined);
+  async updateProduct(command: UpdateProductCommand): Promise<ProductsInfo> {
+    const product = await this.productReader.getProductBy(command.productCode);
+    product.updateProductInfo(command.productName, command.productPrice);
+    const updatedProduct = await this.productStore.store(product);
+    const allOptionInfoList =
+      this.productReader.getAllOptionInfoList(updatedProduct);
+
+    return this.productsCommandMapper.ofPaymentInfo(
+      updatedProduct,
+      allOptionInfoList,
+    );
   }
 
   updateProductOption(
