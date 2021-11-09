@@ -39,3 +39,107 @@ export function fixtureProductOption() {
     faker.commerce.price(),
   );
 }
+
+export function fixtureCreateCommand() {
+  return {
+    productName: faker.commerce.productName(),
+    productPrice: faker.commerce.price(),
+    productCode: faker.datatype.uuid(),
+    productOptionGroupList: [
+      {
+        productOptionGroupName: faker.commerce.productName(),
+        ordering: 1,
+        productOptionList: [
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 3,
+          },
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 2,
+          },
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 1,
+          },
+        ],
+      },
+      {
+        productOptionGroupName: faker.commerce.productName(),
+        ordering: 2,
+        productOptionList: [
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 2,
+          },
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 1,
+          },
+        ],
+      },
+    ],
+  };
+}
+
+// TODO nullable
+export function fixtureUpdateCommand() {
+  return {
+    productName: faker.commerce.productName(),
+    productPrice: faker.commerce.price(),
+    productCode: faker.datatype.uuid(),
+  };
+}
+
+export function fixtureInfo(productCode = faker.datatype.uuid()) {
+  return {
+    productName: faker.commerce.productName(),
+    productPrice: faker.commerce.price(),
+    productCode: productCode,
+    status: '준비중',
+    productOptionGroupList: [
+      {
+        productOptionGroupName: faker.commerce.productName(),
+        ordering: 1,
+        productOptionList: [
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 3,
+          },
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 2,
+          },
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 1,
+          },
+        ],
+      },
+      {
+        productOptionGroupName: faker.commerce.productName(),
+        ordering: 2,
+        productOptionList: [
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 2,
+          },
+          {
+            productOptionName: faker.commerce.color(),
+            productOptionPrice: faker.commerce.price(),
+            ordering: 1,
+          },
+        ],
+      },
+    ],
+  };
+}

@@ -4,6 +4,11 @@ import { ProductsServiceImpl } from '../domain/products.service-impl';
 import { ProductsCommandMapper } from '../domain/products.command.mapper';
 import { ProductsResult } from '../domain/products.result';
 import { ProductsService } from '../domain/products.service';
+import {
+  UpdateProductCommand,
+  UpdateProductOptionCommand,
+  UpdateProductOptionGroupCommand,
+} from '../domain/dto/update-product.command';
 
 @Injectable()
 export default class ProductsFacade {
@@ -19,6 +24,27 @@ export default class ProductsFacade {
 
   async getOne(productCode: string): Promise<ProductsResult> {
     const productInfo = await this.productsService.getOne(productCode);
+    return this.productsCommandMapper.ofResult(productInfo);
+  }
+
+  async updateProduct(command: UpdateProductCommand): Promise<ProductsResult> {
+    const productInfo = await this.productsService.updateProduct(command);
+    return this.productsCommandMapper.ofResult(productInfo);
+  }
+
+  async updateProductOptionGroup(
+    command: UpdateProductOptionGroupCommand,
+  ): Promise<ProductsResult> {
+    const productInfo = await this.productsService.updateProductOptionGroup(
+      command,
+    );
+    return this.productsCommandMapper.ofResult(productInfo);
+  }
+
+  async updateProductOption(
+    command: UpdateProductOptionCommand,
+  ): Promise<ProductsResult> {
+    const productInfo = await this.productsService.updateProductOption(command);
     return this.productsCommandMapper.ofResult(productInfo);
   }
 }

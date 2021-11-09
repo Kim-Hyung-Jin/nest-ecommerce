@@ -6,11 +6,13 @@ export interface ProductsInfo {
   productOptionGroupList: ProductsOptionGroupInfo[];
 }
 export interface ProductsOptionGroupInfo {
+  id: number;
   productOptionGroupName: string;
   ordering: number;
   productOptionList: ProductsOptionInfo[];
 }
 export interface ProductsOptionInfo {
+  id: number;
   productOptionName: string;
   productOptionPrice: number;
   ordering: number;
