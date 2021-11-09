@@ -55,7 +55,7 @@ export class Products extends BaseEntity {
     this.productOptionGroupList = productOptionGroupList;
   }
 
-  updateProductInfo(productName: string, productPrice: number) {
+  updateProduct(productName: string, productPrice: number) {
     if (productName == undefined && productPrice == undefined) {
       throw new Error('업데이트 할 값이 없음');
     }
@@ -67,5 +67,23 @@ export class Products extends BaseEntity {
     if (productName != undefined) {
       this.productPrice = productPrice;
     }
+  }
+
+  updateProductOptionGroup(
+    optionGroupId: number,
+    productOptionGroupName: string,
+    ordering: number,
+  ) {
+    if (optionGroupId == undefined)
+      throw new Error('업데이트 할 optionGroup id가 없음');
+    if (productOptionGroupName == undefined && ordering == undefined)
+      throw new Error('업데이트 할 값이 없음');
+
+    const optionGroup = this.getOptionGroup(optionGroupId);
+    optionGroup.updateOptionGroup(productOptionGroupName, ordering);
+  }
+
+  private getOptionGroup(optionGroupId: number) {
+    return this.productOptionGroupList.find(value => optionGroupId == value.id);
   }
 }

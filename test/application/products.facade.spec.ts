@@ -10,7 +10,7 @@ import {
   fixtureInfo,
   fixtureProduct,
   fixtureUpdateProductCommand,
-  fixtureUpdateProductionOptionCommand,
+  fixtureUpdateProductOptionCommand,
   fixtureUpdateProductOptionGroupCommand,
 } from '../fixture';
 
@@ -246,7 +246,7 @@ describe('updateProductOptionGroup() 호출시', () => {
     }
 
     it('수정된 상품 정보 응답', async () => {
-      const command = fixtureUpdateProductionOptionCommand();
+      const command = fixtureUpdateProductOptionCommand();
       const mockedInfo = makeMockedInfo(command);
       const expectedResult = {
         productInfo: mockedInfo,

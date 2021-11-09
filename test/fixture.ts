@@ -5,7 +5,7 @@ import * as faker from 'faker';
 
 export function fixtureProduct() {
   const productOptionGroupList = [];
-  for (let i = 0; i < randomNumberWithRange(0, 5); i++) {
+  for (let i = 0; i < randomNumberWithRange(1, 5); i++) {
     productOptionGroupList.push(fixtureProductOptionGroup());
   }
   return new Products(
@@ -17,7 +17,7 @@ export function fixtureProduct() {
 
 export function fixtureProductOptionGroup() {
   const productOptionList = [];
-  for (let i = 0; i < randomNumberWithRange(0, 5); i++) {
+  for (let i = 0; i < randomNumberWithRange(1, 5); i++) {
     productOptionList.push(fixtureProductOption());
   }
   return new ProductOptionGroup(
@@ -125,7 +125,7 @@ export function fixtureUpdateProductOptionGroupCommand() {
   };
 }
 
-export function fixtureUpdateProductionOptionCommand() {
+export function fixtureUpdateProductOptionCommand() {
   return {
     optionGroupId: faker.datatype.number(),
     productCode: faker.datatype.uuid(),

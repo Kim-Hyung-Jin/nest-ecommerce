@@ -12,6 +12,8 @@ import {
   fixtureCreateCommand,
   fixtureProduct,
   fixtureUpdateProductCommand,
+  fixtureUpdateProductOptionCommand,
+  fixtureUpdateProductOptionGroupCommand,
 } from '../fixture';
 import { CreateProductCommand } from '../../src/domain/dto/create-product.command';
 import { EntityNotFoundError } from 'typeorm';
@@ -361,18 +363,6 @@ describe('updateProduct() 호출시', () => {
       return mockedEntity;
     }
 
-    function makeExpectedUpdatedProduct(
-      mockedEntity,
-      command: { productCode: any; productName: any; productPrice: any },
-    ) {
-      const expectedUpdatedProduct = mockedEntity;
-      Reflect.deleteProperty(expectedUpdatedProduct, 'productName');
-      Reflect.deleteProperty(expectedUpdatedProduct, 'productPrice');
-      Reflect.set(expectedUpdatedProduct, 'productName', command.productName);
-      Reflect.set(expectedUpdatedProduct, 'productPrice', command.productPrice);
-      return expectedUpdatedProduct;
-    }
-
     it('product 응답', async () => {
       const productCode = faker.datatype.uuid();
       const command = fixtureUpdateProductCommand(productCode);
@@ -386,6 +376,78 @@ describe('updateProduct() 호출시', () => {
         await service.updateProduct(command);
       }).rejects.toThrowError(new Error('업데이트 할 값이 없음'));
       expect(mockReader.getProductBy).toHaveBeenCalledWith(command.productCode);
+    });
+  });
+});
+
+describe('updateProductOptionGroup() 호출시', () => {
+  let service: ProductsService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        ProductsCommandMapper,
+        { provide: 'ProductsService', useClass: ProductsServiceImpl },
+        { provide: 'ProductsReader', useValue: mockReader },
+        { provide: 'ProductsStore', useValue: mockStore },
+      ],
+    }).compile();
+
+    service = module.get<ProductsService>('ProductsService');
+  });
+
+  describe('올바른 command 가 주어지면', () => {
+    function makeMockProduct(command: {
+      productCode: any;
+      ordering: any;
+      id: any;
+      productOptionGroupName: any;
+    }) {
+      const entity = fixtureProduct();
+      Reflect.set(entity.productOptionGroupList[0], 'id', command.id);
+      const optionGroup = entity.productOptionGroupList.find(
+        value => value.id == command.id,
+      );
+      optionGroup.productOptionGroupName = command.productOptionGroupName;
+      optionGroup.ordering = command.ordering;
+      return entity;
+    }
+
+    function makeUpdatedProduct(
+      mockRetrievedEntity: Products,
+      command: {
+        productCode: any;
+        ordering: any;
+        id: any;
+        productOptionGroupName: any;
+      },
+    ) {
+      mockRetrievedEntity.productOptionGroupList.find(
+        value => value.id == command.id,
+      ).productOptionGroupName = command.productOptionGroupName;
+      mockRetrievedEntity.productOptionGroupList.find(
+        value => value.id == command.id,
+      ).productOptionGroupName = command.ordering;
+
+      return mockRetrievedEntity;
+    }
+
+    it('업데이트된 product 응답', async () => {
+      const command = fixtureUpdateProductOptionGroupCommand();
+      const mockRetrievedEntity = makeMockProduct(command);
+      const updatedProduct = makeUpdatedProduct(mockRetrievedEntity, command);
+      const mockStoredProduct: Products = updatedProduct;
+      const mockOptionInfoList = mockStoredProduct.productOptionGroupList;
+      const expectedInfo = { ...mockStoredProduct };
+
+      mockReader.getProductBy.mockReturnValue(mockRetrievedEntity);
+      mockStore.store.mockReturnValue(mockStoredProduct);
+      mockReader.getAllOptionInfoList.mockReturnValue(mockOptionInfoList);
+
+      const res = await service.updateProductOptionGroup(command);
+
+      expect(mockStore.store).toHaveBeenCalledWith(updatedProduct);
+      expect(res).toStrictEqual(expectedInfo);
     });
   });
 });

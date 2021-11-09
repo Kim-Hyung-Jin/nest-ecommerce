@@ -11,12 +11,13 @@ import { Products } from './product.entity';
 
 @Entity()
 export default class ProductOptionGroup extends BaseEntity {
-  @PrimaryGeneratedColumn() private _id: number;
+  @PrimaryGeneratedColumn() id: number;
 
   @Column({ type: 'varchar', nullable: false })
-  private readonly _productOptionGroupName: string;
+  productOptionGroupName: string;
 
-  @Column({ type: 'int', nullable: false }) private readonly _ordering: number;
+  @Column({ type: 'int', nullable: false })
+  ordering: number;
 
   @OneToMany(
     type => ProductOption,
@@ -25,30 +26,10 @@ export default class ProductOptionGroup extends BaseEntity {
       cascade: true,
     },
   )
-  private readonly _productOptionList: ProductOption[];
+  productOptionList: ProductOption[];
 
   @ManyToOne(type => Products, product => product.productOptionGroupList)
-  private _product: Products;
-
-  get id(): number {
-    return this._id;
-  }
-
-  get productOptionGroupName(): string {
-    return this._productOptionGroupName;
-  }
-
-  get ordering(): number {
-    return this._ordering;
-  }
-
-  get productOptionList(): ProductOption[] {
-    return this._productOptionList;
-  }
-
-  get product(): Products {
-    return this._product;
-  }
+  product: Products;
 
   constructor(
     productOptionGroupName: string,
@@ -56,8 +37,16 @@ export default class ProductOptionGroup extends BaseEntity {
     productOptionList: ProductOption[],
   ) {
     super();
-    this._productOptionGroupName = productOptionGroupName;
-    this._ordering = ordering;
-    this._productOptionList = productOptionList;
+    this.productOptionGroupName = productOptionGroupName;
+    this.ordering = ordering;
+    this.productOptionList = productOptionList;
+  }
+
+  updateOptionGroup(productOptionGroupName: string, ordering: number) {
+    if (productOptionGroupName == undefined && ordering == undefined)
+      throw new Error('업데이트 할 값이 없음');
+
+    this.productOptionGroupName = productOptionGroupName;
+    this.ordering = ordering;
   }
 }

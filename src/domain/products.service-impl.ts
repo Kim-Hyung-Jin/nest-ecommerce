@@ -51,7 +51,7 @@ export class ProductsServiceImpl implements ProductsService {
 
   async updateProduct(command: UpdateProductCommand): Promise<ProductsInfo> {
     const product = await this.productReader.getProductBy(command.productCode);
-    product.updateProductInfo(command.productName, command.productPrice);
+    product.updateProduct(command.productName, command.productPrice);
     const updatedProduct = await this.productStore.store(product);
     const allOptionInfoList =
       this.productReader.getAllOptionInfoList(updatedProduct);
@@ -68,9 +68,22 @@ export class ProductsServiceImpl implements ProductsService {
     return Promise.resolve(undefined);
   }
 
-  updateProductOptionGroup(
+  async updateProductOptionGroup(
     command: UpdateProductOptionGroupCommand,
   ): Promise<ProductsInfo> {
-    return Promise.resolve(undefined);
+    const product = await this.productReader.getProductBy(command.productCode);
+    product.updateProductOptionGroup(
+      command.id,
+      command.productOptionGroupName,
+      command.ordering,
+    );
+    const updatedProduct = await this.productStore.store(product);
+    const allOptionInfoList =
+      this.productReader.getAllOptionInfoList(updatedProduct);
+
+    return this.productsCommandMapper.ofPaymentInfo(
+      updatedProduct,
+      allOptionInfoList,
+    );
   }
 }
