@@ -125,9 +125,12 @@ export function fixtureUpdateProductOptionGroupCommand() {
 
 export function fixtureUpdateProductionOptionCommand() {
   return {
-    productName: faker.commerce.productName(),
-    productPrice: faker.commerce.price(),
+    optionGroupId: faker.datatype.number(),
     productCode: faker.datatype.uuid(),
+    id: faker.datatype.number(),
+    productOptionName: faker.commerce.productName(),
+    ordering: faker.datatype.number(),
+    productOptionPrice: faker.datatype.number(),
   };
 }
 

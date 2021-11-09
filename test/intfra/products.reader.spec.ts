@@ -119,11 +119,13 @@ describe('getAllOptionInfoList() 호출시', () => {
     const expectedInfo = entity.productOptionGroupList.map(
       productionOptionGroup => {
         return {
+          id: productionOptionGroup.id,
           productOptionGroupName: productionOptionGroup.productOptionGroupName,
           ordering: productionOptionGroup.ordering,
           productOptionList: productionOptionGroup.productOptionList.map(
             productionOptionGroup => {
               return {
+                id: productionOptionGroup.id,
                 productOptionName: productionOptionGroup.productOptionName,
                 productOptionPrice: productionOptionGroup.productOptionPrice,
                 ordering: productionOptionGroup.ordering,

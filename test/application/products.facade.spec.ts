@@ -10,6 +10,7 @@ import {
   fixtureInfo,
   fixtureProduct,
   fixtureUpdateProductCommand,
+  fixtureUpdateProductionOptionCommand,
   fixtureUpdateProductOptionGroupCommand,
 } from '../fixture';
 
@@ -207,7 +208,54 @@ describe('updateProductOptionGroup() 호출시', () => {
       expect(getAssertOptionGroupName(res, command)).toStrictEqual(
         command.productOptionGroupName,
       );
-      expect(getAssertOptionGroupOrder).toStrictEqual(command.ordering);
+      expect(getAssertOptionGroupOrder(res, command)).toStrictEqual(
+        command.ordering,
+      );
+      expect(res).toStrictEqual(expectedResult);
+    });
+  });
+});
+
+describe('updateProductOptionGroup() 호출시', () => {
+  let facade: ProductsFacade;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        ProductsFacade,
+        ProductsCommandMapper,
+        { provide: 'ProductsService', useValue: mockService },
+      ],
+    }).compile();
+
+    facade = module.get<ProductsFacade>(ProductsFacade);
+  });
+
+  describe('올바른 옵션 정보가 주어지면', () => {
+    function makeMockedInfo(command) {
+      const mockedInfo = fixtureInfo();
+      mockedInfo.productOptionGroupList[0].id = command.id;
+      mockedInfo.productOptionGroupList[0].productOptionList[0].productOptionName =
+        command.productOptionName;
+      mockedInfo.productOptionGroupList[0].productOptionList[0].productOptionPrice =
+        command.productOptionPrice;
+      mockedInfo.productOptionGroupList[0].productOptionList[0].ordering =
+        command.ordering;
+
+      return mockedInfo;
+    }
+
+    it('수정된 상품 정보 응답', async () => {
+      const command = fixtureUpdateProductionOptionCommand();
+      const mockedInfo = makeMockedInfo(command);
+      const expectedResult = {
+        productInfo: mockedInfo,
+      };
+
+      mockService.updateProductOption.mockReturnValue(mockedInfo);
+
+      const res = await facade.updateProductOption(command);
+      expect(mockService.updateProductOption).toHaveBeenCalledWith(command);
       expect(res).toStrictEqual(expectedResult);
     });
   });

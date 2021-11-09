@@ -61,24 +61,26 @@ export class ProductsCommandMapper {
     };
   }
 
-  // ofPaymentOptionGroupInfo(
-  //   productOptionGroup: ProductOptionGroup,
-  //   productOptionList: ProductsOptionInfo[],
-  // ): ProductsOptionGroupInfo {
-  //   return {
-  //     productOptionGroupName: productOptionGroup.productOptionGroupName,
-  //     ordering: productOptionGroup.ordering,
-  //     productOptionList: productOptionList,
-  //   };
-  // }
-  //
-  // ofPaymentOptionInfo(productOption: ProductOption): ProductsOptionInfo {
-  //   return {
-  //     productOptionName: productOption.productOptionName,
-  //     productOptionPrice: productOption.productOptionPrice,
-  //     ordering: productOption.ordering,
-  //   };
-  // }
+  ofPaymentOptionGroupInfo(
+    productOptionGroup: ProductOptionGroup,
+    productOptionList: ProductsOptionInfo[],
+  ): ProductsOptionGroupInfo {
+    return {
+      id: productOptionGroup.id,
+      productOptionGroupName: productOptionGroup.productOptionGroupName,
+      ordering: productOptionGroup.ordering,
+      productOptionList: productOptionList,
+    };
+  }
+
+  ofPaymentOptionInfo(productOption: ProductOption): ProductsOptionInfo {
+    return {
+      id: productOption.id,
+      productOptionName: productOption.productOptionName,
+      productOptionPrice: productOption.productOptionPrice,
+      ordering: productOption.ordering,
+    };
+  }
 
   ofResult(productsInfo: ProductsInfo): ProductsResult {
     return {

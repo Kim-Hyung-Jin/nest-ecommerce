@@ -45,6 +45,7 @@ export class ProductsReaderImpl implements ProductsReader {
     productOptionGroup: ProductOptionGroup,
   ): ProductsOptionGroupInfo {
     return {
+      id: productOptionGroup.id,
       productOptionGroupName: productOptionGroup.productOptionGroupName,
       ordering: productOptionGroup.ordering,
       productOptionList: productOptionGroup.productOptionList.map(

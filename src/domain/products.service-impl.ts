@@ -7,6 +7,10 @@ import { ProductsCommandMapper } from './products.command.mapper';
 import { ProductsInfo } from './dto/products.info';
 import { ProductsService } from './products.service';
 import { logger } from '../common/logger';
+import {
+  UpdateProductCommand,
+  UpdateProductOptionCommand, UpdateProductOptionGroupCommand,
+} from './dto/update-product.command';
 
 @Injectable()
 export class ProductsServiceImpl implements ProductsService {
@@ -42,5 +46,21 @@ export class ProductsServiceImpl implements ProductsService {
 
   remove(id: number) {
     return `This action removes a #${id} product`;
+  }
+
+  updateProduct(command: UpdateProductCommand): Promise<ProductsInfo> {
+    return Promise.resolve(undefined);
+  }
+
+  updateProductOption(
+    command: UpdateProductOptionCommand,
+  ): Promise<ProductsInfo> {
+    return Promise.resolve(undefined);
+  }
+
+  updateProductOptionGroup(
+    command: UpdateProductOptionGroupCommand,
+  ): Promise<ProductsInfo> {
+    return Promise.resolve(undefined);
   }
 }
