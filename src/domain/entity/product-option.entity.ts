@@ -10,40 +10,20 @@ import ProductOptionGroup from './product-option-group.entity';
 
 @Entity()
 export default class ProductOption extends BaseEntity {
-  @PrimaryGeneratedColumn() private _id: number;
+  @PrimaryGeneratedColumn() id: number;
 
   @Column({ type: 'varchar', nullable: false })
-  private readonly _productOptionName: string;
+  productOptionName: string;
 
-  @Column({ type: 'int', nullable: false }) private readonly _ordering: number;
+  @Column({ type: 'int', nullable: false }) ordering: number;
 
-  @Column({ type: 'int', nullable: false }) private _productOptionPrice: number;
+  @Column({ type: 'int', nullable: false }) productOptionPrice: number;
 
   @ManyToOne(
     type => ProductOptionGroup,
     productOptionGroup => productOptionGroup.productOptionList,
   )
-  private readonly _productOptionGroup: ProductOptionGroup;
-
-  get id(): number {
-    return this._id;
-  }
-
-  get productOptionName(): string {
-    return this._productOptionName;
-  }
-
-  get ordering(): number {
-    return this._ordering;
-  }
-
-  get productOptionPrice(): number {
-    return this._productOptionPrice;
-  }
-
-  get productOptionGroup(): ProductOptionGroup {
-    return this._productOptionGroup;
-  }
+  productOptionGroup: ProductOptionGroup;
 
   constructor(
     productOptionName: string,
@@ -51,8 +31,25 @@ export default class ProductOption extends BaseEntity {
     productOptionPrice: number,
   ) {
     super();
-    this._productOptionName = productOptionName;
-    this._ordering = ordering;
-    this._productOptionPrice = productOptionPrice;
+    this.productOptionName = productOptionName;
+    this.ordering = ordering;
+    this.productOptionPrice = productOptionPrice;
+  }
+
+  updateProductOption(
+    productOptionName: string,
+    ordering: number,
+    productOptionPrice: number,
+  ) {
+    if (
+      productOptionName == undefined &&
+      ordering == undefined &&
+      productOptionPrice == undefined
+    )
+      throw new Error('업데이트 할 값이 없음');
+
+    this.productOptionName = productOptionName;
+    this.ordering = ordering;
+    this.productOptionPrice = productOptionPrice;
   }
 }

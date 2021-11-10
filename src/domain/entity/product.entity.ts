@@ -83,7 +83,32 @@ export class Products extends BaseEntity {
     optionGroup.updateOptionGroup(productOptionGroupName, ordering);
   }
 
+  updateProductOption(
+    optionGroupId: number,
+    id: number,
+    productOptionName: string,
+    ordering: number,
+    productOptionPrice: number,
+  ) {
+    if (optionGroupId == undefined)
+      throw new Error('업데이트 할 option 의 Group id가 없음');
+    if (
+      productOptionName == undefined &&
+      ordering == undefined &&
+      productOptionPrice == undefined
+    )
+      throw new Error('업데이트 할 값이 없음');
+
+    const optionGroup = this.getOptionGroup(optionGroupId);
+    const option = this.getOption(optionGroup, id);
+    option.updateProductOption(productOptionName, ordering, productOptionPrice);
+  }
+
   private getOptionGroup(optionGroupId: number) {
     return this.productOptionGroupList.find(value => optionGroupId == value.id);
+  }
+
+  private getOption(optionGroup: ProductOptionGroup, optionId: number) {
+    return optionGroup.productOptionList.find(value => value.id == optionId);
   }
 }

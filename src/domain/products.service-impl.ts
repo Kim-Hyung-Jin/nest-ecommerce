@@ -62,20 +62,36 @@ export class ProductsServiceImpl implements ProductsService {
     );
   }
 
-  updateProductOption(
-    command: UpdateProductOptionCommand,
-  ): Promise<ProductsInfo> {
-    return Promise.resolve(undefined);
-  }
-
   async updateProductOptionGroup(
     command: UpdateProductOptionGroupCommand,
   ): Promise<ProductsInfo> {
     const product = await this.productReader.getProductBy(command.productCode);
     product.updateProductOptionGroup(
+      // TODO 나머지 연산자 안되나
       command.id,
       command.productOptionGroupName,
       command.ordering,
+    );
+    const updatedProduct = await this.productStore.store(product);
+    const allOptionInfoList =
+      this.productReader.getAllOptionInfoList(updatedProduct);
+
+    return this.productsCommandMapper.ofPaymentInfo(
+      updatedProduct,
+      allOptionInfoList,
+    );
+  }
+
+  async updateProductOption(
+    command: UpdateProductOptionCommand,
+  ): Promise<ProductsInfo> {
+    const product = await this.productReader.getProductBy(command.productCode);
+    product.updateProductOption(
+      command.optionGroupId,
+      command.id,
+      command.productOptionName,
+      command.ordering,
+      command.productOptionPrice,
     );
     const updatedProduct = await this.productStore.store(product);
     const allOptionInfoList =

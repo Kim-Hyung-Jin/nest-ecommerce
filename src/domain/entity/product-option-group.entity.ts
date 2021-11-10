@@ -45,6 +45,7 @@ export default class ProductOptionGroup extends BaseEntity {
   updateOptionGroup(productOptionGroupName: string, ordering: number) {
     if (productOptionGroupName == undefined && ordering == undefined)
       throw new Error('업데이트 할 값이 없음');
+    //TODO 이 유효성 검사를 product fucntion에서도 하는데 여기에서도 해야되나
 
     this.productOptionGroupName = productOptionGroupName;
     this.ordering = ordering;
