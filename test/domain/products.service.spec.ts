@@ -142,35 +142,14 @@ describe('updateProduct() 호출시', () => {
   });
 
   describe('올바른 command 가 주어지면', () => {
-    function makeMockEntity(productCode) {
-      const mockedEntity = fixtureProduct();
-      Reflect.deleteProperty(mockedEntity, 'productCode');
-      Reflect.deleteProperty(mockedEntity, 'status');
-      Reflect.set(mockedEntity, 'productCode', productCode);
-      Reflect.set(mockedEntity, 'status', '준비중');
-
-      return mockedEntity;
-    }
-
-    function makeExpectedUpdatedProduct(
-      mockedEntity,
-      command: { productCode: any; productName: any; productPrice: any },
-    ) {
-      const expectedUpdatedProduct = mockedEntity;
-      Reflect.deleteProperty(expectedUpdatedProduct, 'productName');
-      Reflect.deleteProperty(expectedUpdatedProduct, 'productPrice');
-      Reflect.set(expectedUpdatedProduct, 'productName', command.productName);
-      Reflect.set(expectedUpdatedProduct, 'productPrice', command.productPrice);
-      return expectedUpdatedProduct;
-    }
-
     it('product 응답', async () => {
       const productCode = faker.datatype.uuid();
       const command = fixtureUpdateProductCommand(productCode);
-      const mockRetrievedProduct = makeMockEntity(productCode);
+      const mockRetrievedProduct = makeMockEntity(productCode, '준비중');
       const mockStoredProduct = makeExpectedUpdatedProduct(
         mockRetrievedProduct,
-        command,
+        command.productName,
+        command.productPrice,
       );
       const updatedProduct = mockStoredProduct;
       const expectedInfo = { ...updatedProduct };
@@ -192,36 +171,15 @@ describe('updateProduct() 호출시', () => {
   });
 
   describe('productPrice 만 빈값으로 주어지면', () => {
-    function makeMockEntity(productCode) {
-      const mockedEntity = fixtureProduct();
-      Reflect.deleteProperty(mockedEntity, 'productCode');
-      Reflect.deleteProperty(mockedEntity, 'status');
-      Reflect.set(mockedEntity, 'productCode', productCode);
-      Reflect.set(mockedEntity, 'status', '준비중');
-
-      return mockedEntity;
-    }
-
-    function makeExpectedUpdatedProduct(
-      mockedEntity,
-      command: { productCode: any; productName: any; productPrice: any },
-    ) {
-      const expectedUpdatedProduct = mockedEntity;
-      Reflect.deleteProperty(expectedUpdatedProduct, 'productName');
-      Reflect.deleteProperty(expectedUpdatedProduct, 'productPrice');
-      Reflect.set(expectedUpdatedProduct, 'productName', command.productName);
-      Reflect.set(expectedUpdatedProduct, 'productPrice', command.productPrice);
-      return expectedUpdatedProduct;
-    }
-
     it('product 응답', async () => {
       const productCode = faker.datatype.uuid();
       const command = fixtureUpdateProductCommand(productCode);
       delete command.productPrice;
-      const mockRetrievedProduct = makeMockEntity(productCode);
+      const mockRetrievedProduct = makeMockEntity(undefined, '준비중');
       const mockStoredProduct = makeExpectedUpdatedProduct(
         mockRetrievedProduct,
-        command,
+        command.productName,
+        command.productPrice,
       );
       const updatedProduct = mockStoredProduct;
       const expectedInfo = { ...updatedProduct };
@@ -243,36 +201,15 @@ describe('updateProduct() 호출시', () => {
   });
 
   describe('productName 만 빈값으로 주어지면', () => {
-    function makeMockEntity(productCode) {
-      const mockedEntity = fixtureProduct();
-      Reflect.deleteProperty(mockedEntity, 'productCode');
-      Reflect.deleteProperty(mockedEntity, 'status');
-      Reflect.set(mockedEntity, 'productCode', productCode);
-      Reflect.set(mockedEntity, 'status', '준비중');
-
-      return mockedEntity;
-    }
-
-    function makeExpectedUpdatedProduct(
-      mockedEntity,
-      command: { productCode: any; productName: any; productPrice: any },
-    ) {
-      const expectedUpdatedProduct = mockedEntity;
-      Reflect.deleteProperty(expectedUpdatedProduct, 'productName');
-      Reflect.deleteProperty(expectedUpdatedProduct, 'productPrice');
-      Reflect.set(expectedUpdatedProduct, 'productName', command.productName);
-      Reflect.set(expectedUpdatedProduct, 'productPrice', command.productPrice);
-      return expectedUpdatedProduct;
-    }
-
     it('product 응답', async () => {
       const productCode = faker.datatype.uuid();
       const command = fixtureUpdateProductCommand(productCode);
       delete command.productName;
-      const mockRetrievedProduct = makeMockEntity(productCode);
+      const mockRetrievedProduct = makeMockEntity(productCode, '준비중');
       const mockStoredProduct = makeExpectedUpdatedProduct(
         mockRetrievedProduct,
-        command,
+        command.productName,
+        command.productPrice,
       );
       const updatedProduct = mockStoredProduct;
       const expectedInfo = { ...updatedProduct };
@@ -294,22 +231,12 @@ describe('updateProduct() 호출시', () => {
   });
 
   describe('productName, productPrice 모두 빈값으로 주어지면', () => {
-    function makeMockEntity(productCode) {
-      const mockedEntity = fixtureProduct();
-      Reflect.deleteProperty(mockedEntity, 'productCode');
-      Reflect.deleteProperty(mockedEntity, 'status');
-      Reflect.set(mockedEntity, 'productCode', productCode);
-      Reflect.set(mockedEntity, 'status', '준비중');
-
-      return mockedEntity;
-    }
-
     it('product 응답', async () => {
       const productCode = faker.datatype.uuid();
       const command = fixtureUpdateProductCommand(productCode);
       delete command.productName;
       delete command.productPrice;
-      const mockRetrievedProduct = makeMockEntity(productCode);
+      const mockRetrievedProduct = makeMockEntity(productCode, '준비중');
       mockReader.getProductBy.mockReturnValue(mockRetrievedProduct);
 
       // TODO async 인 이유 확인
@@ -618,4 +545,40 @@ function makeMockProduct(
   }
 
   return entity;
+}
+
+function makeMockEntity(
+  productCode: string | undefined,
+  status: string | undefined,
+) {
+  const mockedEntity = fixtureProduct();
+  if (productCode != undefined) {
+    Reflect.deleteProperty(mockedEntity, 'productCode');
+    Reflect.set(mockedEntity, 'productCode', productCode);
+  }
+
+  if (status != undefined) {
+    Reflect.deleteProperty(mockedEntity, 'status');
+    Reflect.set(mockedEntity, 'status', status);
+  }
+
+  return mockedEntity;
+}
+
+function makeExpectedUpdatedProduct(
+  mockedEntity: Products,
+  productName: string,
+  productPrice: number,
+) {
+  const expectedUpdatedProduct = mockedEntity;
+  if (productName != undefined) {
+    Reflect.deleteProperty(expectedUpdatedProduct, 'productName');
+    Reflect.set(expectedUpdatedProduct, 'productName', productName);
+  }
+
+  if (productPrice != undefined) {
+    Reflect.deleteProperty(expectedUpdatedProduct, 'productPrice');
+    Reflect.set(expectedUpdatedProduct, 'productPrice', productPrice);
+  }
+  return expectedUpdatedProduct;
 }

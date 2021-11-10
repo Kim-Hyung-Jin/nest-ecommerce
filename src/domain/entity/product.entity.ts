@@ -64,7 +64,7 @@ export class Products extends BaseEntity {
       this.productName = productName;
     }
 
-    if (productName != undefined) {
+    if (productPrice != undefined) {
       this.productPrice = productPrice;
     }
   }
