@@ -59,7 +59,6 @@ export class Products extends BaseEntity {
     if (productName == undefined && productPrice == undefined) {
       throw new Error('업데이트 할 값이 없음');
     }
-
     if (productName != undefined) {
       this.productName = productName;
     }

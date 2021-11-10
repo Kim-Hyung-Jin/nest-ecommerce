@@ -22,18 +22,21 @@ const mockService = {
   updateProductOption: jest.fn(),
 };
 
+async function getTestModule() {
+  return await Test.createTestingModule({
+    providers: [
+      ProductsFacade,
+      ProductsCommandMapper,
+      { provide: 'ProductsService', useValue: mockService },
+    ],
+  }).compile();
+}
+
 describe('register() 호출시', () => {
   let facade: ProductsFacade;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsFacade,
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useValue: mockService },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     facade = module.get<ProductsFacade>(ProductsFacade);
   });
 
@@ -49,7 +52,9 @@ describe('register() 호출시', () => {
 
     it('등록된 상품 정보 응답', async () => {
       mockService.register.mockReturnValue(mockedInfo);
+
       const res = await facade.register(command);
+
       expect(res).toStrictEqual(expectedResult);
     });
   });
@@ -59,14 +64,7 @@ describe('getOne() 호출시', () => {
   let facade: ProductsFacade;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsFacade,
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useValue: mockService },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     facade = module.get<ProductsFacade>(ProductsFacade);
   });
 
@@ -89,14 +87,7 @@ describe('updateProduct() 호출시', () => {
   let facade: ProductsFacade;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsFacade,
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useValue: mockService },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     facade = module.get<ProductsFacade>(ProductsFacade);
   });
 
@@ -123,7 +114,6 @@ describe('updateProduct() 호출시', () => {
       mockService.updateProduct.mockReturnValue(mockedInfo);
 
       const res = await facade.updateProduct(command);
-
       expect(mockService.updateProduct).toHaveBeenCalledWith(command);
       expect(res.productInfo.productCode).toStrictEqual(command.productCode);
       expect(res.productInfo.productName).toStrictEqual(command.productName);
@@ -137,58 +127,15 @@ describe('updateProductOptionGroup() 호출시', () => {
   let facade: ProductsFacade;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsFacade,
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useValue: mockService },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     facade = module.get<ProductsFacade>(ProductsFacade);
   });
 
   describe('올바른 옵션 그룹 정보가 주어지면', () => {
-    function makeMockedInfo(command) {
-      const mockedInfo = fixtureInfo();
-      mockedInfo.productOptionGroupList.push({
-        id: command.id,
-        productOptionGroupName: command.productOptionGroupName,
-        ordering: command.ordering,
-        productOptionList: [
-          {
-            id: faker.datatype.number(),
-            productOptionName: faker.commerce.color(),
-            productOptionPrice: faker.commerce.price(),
-            ordering: 3,
-          },
-          {
-            id: faker.datatype.number(),
-            productOptionName: faker.commerce.color(),
-            productOptionPrice: faker.commerce.price(),
-            ordering: 2,
-          },
-          {
-            id: faker.datatype.number(),
-            productOptionName: faker.commerce.color(),
-            productOptionPrice: faker.commerce.price(),
-            ordering: 1,
-          },
-        ],
-      });
-      return mockedInfo;
-    }
-
-    function getAssertOptionGroupName(res, command) {
-      return res.productInfo.productOptionGroupList.find(
-        value => value.id == command.id,
-      ).productOptionGroupName;
-    }
-
-    function getAssertOptionGroupOrder(res, command) {
-      return res.productInfo.productOptionGroupList.find(
-        value => value.id == command.id,
-      ).ordering;
+    function getTargetOptionGroup(result, optionGroupId) {
+      return result.productInfo.productOptionGroupList.find(
+        value => value.id == optionGroupId,
+      );
     }
 
     it('수정된 상품 정보 응답', async () => {
@@ -201,16 +148,14 @@ describe('updateProductOptionGroup() 호출시', () => {
       mockService.updateProductOptionGroup.mockReturnValue(mockedInfo);
 
       const res = await facade.updateProductOptionGroup(command);
-
       expect(mockService.updateProductOptionGroup).toHaveBeenCalledWith(
         command,
       );
-      expect(getAssertOptionGroupName(res, command)).toStrictEqual(
+      const targetOptionGroup = getTargetOptionGroup(res, command.id);
+      expect(targetOptionGroup.productOptionGroupName).toStrictEqual(
         command.productOptionGroupName,
       );
-      expect(getAssertOptionGroupOrder(res, command)).toStrictEqual(
-        command.ordering,
-      );
+      expect(targetOptionGroup.ordering).toStrictEqual(command.ordering);
       expect(res).toStrictEqual(expectedResult);
     });
   });
@@ -218,33 +163,12 @@ describe('updateProductOptionGroup() 호출시', () => {
 
 describe('updateProductOptionGroup() 호출시', () => {
   let facade: ProductsFacade;
-
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsFacade,
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useValue: mockService },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     facade = module.get<ProductsFacade>(ProductsFacade);
   });
 
   describe('올바른 옵션 정보가 주어지면', () => {
-    function makeMockedInfo(command) {
-      const mockedInfo = fixtureInfo();
-      mockedInfo.productOptionGroupList[0].id = command.id;
-      mockedInfo.productOptionGroupList[0].productOptionList[0].productOptionName =
-        command.productOptionName;
-      mockedInfo.productOptionGroupList[0].productOptionList[0].productOptionPrice =
-        command.productOptionPrice;
-      mockedInfo.productOptionGroupList[0].productOptionList[0].ordering =
-        command.ordering;
-
-      return mockedInfo;
-    }
-
     it('수정된 상품 정보 응답', async () => {
       const command = fixtureUpdateProductOptionCommand();
       const mockedInfo = makeMockedInfo(command);
@@ -260,3 +184,33 @@ describe('updateProductOptionGroup() 호출시', () => {
     });
   });
 });
+
+function makeMockedInfo(command) {
+  const mockedInfo = fixtureInfo();
+  mockedInfo.productOptionGroupList.push({
+    id: command.id,
+    productOptionGroupName: command.productOptionGroupName,
+    ordering: command.ordering,
+    productOptionList: [
+      {
+        id: faker.datatype.number(),
+        productOptionName: faker.commerce.color(),
+        productOptionPrice: faker.commerce.price(),
+        ordering: 3,
+      },
+      {
+        id: faker.datatype.number(),
+        productOptionName: faker.commerce.color(),
+        productOptionPrice: faker.commerce.price(),
+        ordering: 2,
+      },
+      {
+        id: faker.datatype.number(),
+        productOptionName: faker.commerce.color(),
+        productOptionPrice: faker.commerce.price(),
+        ordering: 1,
+      },
+    ],
+  });
+  return mockedInfo;
+}
