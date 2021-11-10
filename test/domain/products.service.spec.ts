@@ -29,19 +29,24 @@ const mockStore = {
   store: jest.fn(),
 };
 
+const testProvider = [
+  ProductsCommandMapper,
+  { provide: 'ProductsService', useClass: ProductsServiceImpl },
+  { provide: 'ProductsReader', useValue: mockReader },
+  { provide: 'ProductsStore', useValue: mockStore },
+];
+
+async function getTestModule() {
+  return await Test.createTestingModule({
+    providers: testProvider,
+  }).compile();
+}
+
 describe('register() 호출시', () => {
   let service: ProductsService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useClass: ProductsServiceImpl },
-        { provide: 'ProductsReader', useValue: mockReader },
-        { provide: 'ProductsStore', useValue: mockStore },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     service = module.get<ProductsService>('ProductsService');
   });
 
@@ -75,13 +80,7 @@ describe('register() 호출시', () => {
       const command = fixtureCreateCommand();
       const expectedEntity = makeExpectedEntity(command);
       const mockedEntity = expectedEntity;
-      const expectedInfo = {
-        productName: mockedEntity.productName,
-        productPrice: mockedEntity.productPrice,
-        productCode: mockedEntity.productCode,
-        status: mockedEntity.status,
-        productOptionGroupList: mockedEntity.productOptionGroupList,
-      };
+      const expectedInfo = { ...mockedEntity };
 
       mockStore.store.mockReturnValue(mockedEntity);
       mockReader.getAllOptionInfoList.mockReturnValue(
@@ -102,15 +101,7 @@ describe('getOne() 호출시', () => {
   let service: ProductsService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useClass: ProductsServiceImpl },
-        { provide: 'ProductsReader', useValue: mockReader },
-        { provide: 'ProductsStore', useValue: mockStore },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     service = module.get<ProductsService>('ProductsService');
   });
 
@@ -146,15 +137,7 @@ describe('updateProduct() 호출시', () => {
   let service: ProductsService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useClass: ProductsServiceImpl },
-        { provide: 'ProductsReader', useValue: mockReader },
-        { provide: 'ProductsStore', useValue: mockStore },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     service = module.get<ProductsService>('ProductsService');
   });
 
@@ -342,30 +325,11 @@ describe('updateProductOptionGroup() 호출시', () => {
   let service: ProductsService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useClass: ProductsServiceImpl },
-        { provide: 'ProductsReader', useValue: mockReader },
-        { provide: 'ProductsStore', useValue: mockStore },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     service = module.get<ProductsService>('ProductsService');
   });
 
   describe('올바른 command 가 주어지면', () => {
-    function makeMockProduct(command: {
-      productCode: any;
-      ordering: any;
-      id: any;
-      productOptionGroupName: any;
-    }) {
-      const entity = fixtureProduct();
-      Reflect.set(entity.productOptionGroupList[0], 'id', command.id);
-      return entity;
-    }
-
     function makeUpdatedProduct(
       mockRetrievedEntity: Products,
       command: {
@@ -386,7 +350,7 @@ describe('updateProductOptionGroup() 호출시', () => {
 
     it('업데이트된 product 응답', async () => {
       const command = fixtureUpdateProductOptionGroupCommand();
-      const mockRetrievedEntity = makeMockProduct(command);
+      const mockRetrievedEntity = makeMockProduct(command.id, undefined);
       const expectedUpdatedProduct = makeUpdatedProduct(
         cloneDeep(mockRetrievedEntity),
         command,
@@ -416,21 +380,10 @@ describe('updateProductOptionGroup() 호출시', () => {
   });
 
   describe('optionGroupId 가 없을 때', () => {
-    function makeMockProduct(command: {
-      productCode: any;
-      ordering: any;
-      id: any;
-      productOptionGroupName: any;
-    }) {
-      const entity = fixtureProduct();
-      Reflect.set(entity.productOptionGroupList[0], 'id', command.id);
-      return entity;
-    }
-
     it('업데이트된 product 응답', async () => {
       const command = fixtureUpdateProductOptionGroupCommand();
       delete command.id;
-      const mockRetrievedEntity = makeMockProduct(command);
+      const mockRetrievedEntity = makeMockProduct(command.id, undefined);
 
       mockReader.getProductBy.mockReturnValue(mockRetrievedEntity);
 
@@ -441,17 +394,6 @@ describe('updateProductOptionGroup() 호출시', () => {
   });
 
   describe('productOptionGroupName 가 없을 때', () => {
-    function makeMockProduct(command: {
-      productCode: any;
-      ordering: any;
-      id: any;
-      productOptionGroupName: any;
-    }) {
-      const entity = fixtureProduct();
-      Reflect.set(entity.productOptionGroupList[0], 'id', command.id);
-      return entity;
-    }
-
     function makeUpdatedProduct(
       mockRetrievedEntity: Products,
       command: {
@@ -473,7 +415,7 @@ describe('updateProductOptionGroup() 호출시', () => {
     it('업데이트된 product 응답', async () => {
       const command = fixtureUpdateProductOptionGroupCommand();
       delete command.productOptionGroupName;
-      const mockRetrievedEntity = makeMockProduct(command);
+      const mockRetrievedEntity = makeMockProduct(command.id, undefined);
       const expectedUpdatedProduct = makeUpdatedProduct(
         cloneDeep(mockRetrievedEntity),
         command,
@@ -503,17 +445,6 @@ describe('updateProductOptionGroup() 호출시', () => {
   });
 
   describe('ordering 가 없을 때', () => {
-    function makeMockProduct(command: {
-      productCode: any;
-      ordering: any;
-      id: any;
-      productOptionGroupName: any;
-    }) {
-      const entity = fixtureProduct();
-      Reflect.set(entity.productOptionGroupList[0], 'id', command.id);
-      return entity;
-    }
-
     function makeUpdatedProduct(
       mockRetrievedEntity: Products,
       command: {
@@ -535,7 +466,7 @@ describe('updateProductOptionGroup() 호출시', () => {
     it('업데이트된 product 응답', async () => {
       const command = fixtureUpdateProductOptionGroupCommand();
       delete command.ordering;
-      const mockRetrievedEntity = makeMockProduct(command);
+      const mockRetrievedEntity = makeMockProduct(command.id, undefined);
       const expectedUpdatedProduct = makeUpdatedProduct(
         cloneDeep(mockRetrievedEntity),
         command,
@@ -565,22 +496,11 @@ describe('updateProductOptionGroup() 호출시', () => {
   });
 
   describe('productOptionGroupName, ordering 가 없을 때', () => {
-    function makeMockProduct(command: {
-      productCode: any;
-      ordering: any;
-      id: any;
-      productOptionGroupName: any;
-    }) {
-      const entity = fixtureProduct();
-      Reflect.set(entity.productOptionGroupList[0], 'id', command.id);
-      return entity;
-    }
-
     it('업데이트된 product 응답', async () => {
       const command = fixtureUpdateProductOptionGroupCommand();
       delete command.ordering;
       delete command.productOptionGroupName;
-      const mockRetrievedEntity = makeMockProduct(command);
+      const mockRetrievedEntity = makeMockProduct(command.id, undefined);
 
       mockReader.getProductBy.mockReturnValue(mockRetrievedEntity);
 
@@ -595,41 +515,11 @@ describe('updateProductOption() 호출시', () => {
   let service: ProductsService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductsCommandMapper,
-        { provide: 'ProductsService', useClass: ProductsServiceImpl },
-        { provide: 'ProductsReader', useValue: mockReader },
-        { provide: 'ProductsStore', useValue: mockStore },
-      ],
-    }).compile();
-
+    const module = await getTestModule();
     service = module.get<ProductsService>('ProductsService');
   });
 
   describe('올바른 command 가 주어지면', () => {
-    function makeMockProduct(command: {
-      optionGroupId: number;
-      productCode: string;
-      id: number;
-      productOptionName: string;
-      ordering: number;
-      productOptionPrice: number;
-    }) {
-      const entity = fixtureProduct();
-      Reflect.set(
-        entity.productOptionGroupList[0],
-        'id',
-        command.optionGroupId,
-      );
-      Reflect.set(
-        entity.productOptionGroupList[0].productOptionList[0],
-        'id',
-        command.id,
-      );
-      return entity;
-    }
-
     function makeUpdatedProduct(
       mockRetrievedEntity: Products,
       command: {
@@ -675,7 +565,10 @@ describe('updateProductOption() 호출시', () => {
 
     it('업데이트된 product 응답', async () => {
       const command = fixtureUpdateProductOptionCommand();
-      const mockRetrievedEntity = makeMockProduct(command);
+      const mockRetrievedEntity = makeMockProduct(
+        command.optionGroupId,
+        command.id,
+      );
       const expectedUpdatedProduct = makeUpdatedProduct(
         cloneDeep(mockRetrievedEntity),
         command,
@@ -705,3 +598,24 @@ describe('updateProductOption() 호출시', () => {
     });
   });
 });
+
+function makeMockProduct(
+  optionGroupId: number | undefined,
+  optionId: number | undefined,
+) {
+  const entity = fixtureProduct();
+
+  if (optionGroupId != undefined) {
+    Reflect.set(entity.productOptionGroupList[0], 'id', optionGroupId);
+  }
+
+  if (optionId != undefined) {
+    Reflect.set(
+      entity.productOptionGroupList[0].productOptionList[0],
+      'id',
+      optionId,
+    );
+  }
+
+  return entity;
+}
