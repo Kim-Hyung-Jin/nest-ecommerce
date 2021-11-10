@@ -3,7 +3,6 @@ import { ProductsService } from '../../src/domain/products.service';
 import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
 import { ProductsServiceImpl } from '../../src/domain/products.service-impl';
 import * as faker from 'faker';
-// import { v4 } from 'uuid';
 import * as uuid from 'uuid';
 import { Products } from '../../src/domain/entity/product.entity';
 import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
@@ -12,11 +11,11 @@ import {
   fixtureCreateCommand,
   fixtureProduct,
   fixtureUpdateProductCommand,
-  fixtureUpdateProductOptionCommand,
   fixtureUpdateProductOptionGroupCommand,
 } from '../fixture';
 import { CreateProductCommand } from '../../src/domain/dto/create-product.command';
-import { EntityNotFoundError } from 'typeorm';
+import * as lodash from 'lodash';
+import { cloneDeep } from 'lodash';
 
 jest.mock('uuid');
 
@@ -116,51 +115,9 @@ describe('getOne() 호출시', () => {
 
   describe('올바른 productCode 가 주어지면', () => {
     function makeMockedEntity(productCode) {
-      const mockedEntity = {
-        productCode: productCode,
-        productName: faker.commerce.productName(),
-        productPrice: faker.commerce.price(),
-        status: '준비중',
-        productOptionGroupList: [
-          {
-            productOptionGroupName: faker.commerce.productName(),
-            ordering: 1,
-            productOptionList: [
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 1,
-              },
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 2,
-              },
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 3,
-              },
-            ],
-          },
-          {
-            productOptionGroupName: faker.commerce.productName(),
-            ordering: 2,
-            productOptionList: [
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 1,
-              },
-              {
-                productOptionName: faker.commerce.color(),
-                productOptionPrice: faker.commerce.price(),
-                ordering: 2,
-              },
-            ],
-          },
-        ],
-      };
+      const mockedEntity = fixtureProduct();
+      Reflect.set(mockedEntity, 'productCode', productCode);
+      Reflect.set(mockedEntity, 'status', '준비중');
       return mockedEntity;
     }
 
@@ -422,12 +379,11 @@ describe('updateProductOptionGroup() 호출시', () => {
         productOptionGroupName: any;
       },
     ) {
-      mockRetrievedEntity.productOptionGroupList.find(
+      const targetOptionGroup = mockRetrievedEntity.productOptionGroupList.find(
         value => value.id == command.id,
-      ).productOptionGroupName = command.productOptionGroupName;
-      mockRetrievedEntity.productOptionGroupList.find(
-        value => value.id == command.id,
-      ).productOptionGroupName = command.ordering;
+      );
+      targetOptionGroup.productOptionGroupName = command.productOptionGroupName;
+      targetOptionGroup.ordering = command.ordering;
 
       return mockRetrievedEntity;
     }
@@ -435,8 +391,11 @@ describe('updateProductOptionGroup() 호출시', () => {
     it('업데이트된 product 응답', async () => {
       const command = fixtureUpdateProductOptionGroupCommand();
       const mockRetrievedEntity = makeMockProduct(command);
-      const updatedProduct = makeUpdatedProduct(mockRetrievedEntity, command);
-      const mockStoredProduct: Products = updatedProduct;
+      const expectedUpdatedProduct = makeUpdatedProduct(
+        cloneDeep(mockRetrievedEntity),
+        command,
+      );
+      const mockStoredProduct: Products = cloneDeep(expectedUpdatedProduct);
       const mockOptionInfoList = mockStoredProduct.productOptionGroupList;
       const expectedInfo = { ...mockStoredProduct };
 
@@ -445,9 +404,18 @@ describe('updateProductOptionGroup() 호출시', () => {
       mockReader.getAllOptionInfoList.mockReturnValue(mockOptionInfoList);
 
       const res = await service.updateProductOptionGroup(command);
-
-      expect(mockStore.store).toHaveBeenCalledWith(updatedProduct);
+      expect(mockStore.store).toHaveBeenCalledWith(expectedUpdatedProduct);
+      expect(mockReader.getAllOptionInfoList).toHaveBeenCalledWith(
+        mockStoredProduct,
+      );
       expect(res).toStrictEqual(expectedInfo);
+      const targetOptionGroup = res.productOptionGroupList.find(
+        value => value.id == command.id,
+      );
+      expect(targetOptionGroup.ordering).toStrictEqual(command.ordering);
+      expect(targetOptionGroup.productOptionGroupName).toStrictEqual(
+        command.productOptionGroupName,
+      );
     });
   });
 });
