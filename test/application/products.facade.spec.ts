@@ -70,7 +70,7 @@ describe('getOne() 호출시', () => {
 
   describe('올바른 상품 코드가 주어지면', () => {
     const productCode = faker.datatype.uuid();
-    const mockedInfo = fixtureInfo();
+    const mockedInfo = fixtureInfo('준비중');
     const expectedResult = {
       productInfo: mockedInfo,
     };
@@ -97,8 +97,7 @@ describe('updateProduct() 호출시', () => {
       productName: string;
       productPrice: number;
     }) {
-      const mockedInfo = fixtureInfo();
-      mockedInfo.productCode = command.productCode;
+      const mockedInfo = fixtureInfo('준비중', command.productCode);
       mockedInfo.productName = command.productName;
       mockedInfo.productPrice = command.productPrice;
       return mockedInfo;
@@ -186,7 +185,7 @@ describe('updateProductOptionGroup() 호출시', () => {
 });
 
 function makeMockedInfo(command) {
-  const mockedInfo = fixtureInfo();
+  const mockedInfo = fixtureInfo('준비중');
   mockedInfo.productOptionGroupList.push({
     id: command.id,
     productOptionGroupName: command.productOptionGroupName,

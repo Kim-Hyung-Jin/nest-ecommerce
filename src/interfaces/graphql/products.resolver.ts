@@ -11,11 +11,12 @@ import { ProductsService } from '../../domain/products.service';
 import { ProductsInfo } from '../../domain/dto/products.info';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { ProductsDtoMapper } from '../products-dto.mapper';
+import ProductsFacade from '../../application/products.facade';
 
 @Resolver('Products')
 export class ProductsResolver {
   constructor(
-    @Inject('ProductsService') private productsService: ProductsService,
+    private productsFacade: ProductsFacade,
     private productsDtoMapper: ProductsDtoMapper,
   ) {}
 
@@ -23,13 +24,12 @@ export class ProductsResolver {
   async getProduct(
     @Args('productCode', { type: () => String }) productCode: string,
   ) {
-    return this.productsService.getOne(productCode);
+    return this.productsFacade.getOne(productCode);
   }
 
   @Mutation()
   async registerProduct(@Args('data') dto: CreateProductDto) {
-    // TODO http request랑 같은거 써도 되나
     const command = this.productsDtoMapper.toCreateProductCommand(dto);
-    return this.productsService.register(command);
+    return this.productsFacade.register(command);
   }
 }

@@ -136,13 +136,16 @@ export function fixtureUpdateProductOptionCommand() {
   };
 }
 
-export function fixtureInfo(productCode = faker.datatype.uuid()) {
+export function fixtureInfo(
+  status: string,
+  productCode = faker.datatype.uuid(),
+) {
   return {
     id: faker.datatype.number(),
     productName: faker.commerce.productName(),
     productPrice: faker.commerce.price(),
     productCode: productCode,
-    status: '준비중',
+    status: status,
     productOptionGroupList: [
       {
         id: faker.datatype.number(),
