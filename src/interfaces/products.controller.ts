@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import ProductsFacade from '../application/products.facade';
-import { CreateProductDto } from './dto/create-product.dto';
-import { CreateProductResponse } from './dto/create-product.response';
+import { CreateProductDto } from './dto/product/create-product.dto';
+import { CreateProductResponse } from './dto/product/create-product.response';
 import { ProductsDtoMapper } from './products-dto.mapper';
 import { ProductsResult } from '../domain/products.result';
 

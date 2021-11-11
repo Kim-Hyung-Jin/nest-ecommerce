@@ -9,11 +9,11 @@ import {
 import { Inject } from '@nestjs/common';
 import { ProductsService } from '../../domain/products.service';
 import { ProductsInfo } from '../../domain/dto/products.info';
-import { CreateProductDto } from '../dto/create-product.dto';
+import { CreateProductDto } from '../dto/product/create-product.dto';
 import { ProductsDtoMapper } from '../products-dto.mapper';
 import ProductsFacade from '../../application/products.facade';
-import { UpdateProductDto, UpdateProductOptionDto, UpdateProductOptionGroupDto } from '../dto/update-product.dto';
-import { UpdateProductResponse } from '../dto/update-product.response';
+import { UpdateProductDto, UpdateProductOptionDto, UpdateProductOptionGroupDto } from '../dto/product/update-product.dto';
+import { UpdateProductResponse } from '../dto/product/update-product.response';
 import {
   UpdateProductCommand,
   UpdateProductOptionCommand,

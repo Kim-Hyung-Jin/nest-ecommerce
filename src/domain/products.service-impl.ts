@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { UpdateProductDto } from '../interfaces/dto/update-product.dto';
+import { UpdateProductDto } from '../interfaces/dto/product/update-product.dto';
 import { ProductsReader } from './products.reader';
 import ProductsStore from './products.store';
 import { CreateProductCommand } from './dto/create-product.command';
