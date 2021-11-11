@@ -1,52 +1,57 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import * as faker from 'faker';
-import { ProductsResolver } from '../../src/interfaces/graphql/products.resolver';
-import { ProductsDtoMapper } from '../../src/interfaces/products-dto.mapper';
-import { fixtureInfo } from '../fixture';
 import ProductsFacade from '../../src/application/products.facade';
+import * as faker from 'faker';
 import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
-import { IsNumber } from 'class-validator';
-import OrderFacade from '../../src/application/order.facade';
-import { OrderResolver } from '../../src/interfaces/graphql/order.resolver';
+import { MockType } from '../../src/common/mock.helper';
+import { ProductsService } from '../../src/domain/products.service';
+import { ProductsServiceImpl } from '../../src/domain/products.service-impl';
 import {
-  CreateOrder,
-  CreateOrderLine,
-} from '../../src/interfaces/dto/order/order-dto';
+  fixtureCreateCommand,
+  fixtureInfo,
+  fixtureProduct,
+  fixtureUpdateProductCommand,
+  fixtureUpdateProductOptionCommand,
+  fixtureUpdateProductOptionGroupCommand,
+} from '../fixture';
+import OrderFacade from '../../src/application/order.facade';
 
-const mockFacade = {
+const mockService = {
   create: jest.fn(),
 };
 
 async function getTestModule() {
   return await Test.createTestingModule({
-    providers: [{ provide: OrderFacade, useValue: mockFacade }, OrderResolver],
+    providers: [
+      OrderFacade,
+      { provide: 'ProductsService', useValue: mockService },
+    ],
   }).compile();
 }
 
-describe('create() Mutation 호출시', () => {
-  let resolver: OrderResolver;
+describe('create() 호출시', () => {
+  let facade: OrderFacade;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    resolver = module.get<OrderResolver>(OrderResolver);
+    facade = module.get<OrderFacade>(OrderFacade);
   });
 
-  describe('올바른 주문정보가 주어졌으면', () => {
-    it('조회한 상품 정보 응답', async () => {
-      const request = makeCreateOrderRequest();
-      const command = { ...request };
-      const mockedResult = { orderInfo: { orderCode: faker.datatype.uuid() } };
-      const expectedResponse = { orderCode: mockedResult.orderInfo.orderCode };
-      mockFacade.create.mockReturnValue(mockedResult);
+  describe('정상적인 command 가 주어졌으면', () => {
+    const command = makeCreateOrderCommand();
+    const mockedInfo = { orderCode: faker.datatype.uuid() };
+    const expectedResult = { orderInfo: mockedInfo };
 
-      const res = await resolver.create(request);
-      expect(mockFacade.create).toHaveBeenCalledWith(command);
-      expect(res).toStrictEqual(expectedResponse);
+    it('등록된 상품 정보 응답', async () => {
+      mockService.create.mockReturnValue(mockedInfo);
+
+      const res = await facade.create(command);
+      expect(mockService.create).toHaveBeenCalledWith(command);
+      expect(res).toStrictEqual(expectedResult);
     });
   });
 });
 
-function makeCreateOrderRequest() {
+function makeCreateOrderCommand() {
   return {
     userId: faker.datatype.number(),
     payMethod: faker.datatype.string(),
