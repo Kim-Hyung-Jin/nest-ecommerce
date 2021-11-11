@@ -88,24 +88,6 @@ describe('[GET] /products', () => {
       Logger.log('res -> ' + res);
     });
   });
-
-  // describe('존재하지 않는 상품 코드로 조회 시', () => {
-  //   const productCode = faker.datatype.uuid();
-  //   it('EntityNotFoundError 에러 응답', async () => {
-  //     mockFacade.getProduct.mockImplementation(() => {
-  //       throw new EntityNotFoundError(Product, productCode);
-  //     });
-  //     const res = await controller.findOne(productCode);
-  //     expect(res).toStrictEqual({
-  //       statusCode: 400,
-  //       timestamp: '2021-11-03T10:29:17.756Z',
-  //       path: '/products/bca28eff-ce6c-490a-b926-',
-  //       message:
-  //         'Could not find any entity of type "Product" matching: "bca28eff-ce6c-490a-b926-"',
-  //     });
-  //   });
-  // });
-  // TODO
 });
 
 describe('[POST] /products', () => {

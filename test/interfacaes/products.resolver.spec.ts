@@ -5,6 +5,7 @@ import { ProductsDtoMapper } from '../../src/interfaces/products-dto.mapper';
 import { fixtureInfo } from '../fixture';
 import ProductsFacade from '../../src/application/products.facade';
 import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
+import { IsNumber } from 'class-validator';
 
 const mockFacade = {
   register: jest.fn(),
@@ -24,7 +25,7 @@ async function getTestModule() {
   }).compile();
 }
 
-describe('products Query 호출시', () => {
+describe('getProduct Query 호출시', () => {
   let resolver: ProductsResolver;
 
   beforeEach(async () => {
@@ -45,7 +46,7 @@ describe('products Query 호출시', () => {
   });
 });
 
-describe('Mutation Products 호출시', () => {
+describe('registerProduct Mutation 호출시', () => {
   let resolver: ProductsResolver;
 
   beforeEach(async () => {
@@ -61,10 +62,89 @@ describe('Mutation Products 호출시', () => {
         productPrice: request.productPrice,
         productOptionGroupList: request.productOptionGroupList,
       };
+
       mockFacade.register.mockReturnValue(mockedInfo);
+
       const res = await resolver.registerProduct(request);
       expect(mockFacade.register).toHaveBeenCalledWith(expectedCommand);
       expect(res).toStrictEqual(mockedInfo);
+    });
+  });
+});
+
+describe('updateProduct Mutation 호출시', () => {
+  let resolver: ProductsResolver;
+
+  beforeEach(async () => {
+    const module = await getTestModule();
+    resolver = module.get<ProductsResolver>(ProductsResolver);
+  });
+  describe('올바른 dto 가 주어졌다면', () => {
+    it('등록된 products 응답', async () => {
+      const request = makeUpdateProductRequest();
+      const mockedInfo = fixtureInfo('준비중');
+      const mockedResult = { productInfo: { ...mockedInfo } };
+      const expectedCommand = { ...request };
+      const expectedResult = { productInfo: { ...mockedInfo } };
+      const expectedResponse = { ...expectedResult.productInfo };
+
+      mockFacade.updateProduct.mockReturnValue(mockedResult);
+
+      const res = await resolver.updateProduct(request);
+      expect(mockFacade.updateProduct).toHaveBeenCalledWith(expectedCommand);
+      expect(res).toStrictEqual(expectedResponse);
+    });
+  });
+});
+
+describe('updateProductOptionGroup Mutation 호출시', () => {
+  let resolver: ProductsResolver;
+
+  beforeEach(async () => {
+    const module = await getTestModule();
+    resolver = module.get<ProductsResolver>(ProductsResolver);
+  });
+  describe('올바른 dto 가 주어졌다면', () => {
+    it('등록된 products 응답', async () => {
+      const request = makeUpdateProductOptionGroupRequest();
+      const mockedInfo = fixtureInfo('준비중');
+      const mockedResult = { productInfo: { ...mockedInfo } };
+      const expectedCommand = { ...request };
+      const expectedResult = { productInfo: { ...mockedInfo } };
+      const expectedResponse = { ...expectedResult.productInfo };
+
+      mockFacade.updateProductOptionGroup.mockReturnValue(mockedResult);
+
+      const res = await resolver.updateProductOptionGroup(request);
+      expect(mockFacade.updateProductOptionGroup).toHaveBeenCalledWith(expectedCommand);
+      expect(res).toStrictEqual(expectedResponse);
+    });
+  });
+});
+
+describe('updateProductOption Mutation 호출시', () => {
+  let resolver: ProductsResolver;
+
+  beforeEach(async () => {
+    const module = await getTestModule();
+    resolver = module.get<ProductsResolver>(ProductsResolver);
+  });
+  describe('올바른 dto 가 주어졌다면', () => {
+    it('등록된 products 응답', async () => {
+      const request = makeUpdateProductOptionRequest();
+      const mockedInfo = fixtureInfo('준비중');
+      const mockedResult = { productInfo: { ...mockedInfo } };
+      const expectedCommand = { ...request };
+      const expectedResult = { productInfo: { ...mockedInfo } };
+      const expectedResponse = { ...expectedResult.productInfo };
+
+      mockFacade.updateProductOption.mockReturnValue(mockedResult);
+
+      const res = await resolver.updateProductOption(request);
+      expect(mockFacade.updateProductOption).toHaveBeenCalledWith(
+        expectedCommand,
+      );
+      expect(res).toStrictEqual(expectedResponse);
     });
   });
 });
@@ -114,5 +194,33 @@ function makeRequest() {
         ],
       },
     ],
+  };
+}
+
+function makeUpdateProductRequest() {
+  return {
+    productCode: faker.datatype.uuid(),
+    productName: faker.commerce.productName(),
+    productPrice: faker.commerce.price(),
+  };
+}
+
+function makeUpdateProductOptionGroupRequest() {
+  return {
+    id: faker.datatype.number(),
+    productCode: faker.datatype.uuid(),
+    productOptionGroupName: faker.commerce.productName(),
+    ordering: faker.datatype.number(),
+  };
+}
+
+function makeUpdateProductOptionRequest() {
+  return {
+    productCode: faker.datatype.uuid(),
+    optionGroupId: faker.datatype.number(),
+    id: faker.datatype.number(),
+    productOptionName: faker.commerce.productName(),
+    ordering: faker.datatype.number(),
+    productOptionPrice: faker.commerce.price(),
   };
 }

@@ -4,7 +4,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 
 export class CreateProductDto {
   @IsString()
@@ -13,7 +13,7 @@ export class CreateProductDto {
   @IsNumber()
   readonly productPrice: number;
 
-  @IsOptional()
+  @Exclude()
   @ValidateNested({ each: true })
   @Type(() => CreateProductOptionGroupDto)
   readonly productOptionGroupList: CreateProductOptionGroupDto[];
@@ -26,7 +26,7 @@ export class CreateProductOptionGroupDto {
   @IsNumber()
   readonly ordering: number;
 
-  @IsOptional()
+  @Exclude()
   @ValidateNested({ each: true })
   @Type(() => CreateProductOptionGroupDto)
   productOptionList: CreateProductOptionDto[];
