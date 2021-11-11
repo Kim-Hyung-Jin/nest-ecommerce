@@ -10,11 +10,11 @@ export class OrderResolver {
   constructor(private orderFacade: OrderFacade) {}
 
   @Mutation()
-  async createOrder(
+  async create(
     @Args('data') dto: OrderDto.CreateOrder,
   ): Promise<OrderResponse.CreateOrder> {
     const command: OrderCommand.CreateOrder = { ...dto };
-    const result = await this.orderFacade.createOrder(command);
+    const result = await this.orderFacade.create(command);
     return { ...result.orderInfo };
   }
 }
