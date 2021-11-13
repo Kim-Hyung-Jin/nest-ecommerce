@@ -1,17 +1,17 @@
-export interface ProductsInfo {
+export interface ProductInfo {
   productName: string;
   productPrice: number;
   productCode: string;
   status: string;
-  productOptionGroupList: ProductsOptionGroupInfo[];
+  productOptionGroupList: ProductOptionGroupInfo[];
 }
-export interface ProductsOptionGroupInfo {
+export interface ProductOptionGroupInfo {
   id: number;
   productOptionGroupName: string;
   ordering: number;
-  productOptionList: ProductsOptionInfo[];
+  productOptionList: ProductOptionInfo[];
 }
-export interface ProductsOptionInfo {
+export interface ProductOptionInfo {
   id: number;
   productOptionName: string;
   productOptionPrice: number;

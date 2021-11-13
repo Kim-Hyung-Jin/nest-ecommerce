@@ -1,4 +1,4 @@
-import { Products } from '../src/domain/entity/product.entity';
+import { Product } from '../src/domain/entity/product.entity';
 import ProductOptionGroup from '../src/domain/entity/product-option-group.entity';
 import ProductOption from '../src/domain/entity/product-option.entity';
 import * as faker from 'faker';
@@ -8,7 +8,7 @@ export function fixtureProduct() {
   for (let i = 0; i < randomNumberWithRange(1, 5); i++) {
     productOptionGroupList.push(fixtureProductOptionGroup());
   }
-  return new Products(
+  return new Product(
     faker.commerce.productName(),
     faker.datatype.number(),
     productOptionGroupList,
@@ -99,9 +99,7 @@ export function fixtureUpdateProductCommand(
 }
 
 export function fixture<T>(obj: T) {
-  // console.log(T.);
   const temp = {};
-  console.log('@@!! -> ' + JSON.stringify(obj));
   if (typeof obj === 'object') {
     Object.keys(obj).map(k => {
       if (typeof k === 'string') {
@@ -113,7 +111,6 @@ export function fixture<T>(obj: T) {
       }
     });
   }
-  console.log('@@!! -> ' + JSON.stringify(temp));
 }
 
 export function fixtureUpdateProductOptionGroupCommand() {

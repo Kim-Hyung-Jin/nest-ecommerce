@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import ProductsFacade from '../../src/application/products.facade';
+import ProductFacade from '../../src/application/product.facade';
 import * as faker from 'faker';
-import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
+import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
 import { MockType } from '../../src/common/mock.helper';
-import { ProductsService } from '../../src/domain/products.service';
-import { ProductsServiceImpl } from '../../src/domain/products.service-impl';
+import { ProductService } from '../../src/domain/product.service';
+import { ProductServiceImpl } from '../../src/domain/product.service-impl';
 import {
   fixtureCreateCommand,
   fixtureInfo,
@@ -25,19 +25,19 @@ const mockService = {
 async function getTestModule() {
   return await Test.createTestingModule({
     providers: [
-      ProductsFacade,
-      ProductsCommandMapper,
-      { provide: 'ProductsService', useValue: mockService },
+      ProductFacade,
+      ProductCommandMapper,
+      { provide: 'ProductService', useValue: mockService },
     ],
   }).compile();
 }
 
 describe('register() 호출시', () => {
-  let facade: ProductsFacade;
+  let facade: ProductFacade;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    facade = module.get<ProductsFacade>(ProductsFacade);
+    facade = module.get<ProductFacade>(ProductFacade);
   });
 
   describe('정상적인 command 가 주어졌으면', () => {
@@ -61,11 +61,11 @@ describe('register() 호출시', () => {
 });
 
 describe('getOne() 호출시', () => {
-  let facade: ProductsFacade;
+  let facade: ProductFacade;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    facade = module.get<ProductsFacade>(ProductsFacade);
+    facade = module.get<ProductFacade>(ProductFacade);
   });
 
   describe('올바른 상품 코드가 주어지면', () => {
@@ -84,11 +84,11 @@ describe('getOne() 호출시', () => {
 });
 
 describe('updateProduct() 호출시', () => {
-  let facade: ProductsFacade;
+  let facade: ProductFacade;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    facade = module.get<ProductsFacade>(ProductsFacade);
+    facade = module.get<ProductFacade>(ProductFacade);
   });
 
   describe('올바른 상품 정보가 주어지면', () => {
@@ -123,11 +123,11 @@ describe('updateProduct() 호출시', () => {
 });
 
 describe('updateProductOptionGroup() 호출시', () => {
-  let facade: ProductsFacade;
+  let facade: ProductFacade;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    facade = module.get<ProductsFacade>(ProductsFacade);
+    facade = module.get<ProductFacade>(ProductFacade);
   });
 
   describe('올바른 옵션 그룹 정보가 주어지면', () => {
@@ -161,10 +161,10 @@ describe('updateProductOptionGroup() 호출시', () => {
 });
 
 describe('updateProductOptionGroup() 호출시', () => {
-  let facade: ProductsFacade;
+  let facade: ProductFacade;
   beforeEach(async () => {
     const module = await getTestModule();
-    facade = module.get<ProductsFacade>(ProductsFacade);
+    facade = module.get<ProductFacade>(ProductFacade);
   });
 
   describe('올바른 옵션 정보가 주어지면', () => {

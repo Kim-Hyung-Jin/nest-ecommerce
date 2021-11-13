@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import ProductOption from './product-option.entity';
-import { Products } from './product.entity';
+import { Product } from './product.entity';
 
 @Entity()
 export default class ProductOptionGroup extends BaseEntity {
@@ -28,8 +28,8 @@ export default class ProductOptionGroup extends BaseEntity {
   )
   productOptionList: ProductOption[];
 
-  @ManyToOne(type => Products, product => product.productOptionGroupList)
-  product: Products;
+  @ManyToOne(type => Product, product => product.productOptionGroupList)
+  product: Product;
 
   constructor(
     productOptionGroupName: string,

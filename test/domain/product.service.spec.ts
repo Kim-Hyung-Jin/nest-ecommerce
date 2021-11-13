@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductsService } from '../../src/domain/products.service';
-import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
-import { ProductsServiceImpl } from '../../src/domain/products.service-impl';
+import { ProductService } from '../../src/domain/product.service';
+import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
+import { ProductServiceImpl } from '../../src/domain/product.service-impl';
 import * as faker from 'faker';
 import * as uuid from 'uuid';
-import { Products } from '../../src/domain/entity/product.entity';
+import { Product } from '../../src/domain/entity/product.entity';
 import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
 import ProductOption from '../../src/domain/entity/product-option.entity';
 import {
@@ -16,7 +16,7 @@ import {
 } from '../fixture';
 import { CreateProductCommand } from '../../src/domain/dto/create-product.command';
 import { cloneDeep } from 'lodash';
-import { ProductsInfo } from '../../src/domain/dto/products.info';
+import { ProductInfo } from '../../src/domain/dto/product.info';
 
 jest.mock('uuid');
 
@@ -30,10 +30,10 @@ const mockStore = {
 };
 
 const testProvider = [
-  ProductsCommandMapper,
-  { provide: 'ProductsService', useClass: ProductsServiceImpl },
-  { provide: 'ProductsReader', useValue: mockReader },
-  { provide: 'ProductsStore', useValue: mockStore },
+  ProductCommandMapper,
+  { provide: 'ProductService', useClass: ProductServiceImpl },
+  { provide: 'ProductReader', useValue: mockReader },
+  { provide: 'ProductStore', useValue: mockStore },
 ];
 
 async function getTestModule() {
@@ -43,16 +43,16 @@ async function getTestModule() {
 }
 
 describe('register() 호출시', () => {
-  let service: ProductsService;
+  let service: ProductService;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    service = module.get<ProductsService>('ProductsService');
+    service = module.get<ProductService>('ProductService');
   });
 
   describe('올바른 데이터가 주어지면', () => {
     function makeExpectedEntity(command: CreateProductCommand) {
-      const expectedEntity = new Products(
+      const expectedEntity = new Product(
         command.productName,
         command.productPrice,
         command.productOptionGroupList.map(
@@ -98,11 +98,11 @@ describe('register() 호출시', () => {
 });
 
 describe('getOne() 호출시', () => {
-  let service: ProductsService;
+  let service: ProductService;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    service = module.get<ProductsService>('ProductsService');
+    service = module.get<ProductService>('ProductService');
   });
 
   describe('올바른 productCode 가 주어지면', () => {
@@ -134,11 +134,11 @@ describe('getOne() 호출시', () => {
 });
 
 describe('updateProduct() 호출시', () => {
-  let service: ProductsService;
+  let service: ProductService;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    service = module.get<ProductsService>('ProductsService');
+    service = module.get<ProductService>('ProductService');
   });
 
   describe('올바른 command 가 주어지면', () => {
@@ -249,16 +249,16 @@ describe('updateProduct() 호출시', () => {
 });
 
 describe('updateProductOptionGroup() 호출시', () => {
-  let service: ProductsService;
+  let service: ProductService;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    service = module.get<ProductsService>('ProductsService');
+    service = module.get<ProductService>('ProductService');
   });
 
   describe('올바른 command 가 주어지면', () => {
     function makeUpdatedProduct(
-      mockRetrievedEntity: Products,
+      mockRetrievedEntity: Product,
       command: {
         productCode: any;
         ordering: any;
@@ -282,7 +282,7 @@ describe('updateProductOptionGroup() 호출시', () => {
         cloneDeep(mockRetrievedEntity),
         command,
       );
-      const mockStoredProduct: Products = cloneDeep(expectedUpdatedProduct);
+      const mockStoredProduct: Product = cloneDeep(expectedUpdatedProduct);
       const mockOptionInfoList = mockStoredProduct.productOptionGroupList;
       const expectedInfo = { ...mockStoredProduct };
 
@@ -322,7 +322,7 @@ describe('updateProductOptionGroup() 호출시', () => {
 
   describe('productOptionGroupName 가 없을 때', () => {
     function makeUpdatedProduct(
-      mockRetrievedEntity: Products,
+      mockRetrievedEntity: Product,
       command: {
         productCode: any;
         ordering: any;
@@ -347,7 +347,7 @@ describe('updateProductOptionGroup() 호출시', () => {
         cloneDeep(mockRetrievedEntity),
         command,
       );
-      const mockStoredProduct: Products = cloneDeep(expectedUpdatedProduct);
+      const mockStoredProduct: Product = cloneDeep(expectedUpdatedProduct);
       const mockOptionInfoList = mockStoredProduct.productOptionGroupList;
       const expectedInfo = { ...mockStoredProduct };
 
@@ -373,7 +373,7 @@ describe('updateProductOptionGroup() 호출시', () => {
 
   describe('ordering 가 없을 때', () => {
     function makeUpdatedProduct(
-      mockRetrievedEntity: Products,
+      mockRetrievedEntity: Product,
       command: {
         productCode: any;
         ordering: any;
@@ -398,7 +398,7 @@ describe('updateProductOptionGroup() 호출시', () => {
         cloneDeep(mockRetrievedEntity),
         command,
       );
-      const mockStoredProduct: Products = cloneDeep(expectedUpdatedProduct);
+      const mockStoredProduct: Product = cloneDeep(expectedUpdatedProduct);
       const mockOptionInfoList = mockStoredProduct.productOptionGroupList;
       const expectedInfo = { ...mockStoredProduct };
 
@@ -439,16 +439,16 @@ describe('updateProductOptionGroup() 호출시', () => {
 });
 
 describe('updateProductOption() 호출시', () => {
-  let service: ProductsService;
+  let service: ProductService;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    service = module.get<ProductsService>('ProductsService');
+    service = module.get<ProductService>('ProductService');
   });
 
   describe('올바른 command 가 주어지면', () => {
     function makeUpdatedProduct(
-      mockRetrievedEntity: Products,
+      mockRetrievedEntity: Product,
       command: {
         optionGroupId: number;
         productCode: string;
@@ -471,7 +471,7 @@ describe('updateProductOption() 호출시', () => {
     }
 
     function getTargetOption(
-      res: ProductsInfo,
+      res: ProductInfo,
       command: {
         productOptionName: any;
         productCode: any;
@@ -500,7 +500,7 @@ describe('updateProductOption() 호출시', () => {
         cloneDeep(mockRetrievedEntity),
         command,
       );
-      const mockStoredProduct: Products = cloneDeep(expectedUpdatedProduct);
+      const mockStoredProduct: Product = cloneDeep(expectedUpdatedProduct);
       const mockOptionInfoList = mockStoredProduct.productOptionGroupList;
       const expectedInfo = { ...mockStoredProduct };
 
@@ -566,7 +566,7 @@ function makeMockEntity(
 }
 
 function makeExpectedUpdatedProduct(
-  mockedEntity: Products,
+  mockedEntity: Product,
   productName: string,
   productPrice: number,
 ) {

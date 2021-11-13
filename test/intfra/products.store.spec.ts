@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Products } from '../../src/domain/entity/product.entity';
+import { Product } from '../../src/domain/entity/product.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import ProductsStore from '../../src/domain/products.store';
-import { ProductsStoreImpl } from '../../src/infra/products.store-impl';
+import ProductStore from '../../src/domain/product.store';
+import { ProductStoreImpl } from '../../src/infra/product.store-impl';
 import { fixtureProduct } from '../fixture';
 
 const mockRepo = {
@@ -10,17 +10,17 @@ const mockRepo = {
 };
 
 describe('store() 호출시', () => {
-  let productsStore: ProductsStore;
+  let productStore: ProductStore;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ProductsStoreImpl,
-        { provide: getRepositoryToken(Products), useValue: mockRepo },
+        ProductStoreImpl,
+        { provide: getRepositoryToken(Product), useValue: mockRepo },
       ],
     }).compile();
 
-    productsStore = module.get<ProductsStore>(ProductsStoreImpl);
+    productStore = module.get<ProductStore>(ProductStoreImpl);
   });
 
   //TODO 이게 맞나 ;;
@@ -30,7 +30,7 @@ describe('store() 호출시', () => {
     const expectedEntity = entity;
     it('등록된 product 응답', async () => {
       mockRepo.save.mockReturnValue(mockedEntity);
-      const res = await productsStore.store(entity);
+      const res = await productStore.store(entity);
       expect(res).toStrictEqual(expectedEntity);
     });
   });

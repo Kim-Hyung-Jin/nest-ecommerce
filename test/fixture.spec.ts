@@ -19,9 +19,7 @@ describe('updateProduct() 호출시', () => {
 
     const newInstance = Object.create(A.prototype);
 
-    console.log('!@#!@# ->' + JSON.stringify(A.name));
     // const test = new (<any>A)['A']('25');
-    console.log('!@#!@#2 ->' + JSON.stringify(A.prototype.constructor));
     // eslint-disable-next-line prefer-spread
     // newInstance.constructor.apply(newInstance, { name: 'test' });
     // console.log('!@#!@# ->' + newInstance);

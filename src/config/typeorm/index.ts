@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { Products } from '../../domain/entity/product.entity';
+import { Product } from '../../domain/entity/product.entity';
 import ProductOptionGroup from '../../domain/entity/product-option-group.entity';
 import ProductOption from '../../domain/entity/product-option.entity';
 import { Injectable } from '@nestjs/common';
@@ -17,7 +17,7 @@ export class TypeOrmService implements TypeOrmOptionsFactory {
       username: 'root',
       password: 'jin',
       database: 'test',
-      entities: [Products, ProductOptionGroup, ProductOption],
+      entities: [Product, ProductOptionGroup, ProductOption],
       synchronize: true,
       logging: ['query', 'error'],
       logger: this.logger,

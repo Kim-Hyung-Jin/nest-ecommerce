@@ -1,15 +1,15 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import ProductsFacade from '../application/products.facade';
+import ProductFacade from '../application/product.facade';
 import { CreateProductDto } from './dto/product/create-product.dto';
 import { CreateProductResponse } from './dto/product/create-product.response';
-import { ProductsDtoMapper } from './products-dto.mapper';
-import { ProductsResult } from '../domain/products.result';
+import { ProductDtoMapper } from './product-dto.mapper';
+import { ProductResult } from '../domain/product.result';
 
 @Controller('products')
-export default class ProductsController {
+export default class ProductController {
   constructor(
-    private readonly productsFacade: ProductsFacade,
-    private readonly productsDtoMapper: ProductsDtoMapper,
+    private readonly productFacade: ProductFacade,
+    private readonly productDtoMapper: ProductDtoMapper,
   ) {}
 
   @Post()
@@ -17,9 +17,9 @@ export default class ProductsController {
     @Body() createProductDto: CreateProductDto,
   ): Promise<CreateProductResponse> {
     const command =
-      this.productsDtoMapper.toCreateProductCommand(createProductDto);
-    const result = await this.productsFacade.register(command);
-    return this.productsDtoMapper.ofResponse(result);
+      this.productDtoMapper.toCreateProductCommand(createProductDto);
+    const result = await this.productFacade.register(command);
+    return this.productDtoMapper.ofResponse(result);
   }
 
   //
@@ -31,8 +31,8 @@ export default class ProductsController {
   @Get(':productCode')
   async getOne(
     @Param('productCode') productCode: string,
-  ): Promise<ProductsResult> {
-    const result = await this.productsFacade.getOne(productCode);
+  ): Promise<ProductResult> {
+    const result = await this.productFacade.getOne(productCode);
     return result;
   }
 

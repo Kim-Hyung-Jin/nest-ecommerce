@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import ProductsController from '../../src/interfaces/products.controller';
-import ProductsFacade from '../../src/application/products.facade';
+import ProductController from '../../src/interfaces/product.controller';
+import ProductFacade from '../../src/application/product.facade';
 import * as faker from 'faker';
-import { ProductsDtoMapper } from '../../src/interfaces/products-dto.mapper';
+import { ProductDtoMapper } from '../../src/interfaces/product-dto.mapper';
 import { Logger } from '@nestjs/common';
 import { EntityNotFoundError } from 'typeorm';
-import { Products } from '../../src/domain/entity/product.entity';
+import { Product } from '../../src/domain/entity/product.entity';
 
 const mockFacade = {
   register: jest.fn(),
@@ -13,23 +13,23 @@ const mockFacade = {
 };
 
 describe('[GET] /products', () => {
-  let controller: ProductsController;
-  let facade: ProductsFacade;
+  let controller: ProductController;
+  let facade: ProductFacade;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
-          provide: ProductsFacade,
+          provide: ProductFacade,
           useValue: mockFacade,
         },
-        ProductsDtoMapper,
+        ProductDtoMapper,
       ],
-      controllers: [ProductsController],
+      controllers: [ProductController],
     }).compile();
 
-    controller = module.get<ProductsController>(ProductsController);
-    facade = module.get<ProductsFacade>(ProductsFacade);
+    controller = module.get<ProductController>(ProductController);
+    facade = module.get<ProductFacade>(ProductFacade);
   });
 
   describe('올바른 상품 코드로 조회 시', () => {
@@ -91,25 +91,25 @@ describe('[GET] /products', () => {
 });
 
 describe('[POST] /products', () => {
-  let controller: ProductsController;
-  let facade: ProductsFacade;
-  let mapper: ProductsDtoMapper;
+  let controller: ProductController;
+  let facade: ProductFacade;
+  let mapper: ProductDtoMapper;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
-          provide: ProductsFacade,
+          provide: ProductFacade,
           useValue: mockFacade,
         },
-        ProductsDtoMapper,
+        ProductDtoMapper,
       ],
-      controllers: [ProductsController],
+      controllers: [ProductController],
     }).compile();
 
-    controller = module.get<ProductsController>(ProductsController);
-    facade = module.get<ProductsFacade>(ProductsFacade);
-    mapper = module.get<ProductsDtoMapper>(ProductsDtoMapper);
+    controller = module.get<ProductController>(ProductController);
+    facade = module.get<ProductFacade>(ProductFacade);
+    mapper = module.get<ProductDtoMapper>(ProductDtoMapper);
   });
 
   describe('올바른 상품 코드로 등록 시', () => {

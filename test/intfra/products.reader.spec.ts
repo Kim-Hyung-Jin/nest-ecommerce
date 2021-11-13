@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
-import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
-import { ProductsReaderImpl } from '../../src/infra/products.reader-impl';
-import { Products } from '../../src/domain/entity/product.entity';
+import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
+import { ProductReaderImpl } from '../../src/infra/product.reader-impl';
+import { Product } from '../../src/domain/entity/product.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityNotFoundError } from 'typeorm';
-import { ProductsReader } from '../../src/domain/products.reader';
+import { ProductReader } from '../../src/domain/product.reader';
 import { fixtureProduct } from '../fixture';
 
 const mockRepo = {
@@ -13,18 +13,18 @@ const mockRepo = {
 };
 
 describe('getByProductCode() 호출시', () => {
-  let reader: ProductsReader;
+  let reader: ProductReader;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ProductsCommandMapper,
-        { provide: ProductsReaderImpl, useClass: ProductsReaderImpl },
-        { provide: getRepositoryToken(Products), useValue: mockRepo },
+        ProductCommandMapper,
+        { provide: ProductReaderImpl, useClass: ProductReaderImpl },
+        { provide: getRepositoryToken(Product), useValue: mockRepo },
       ],
     }).compile();
 
-    reader = module.get<ProductsReader>(ProductsReaderImpl);
+    reader = module.get<ProductReader>(ProductReaderImpl);
   });
 
   describe('올바른 productCode 가 주어졌으면', () => {
@@ -94,27 +94,27 @@ describe('getByProductCode() 호출시', () => {
       mockRepo.findOne.mockReturnValue(undefined);
       await expect(async () => {
         await reader.getProductBy(productCode);
-      }).rejects.toThrowError(new EntityNotFoundError(Products, productCode));
+      }).rejects.toThrowError(new EntityNotFoundError(Product, productCode));
     });
   });
 });
 
 describe('getAllOptionInfoList() 호출시', () => {
-  let reader: ProductsReader;
+  let reader: ProductReader;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ProductsCommandMapper,
-        { provide: ProductsReaderImpl, useClass: ProductsReaderImpl },
-        { provide: getRepositoryToken(Products), useValue: mockRepo },
+        ProductCommandMapper,
+        { provide: ProductReaderImpl, useClass: ProductReaderImpl },
+        { provide: getRepositoryToken(Product), useValue: mockRepo },
       ],
     }).compile();
 
-    reader = module.get<ProductsReader>(ProductsReaderImpl);
+    reader = module.get<ProductReader>(ProductReaderImpl);
   });
 
-  describe('올바른 Products 가 주어졌으면', () => {
+  describe('올바른 Product 가 주어졌으면', () => {
     const entity = fixtureProduct();
     const expectedInfo = entity.productOptionGroupList.map(
       productionOptionGroup => {

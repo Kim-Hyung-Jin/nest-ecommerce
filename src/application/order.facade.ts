@@ -5,7 +5,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export default class OrderFacade {
-  constructor(@Inject('ProductsService') private orderService: OrderService) {}
+  constructor(@Inject('ProductService') private orderService: OrderService) {}
 
   async create(command: OrderCommand.CreateOrder): Promise<OrderResult.Simple> {
     const info = await this.orderService.create(command);

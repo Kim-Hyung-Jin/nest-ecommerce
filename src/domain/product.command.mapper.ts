@@ -1,4 +1,4 @@
-import { Products } from './entity/product.entity';
+import { Product } from './entity/product.entity';
 import {
   CreateProductCommand,
   CreateProductOptionCommand,
@@ -7,18 +7,18 @@ import {
 import ProductOption from './entity/product-option.entity';
 import ProductOptionGroup from './entity/product-option-group.entity';
 import {
-  ProductsInfo,
-  ProductsOptionGroupInfo,
-  ProductsOptionInfo,
-} from './dto/products.info';
-import { ProductsResult } from './products.result';
+  ProductInfo,
+  ProductOptionGroupInfo,
+  ProductOptionInfo,
+} from './dto/product.info';
+import { ProductResult } from './product.result';
 import { Injectable, Logger } from '@nestjs/common';
 import { LoggerService } from '@nestjs/common';
 
 @Injectable()
-export class ProductsCommandMapper {
-  toProductEntity(command: CreateProductCommand): Products {
-    return new Products(
+export class ProductCommandMapper {
+  toProductEntity(command: CreateProductCommand): Product {
+    return new Product(
       command.productName,
       command.productPrice,
       command.productOptionGroupList.map(productOptionGroupCommand =>
@@ -48,9 +48,9 @@ export class ProductsCommandMapper {
   }
 
   ofPaymentInfo(
-    entity: Products,
-    productOptionGroupInfoList: ProductsOptionGroupInfo[],
-  ): ProductsInfo {
+    entity: Product,
+    productOptionGroupInfoList: ProductOptionGroupInfo[],
+  ): ProductInfo {
     Logger.log('## -> ' + productOptionGroupInfoList);
     return {
       productName: entity.productName,
@@ -63,8 +63,8 @@ export class ProductsCommandMapper {
 
   ofPaymentOptionGroupInfo(
     productOptionGroup: ProductOptionGroup,
-    productOptionList: ProductsOptionInfo[],
-  ): ProductsOptionGroupInfo {
+    productOptionList: ProductOptionInfo[],
+  ): ProductOptionGroupInfo {
     return {
       id: productOptionGroup.id,
       productOptionGroupName: productOptionGroup.productOptionGroupName,
@@ -73,7 +73,7 @@ export class ProductsCommandMapper {
     };
   }
 
-  ofPaymentOptionInfo(productOption: ProductOption): ProductsOptionInfo {
+  ofPaymentOptionInfo(productOption: ProductOption): ProductOptionInfo {
     return {
       id: productOption.id,
       productOptionName: productOption.productOptionName,
@@ -82,9 +82,9 @@ export class ProductsCommandMapper {
     };
   }
 
-  ofResult(productsInfo: ProductsInfo): ProductsResult {
+  ofResult(productInfo: ProductInfo): ProductResult {
     return {
-      productInfo: productsInfo,
+      productInfo: productInfo,
     };
   }
 }

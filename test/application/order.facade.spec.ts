@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import ProductsFacade from '../../src/application/products.facade';
+import ProductFacade from '../../src/application/product.facade';
 import * as faker from 'faker';
-import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
+import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
 import { MockType } from '../../src/common/mock.helper';
-import { ProductsService } from '../../src/domain/products.service';
-import { ProductsServiceImpl } from '../../src/domain/products.service-impl';
+import { ProductService } from '../../src/domain/product.service';
+import { ProductServiceImpl } from '../../src/domain/product.service-impl';
 import {
   fixtureCreateCommand,
   fixtureInfo,
@@ -23,7 +23,7 @@ async function getTestModule() {
   return await Test.createTestingModule({
     providers: [
       OrderFacade,
-      { provide: 'ProductsService', useValue: mockService },
+      { provide: 'ProductService', useValue: mockService },
     ],
   }).compile();
 }

@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
-import { ProductsResolver } from '../../src/interfaces/graphql/products.resolver';
-import { ProductsDtoMapper } from '../../src/interfaces/products-dto.mapper';
+import { ProductResolver } from '../../src/interfaces/graphql/productResolver';
+import { ProductDtoMapper } from '../../src/interfaces/product-dto.mapper';
 import { fixtureInfo } from '../fixture';
-import ProductsFacade from '../../src/application/products.facade';
-import { ProductsCommandMapper } from '../../src/domain/products.command.mapper';
+import ProductFacade from '../../src/application/product.facade';
+import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
 import { IsNumber } from 'class-validator';
 import OrderFacade from '../../src/application/order.facade';
 import { OrderResolver } from '../../src/interfaces/graphql/order.resolver';
