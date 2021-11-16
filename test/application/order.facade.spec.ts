@@ -17,6 +17,9 @@ import OrderFacade from '../../src/application/order.facade';
 
 const mockService = {
   create: jest.fn(),
+  get: jest.fn(),
+  cancel: jest.fn(),
+  partCancel: jest.fn(),
 };
 
 async function getTestModule() {
@@ -29,6 +32,29 @@ async function getTestModule() {
 }
 
 describe('create() 호출시', () => {
+  let facade: OrderFacade;
+
+  beforeEach(async () => {
+    const module = await getTestModule();
+    facade = module.get<OrderFacade>(OrderFacade);
+  });
+
+  describe('정상적인 command 가 주어졌으면', () => {
+    const command = makeCreateOrderCommand();
+    const mockedInfo = { orderCode: faker.datatype.uuid() };
+    const expectedResult = { orderInfo: mockedInfo };
+
+    it('등록된 상품 정보 응답', async () => {
+      mockService.create.mockReturnValue(mockedInfo);
+
+      const res = await facade.create(command);
+      expect(mockService.create).toHaveBeenCalledWith(command);
+      expect(res).toStrictEqual(expectedResult);
+    });
+  });
+});
+
+describe('get() 호출시', () => {
   let facade: OrderFacade;
 
   beforeEach(async () => {

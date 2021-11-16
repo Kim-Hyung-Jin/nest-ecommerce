@@ -11,4 +11,25 @@ export default class OrderFacade {
     const info = await this.orderService.create(command);
     return { orderInfo: info };
   }
+
+  async get(orderCode: string): Promise<OrderResult.Simple> {
+    const info = await this.orderService.get(orderCode);
+    return { orderInfo: info };
+  }
+
+  async cancel(orderCode: string): Promise<OrderResult.Simple> {
+    const info = await this.orderService.cancel(orderCode);
+    return { orderInfo: info };
+  }
+
+  async partCancel(
+    orderCode: string,
+    cancelOrderLineIdList: number[],
+  ): Promise<OrderResult.Simple> {
+    const info = await this.orderService.partCancel(
+      orderCode,
+      cancelOrderLineIdList,
+    );
+    return { orderInfo: info };
+  }
 }

@@ -5,7 +5,12 @@ import * as OrderResult from './dto/order.result';
 export default interface OrderService {
   create(command: OrderCommand.CreateOrder): Promise<OrderInfo.Simple>;
 
-  cancel(): OrderInfo.Simple;
+  get(orderCode: string): Promise<OrderInfo.Simple>;
 
-  partCancel(): OrderInfo.Simple;
+  cancel(orderCode: string): Promise<OrderInfo.Simple>;
+
+  partCancel(
+    orderCode: string,
+    orderLineCodeList: number[],
+  ): Promise<OrderInfo.Simple>;
 }
