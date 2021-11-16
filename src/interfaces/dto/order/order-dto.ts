@@ -1,5 +1,5 @@
 export class CreateOrder {
-  userId: number;
+  userId: string;
   payMethod: string;
   receiverName: string;
   receiverPhone: string;
