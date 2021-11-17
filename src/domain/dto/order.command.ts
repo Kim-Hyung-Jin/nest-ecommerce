@@ -1,12 +1,16 @@
 export interface CreateOrder {
   userId: string;
   payMethod: string;
+  address: CreateAddress;
+  orderLineList: CreateOrderLine[];
+}
+
+export interface CreateAddress {
   receiverName: string;
   receiverPhone: string;
   receiverZipcode: string;
   receiverAddress1: string;
   receiverAddress2: string;
-  orderLineList: CreateOrderLine[];
 }
 
 export interface CreateOrderLine {

@@ -136,16 +136,22 @@ function makeCreateOrderCommand() {
   return {
     userId: faker.datatype.number(),
     payMethod: faker.datatype.string(),
-    receiverName: faker.commerce.productName(),
-    receiverPhone: faker.datatype.number(),
-    receiverZipcode: faker.address.countryCode(),
-    receiverAddress1: faker.address.streetAddress(),
-    receiverAddress2: faker.address.secondaryAddress(),
+    address: makeCreateAddress(),
     orderLineList: [
       makeCreateOrderLine(),
       makeCreateOrderLine(),
       makeCreateOrderLine(),
     ],
+  };
+}
+
+function makeCreateAddress() {
+  return {
+    receiverName: faker.commerce.productName(),
+    receiverPhone: faker.datatype.number(),
+    receiverZipcode: faker.address.countryCode(),
+    receiverAddress1: faker.address.streetAddress(),
+    receiverAddress2: faker.address.secondaryAddress(),
   };
 }
 
