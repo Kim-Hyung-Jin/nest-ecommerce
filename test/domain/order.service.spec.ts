@@ -29,7 +29,10 @@ import {
 } from '../../src/domain/dto/order.command';
 import { Order } from '../../src/domain/entity/order.entity';
 import { OrderAddress } from '../../src/domain/entity/order-address';
-import { OrderLine } from '../../src/domain/entity/order-line.entity';
+import {
+  OrderLine,
+  OrderStatus,
+} from '../../src/domain/entity/order-line.entity';
 import { OrderProductOptionGroup } from '../../src/domain/entity/order-product-option-group.entity';
 import { OrderProductOption } from '../../src/domain/entity/order-product-option.entity';
 
@@ -98,6 +101,37 @@ describe('get() 호출시', () => {
 
       const res = await service.get(orderCode);
       expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
+      expect(res).toStrictEqual(mockInfo);
+    });
+  });
+});
+
+describe('cancel() 호출시', () => {
+  let service: OrderService;
+
+  beforeEach(async () => {
+    const module = await getTestModule();
+    service = module.get<OrderService>('OrderService');
+  });
+
+  describe('orderCode 가 주어지면', () => {
+    it('취소된 주문 정보 응답', async () => {
+      const orderCode = faker.datatype.uuid();
+      const mockRetrieveEntity = makeEntity(undefined);
+      const expectedCancelEntity = mockRetrieveEntity;
+      Reflect.set(expectedCancelEntity, 'orderCode', orderCode);
+      expectedCancelEntity.orderLineList.map(orderLine => {
+        Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
+      });
+      const mockInfo = { ...expectedCancelEntity };
+      const mockedStoredCancelEntity = expectedCancelEntity;
+
+      mockReader.getOrder.mockReturnValue(mockRetrieveEntity);
+      mockStore.store.mockReturnValue(mockedStoredCancelEntity);
+
+      const res = await service.cancel(orderCode);
+      expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
+      expect(mockStore.store).toHaveBeenCalledWith(expectedCancelEntity);
       expect(res).toStrictEqual(mockInfo);
     });
   });
