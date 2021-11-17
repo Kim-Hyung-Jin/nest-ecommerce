@@ -30,7 +30,7 @@ export default class OrderServiceImpl implements OrderService {
   async cancel(orderCode: string): Promise<OrderInfo.Simple> {
     const retrievedOrder = await this.orderReader.getOrder(orderCode);
     retrievedOrder.orderLineList.map(orderLine => orderLine.onCancel());
-    const canceledOrder = this.orderStore.store(retrievedOrder);
+    const canceledOrder = await this.orderStore.store(retrievedOrder);
     return { ...canceledOrder };
   }
 
@@ -42,7 +42,7 @@ export default class OrderServiceImpl implements OrderService {
     cancelOrderLineIdList.map(cancelOrderLineId =>
       this.getCancelOrderLine(retrievedOrder, cancelOrderLineId).onCancel(),
     );
-    const canceledOrder = this.orderStore.store(retrievedOrder);
+    const canceledOrder = await this.orderStore.store(retrievedOrder);
     return { ...canceledOrder };
   }
 

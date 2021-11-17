@@ -67,7 +67,7 @@ describe('create() 호출시', () => {
     service = module.get<OrderService>('OrderService');
   });
 
-  describe('OrderCommand.CreateOrder 가 주어지면', () => {
+  describe('배송중 이거나 배송 완료상태가 아닐때 OrderCommand.CreateOrder 가 주어지면', () => {
     it('주문 정보 응답', async () => {
       const command = makeCreateOrderCommand();
       const expectedEntity = makeEntity(command);
@@ -118,8 +118,8 @@ describe('cancel() 호출시', () => {
     it('취소된 주문 정보 응답', async () => {
       const orderCode = faker.datatype.uuid();
       const mockRetrieveEntity = makeEntity(undefined);
-      const expectedCancelEntity = mockRetrieveEntity;
-      Reflect.set(expectedCancelEntity, 'orderCode', orderCode);
+      Reflect.set(mockRetrieveEntity, 'orderCode', orderCode);
+      const expectedCancelEntity = cloneDeep(mockRetrieveEntity);
       expectedCancelEntity.orderLineList.map(orderLine => {
         Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
       });
@@ -133,6 +133,58 @@ describe('cancel() 호출시', () => {
       expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
       expect(mockStore.store).toHaveBeenCalledWith(expectedCancelEntity);
       expect(res).toStrictEqual(mockInfo);
+    });
+  });
+
+  describe('배송중 상태일 때', () => {
+    it('취소된 주문 정보 응답', async () => {
+      const orderCode = faker.datatype.uuid();
+      const mockRetrieveEntity = makeEntity(undefined);
+      Reflect.set(mockRetrieveEntity, 'orderCode', orderCode);
+      mockRetrieveEntity.orderLineList.map(orderLine => {
+        Reflect.set(orderLine, 'status', OrderStatus.SHIPPING);
+      });
+
+      mockReader.getOrder.mockReturnValue(mockRetrieveEntity);
+
+      await expect(async () => {
+        await service.cancel(orderCode);
+      }).rejects.toThrowError(new Error('주문 취소 불가 상태'));
+      expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
+    });
+  });
+
+  describe('배송완료 상태일 때', () => {
+    it('취소된 주문 정보 응답', async () => {
+      const orderCode = faker.datatype.uuid();
+      const mockRetrieveEntity = makeEntity(undefined);
+      mockRetrieveEntity.orderLineList.map(orderLine => {
+        Reflect.set(orderLine, 'status', OrderStatus.DELIVERED);
+      });
+
+      mockReader.getOrder.mockReturnValue(mockRetrieveEntity);
+
+      await expect(async () => {
+        await service.cancel(orderCode);
+      }).rejects.toThrowError(new Error('주문 취소 불가 상태'));
+      expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
+    });
+  });
+
+  describe('이미 취소된 상태일 때', () => {
+    it('취소된 주문 정보 응답', async () => {
+      const orderCode = faker.datatype.uuid();
+      const mockRetrieveEntity = makeEntity(undefined);
+      mockRetrieveEntity.orderLineList.map(orderLine => {
+        Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
+      });
+
+      mockReader.getOrder.mockReturnValue(mockRetrieveEntity);
+
+      await expect(async () => {
+        await service.cancel(orderCode);
+      }).rejects.toThrowError(new Error('주문 취소 불가 상태'));
+      expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
     });
   });
 });

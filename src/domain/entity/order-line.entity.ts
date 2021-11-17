@@ -46,28 +46,31 @@ export class OrderLine extends BaseEntity {
   }
 
   onPayed() {
-    if (this.status != OrderStatus.PRE_PAYED)
+    if (this.status !== OrderStatus.PRE_PAYED)
       new Error('올바른 주문 상태가 아님.');
     this.status = OrderStatus.PAYED;
   }
 
   onShipping() {
-    if (this.status != OrderStatus.PAYED) new Error('올바른 주문 상태가 아님.');
+    if (this.status !== OrderStatus.PAYED)
+      new Error('올바른 주문 상태가 아님.');
     this.status = OrderStatus.SHIPPING;
   }
 
   onCancel() {
     if (
-      this.status == OrderStatus.SHIPPING ||
-      this.status == OrderStatus.DELIVERED
+      this.status === OrderStatus.SHIPPING ||
+      this.status === OrderStatus.DELIVERED ||
+      this.status === OrderStatus.CANCEL
     )
-      new Error('주문 취소 불가 상태');
+      throw new Error('주문 취소 불가 상태');
 
     this.status = OrderStatus.CANCEL;
   }
 
   onDelivered() {
-    if (this.status != OrderStatus.SHIPPING) new Error('올바른 배송 상태가 아님.');
+    if (this.status !== OrderStatus.SHIPPING)
+      new Error('올바른 배송 상태가 아님.');
     this.status = OrderStatus.DELIVERED;
   }
 }
