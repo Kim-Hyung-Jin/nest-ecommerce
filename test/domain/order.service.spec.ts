@@ -70,7 +70,7 @@ describe('create() 호출시', () => {
   describe('배송중 이거나 배송 완료상태가 아닐때 OrderCommand.CreateOrder 가 주어지면', () => {
     it('주문 정보 응답', async () => {
       const command = makeCreateOrderCommand();
-      const expectedEntity = makeEntity(command);
+      const expectedEntity = makeOrder(command);
 
       const mockEntity = expectedEntity;
       const mockInfo = { ...mockEntity };
@@ -117,7 +117,7 @@ describe('cancel() 호출시', () => {
   describe('orderCode 가 주어지면', () => {
     it('취소된 주문 정보 응답', async () => {
       const orderCode = faker.datatype.uuid();
-      const mockRetrieveEntity = makeEntity(undefined);
+      const mockRetrieveEntity = makeOrder(undefined);
       Reflect.set(mockRetrieveEntity, 'orderCode', orderCode);
       const expectedCancelEntity = cloneDeep(mockRetrieveEntity);
       expectedCancelEntity.orderLineList.map(orderLine => {
@@ -139,7 +139,7 @@ describe('cancel() 호출시', () => {
   describe('배송중 상태일 때', () => {
     it('취소된 주문 정보 응답', async () => {
       const orderCode = faker.datatype.uuid();
-      const mockRetrieveEntity = makeEntity(undefined);
+      const mockRetrieveEntity = makeOrder(undefined);
       Reflect.set(mockRetrieveEntity, 'orderCode', orderCode);
       mockRetrieveEntity.orderLineList.map(orderLine => {
         Reflect.set(orderLine, 'status', OrderStatus.SHIPPING);
@@ -157,7 +157,7 @@ describe('cancel() 호출시', () => {
   describe('배송완료 상태일 때', () => {
     it('취소된 주문 정보 응답', async () => {
       const orderCode = faker.datatype.uuid();
-      const mockRetrieveEntity = makeEntity(undefined);
+      const mockRetrieveEntity = makeOrder(undefined);
       mockRetrieveEntity.orderLineList.map(orderLine => {
         Reflect.set(orderLine, 'status', OrderStatus.DELIVERED);
       });
@@ -174,7 +174,7 @@ describe('cancel() 호출시', () => {
   describe('이미 취소된 상태일 때', () => {
     it('취소된 주문 정보 응답', async () => {
       const orderCode = faker.datatype.uuid();
-      const mockRetrieveEntity = makeEntity(undefined);
+      const mockRetrieveEntity = makeOrder(undefined);
       mockRetrieveEntity.orderLineList.map(orderLine => {
         Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
       });
@@ -200,32 +200,27 @@ describe('partCancel() 호출시', () => {
   describe('orderCode, cancelOrderLineIdList 가 주어지면', () => {
     it('해당 주문 정보 응답', async () => {
       const orderCode = faker.datatype.uuid();
-      const mockRetrieveEntity = makeEntity(undefined);
-      mockRetrieveEntity.orderLineList.map(orderLine => {
+      const mockRetrieveOrder = makeOrder(undefined);
+      mockRetrieveOrder.orderLineList.map(orderLine => {
         Reflect.set(orderLine, 'id', faker.datatype.number());
       });
-
       const cancelOrderLineIdList = [
-        mockRetrieveEntity.orderLineList[0].id,
-        mockRetrieveEntity.orderLineList[1].id,
+        mockRetrieveOrder.orderLineList[0].id,
+        mockRetrieveOrder.orderLineList[1].id,
       ];
-      const expectedCancelEntity = cloneDeep(mockRetrieveEntity); //TODO depp copy인가
-
-      const orderLineMap = makeOrderLineMap(expectedCancelEntity);
-      cancelOrderLineIdList.map(cancelOrderLineId => {
-        const orderLine: OrderLine = orderLineMap.get(cancelOrderLineId);
-        Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
-      });
-
-      const mockedStoredCancelEntity = Object.assign({}, expectedCancelEntity);
+      const expectedCancelOrder = makePartCancelOrder(
+        mockRetrieveOrder,
+        cancelOrderLineIdList,
+      );
+      const mockedStoredCancelEntity = cloneDeep(expectedCancelOrder);
       const mockInfo = { ...mockedStoredCancelEntity };
 
-      mockReader.getOrder.mockReturnValue(mockRetrieveEntity);
+      mockReader.getOrder.mockReturnValue(mockRetrieveOrder);
       mockStore.store.mockReturnValue(mockedStoredCancelEntity);
 
       const res = await service.partCancel(orderCode, cancelOrderLineIdList);
       expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
-      expect(mockStore.store).toHaveBeenCalledWith(expectedCancelEntity);
+      expect(mockStore.store).toHaveBeenCalledWith(expectedCancelOrder);
       expect(res).toStrictEqual(mockInfo);
     });
   });
@@ -289,12 +284,14 @@ function makeProductOption() {
 }
 
 function makeOrderBy(command: CreateOrder) {
-  return new Order(
+  const order = new Order(
     command.userId,
     command.payMethod,
     makeOrderAddressBy(command.address),
     command.orderLineList.map(value => makeOrderLineListBy(value)),
   );
+
+  return order;
 }
 
 function makeOrderAddressBy(command: CreateAddress): OrderAddress {
@@ -338,20 +335,6 @@ function makeOrderProductOptionBy(
     command.productOptionPrice,
     command.productOptionName,
     command.ordering,
-  );
-}
-
-function makeOrder() {
-  return new Order(
-    faker.datatype.string(),
-    faker.datatype.string(),
-    makeOrderAddress(),
-    [
-      makeOrderLineList(),
-      makeOrderLineList(),
-      makeOrderLineList(),
-      makeOrderLineList(),
-    ],
   );
 }
 
@@ -399,9 +382,25 @@ function makeOrderProductOption() {
   );
 }
 
-function makeEntity(command: CreateOrder) {
+function _makeOrder() {
+  const order = new Order(
+    faker.datatype.string(),
+    faker.datatype.string(),
+    makeOrderAddress(),
+    [
+      makeOrderLineList(),
+      makeOrderLineList(),
+      makeOrderLineList(),
+      makeOrderLineList(),
+    ],
+  );
+
+  return order;
+}
+
+function makeOrder(command: CreateOrder) {
   if (command == undefined) {
-    return makeOrder();
+    return _makeOrder();
   }
 
   return makeOrderBy(command);
@@ -413,4 +412,14 @@ function makeOrderLineMap(order: Order) {
     return orderLineMap.set(orderLine.id, orderLine);
   });
   return orderLineMap;
+}
+
+function makePartCancelOrder(entity: Order, cancelIdList: number[]) {
+  const expectedCancelEntity = cloneDeep(entity); //TODO depp copy인가
+  const orderLineMap = makeOrderLineMap(expectedCancelEntity);
+  cancelIdList.map(cancelOrderLineId => {
+    const orderLine: OrderLine = orderLineMap.get(cancelOrderLineId);
+    Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
+  });
+  return expectedCancelEntity;
 }
