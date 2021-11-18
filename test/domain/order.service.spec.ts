@@ -189,6 +189,48 @@ describe('cancel() 호출시', () => {
   });
 });
 
+describe('partCancel() 호출시', () => {
+  let service: OrderService;
+
+  beforeEach(async () => {
+    const module = await getTestModule();
+    service = module.get<OrderService>('OrderService');
+  });
+
+  describe('orderCode, cancelOrderLineIdList 가 주어지면', () => {
+    it('해당 주문 정보 응답', async () => {
+      const orderCode = faker.datatype.uuid();
+      const mockRetrieveEntity = makeEntity(undefined);
+      mockRetrieveEntity.orderLineList.map(orderLine => {
+        Reflect.set(orderLine, 'id', faker.datatype.number());
+      });
+
+      const cancelOrderLineIdList = [
+        mockRetrieveEntity.orderLineList[0].id,
+        mockRetrieveEntity.orderLineList[1].id,
+      ];
+      const expectedCancelEntity = cloneDeep(mockRetrieveEntity); //TODO depp copy인가
+
+      const orderLineMap = makeOrderLineMap(expectedCancelEntity);
+      cancelOrderLineIdList.map(cancelOrderLineId => {
+        const orderLine: OrderLine = orderLineMap.get(cancelOrderLineId);
+        Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
+      });
+
+      const mockedStoredCancelEntity = Object.assign({}, expectedCancelEntity);
+      const mockInfo = { ...mockedStoredCancelEntity };
+
+      mockReader.getOrder.mockReturnValue(mockRetrieveEntity);
+      mockStore.store.mockReturnValue(mockedStoredCancelEntity);
+
+      const res = await service.partCancel(orderCode, cancelOrderLineIdList);
+      expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
+      expect(mockStore.store).toHaveBeenCalledWith(expectedCancelEntity);
+      expect(res).toStrictEqual(mockInfo);
+    });
+  });
+});
+
 function makeCreateOrderCommand() {
   return {
     userId: faker.datatype.string(),
@@ -304,7 +346,12 @@ function makeOrder() {
     faker.datatype.string(),
     faker.datatype.string(),
     makeOrderAddress(),
-    [makeOrderLineList(), makeOrderLineList(), makeOrderLineList()],
+    [
+      makeOrderLineList(),
+      makeOrderLineList(),
+      makeOrderLineList(),
+      makeOrderLineList(),
+    ],
   );
 }
 
@@ -358,4 +405,12 @@ function makeEntity(command: CreateOrder) {
   }
 
   return makeOrderBy(command);
+}
+
+function makeOrderLineMap(order: Order) {
+  const orderLineMap = new Map();
+  order.orderLineList.map(orderLine => {
+    return orderLineMap.set(orderLine.id, orderLine);
+  });
+  return orderLineMap;
 }
