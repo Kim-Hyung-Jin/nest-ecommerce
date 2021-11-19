@@ -22,6 +22,24 @@ type Query{
     getProduct(productCode: String!): Product
 }
 
+input UpdateProduct {
+    productCode: String!
+    productOptionGroupList: [UpdateProductOptionGroup]!
+}
+
+input UpdateProductOptionGroup {
+    id: Int!
+    productCode: String!
+    productOptionGroupList: [UpdateProductOption]!
+}
+
+input UpdateProductOption {
+    productCode: String!
+    optionGroupId: Int!
+    id: Int!
+}
+
+
 input CreateProduct {
     productName: String!
     productCode: String!
@@ -44,4 +62,7 @@ input CreateProductOption {
 
 type Mutation{
     registerProduct(dto: CreateProduct): Product
+    updateProduct(dto: UpdateProduct): Product
+    updateProductOptionGroup(dto: UpdateProductOptionGroup): Product
+    updateProductOption(dto: UpdateProductOption): Product
 }

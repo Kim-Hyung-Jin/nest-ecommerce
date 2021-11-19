@@ -10,7 +10,7 @@ export class OrderResolver {
 
   @Mutation()
   async create(
-    @Args('data') dto: OrderDto.CreateOrder,
+    @Args('dto') dto: OrderDto.CreateOrder,
   ): Promise<OrderResponse.CreateOrder> {
     const command: OrderCommand.CreateOrder = { ...dto };
     const result = await this.orderFacade.create(command);

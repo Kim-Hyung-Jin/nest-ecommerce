@@ -4,6 +4,11 @@ import ProductOptionGroup from '../../domain/entity/product/product-option-group
 import ProductOption from '../../domain/entity/product/product-option.entity';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '../../common/logger-services';
+import { Order } from '../../domain/entity/order/order.entity';
+import { OrderAddress } from '../../domain/entity/order/order.address.entity';
+import { OrderLine } from '../../domain/entity/order/order-line.entity';
+import { OrderProductOptionGroup } from '../../domain/entity/order/order-product-option-group.entity';
+import { OrderProductOption } from '../../domain/entity/order/order-product-option.entity';
 
 @Injectable()
 export class TypeOrmService implements TypeOrmOptionsFactory {
@@ -17,7 +22,16 @@ export class TypeOrmService implements TypeOrmOptionsFactory {
       username: 'root',
       password: 'jin',
       database: 'test',
-      entities: [Product, ProductOptionGroup, ProductOption],
+      entities: [
+        Product,
+        ProductOptionGroup,
+        ProductOption,
+        Order,
+        OrderAddress,
+        OrderLine,
+        OrderProductOptionGroup,
+        OrderProductOption,
+      ],
       synchronize: true,
       logging: ['query', 'error'],
       logger: this.logger,

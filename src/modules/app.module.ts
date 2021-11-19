@@ -6,17 +6,18 @@ import ProductOptionGroup from '../domain/entity/product/product-option-group.en
 import ProductOption from '../domain/entity/product/product-option.entity';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'lodash';
-import { ProductResolver } from '../interfaces/graphql/productResolver';
 import { takeUntil } from 'rxjs';
 import { TypeOrmService } from '../config/typeorm';
 import { LoggerService } from '../common/logger-services';
 import { GraphQLService } from '../config/graphql';
 import { LoggerMiddleware } from '../common/logger.middleware';
 import ProductController from '../interfaces/product.controller';
+import { OrderModule } from './order.module';
 
 @Module({
   imports: [
     ProductModule,
+    OrderModule,
     GraphQLModule.forRootAsync({
       useClass: GraphQLService,
     }),

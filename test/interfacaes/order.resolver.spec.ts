@@ -1,17 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
-import { ProductResolver } from '../../src/interfaces/graphql/productResolver';
 import { ProductDtoMapper } from '../../src/interfaces/product-dto.mapper';
 import { fixtureInfo } from '../fixture';
 import ProductFacade from '../../src/application/product.facade';
 import { ProductCommandMapper } from '../../src/domain/product/product.command.mapper';
 import { IsNumber } from 'class-validator';
 import OrderFacade from '../../src/application/order.facade';
-import { OrderResolver } from '../../src/interfaces/graphql/order.resolver';
 import {
   CreateOrder,
   CreateOrderLine,
 } from '../../src/interfaces/dto/order-dto';
+import { OrderResolver } from '../../src/interfaces/graphql/order.resolver';
 
 const mockFacade = {
   create: jest.fn(),

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
-import { ProductResolver } from '../../src/interfaces/graphql/productResolver';
+import { OrderResolver } from '../../src/interfaces/graphql/productResolver';
 import { ProductDtoMapper } from '../../src/interfaces/product-dto.mapper';
 import { fixtureInfo } from '../fixture';
 import ProductFacade from '../../src/application/product.facade';
@@ -19,18 +19,18 @@ async function getTestModule() {
   return await Test.createTestingModule({
     providers: [
       { provide: ProductFacade, useValue: mockFacade },
-      ProductResolver,
+      OrderResolver,
       ProductDtoMapper,
     ],
   }).compile();
 }
 
 describe('getProduct Query 호출시', () => {
-  let resolver: ProductResolver;
+  let resolver: OrderResolver;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    resolver = module.get<ProductResolver>(ProductResolver);
+    resolver = module.get<OrderResolver>(OrderResolver);
   });
 
   describe('올바른 productCode 가 주어졌으면', () => {
@@ -47,11 +47,11 @@ describe('getProduct Query 호출시', () => {
 });
 
 describe('registerProduct Mutation 호출시', () => {
-  let resolver: ProductResolver;
+  let resolver: OrderResolver;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    resolver = module.get<ProductResolver>(ProductResolver);
+    resolver = module.get<OrderResolver>(OrderResolver);
   });
   describe('올바른 dto 가 주어졌다면', () => {
     it('등록된 product 응답', async () => {
@@ -73,11 +73,11 @@ describe('registerProduct Mutation 호출시', () => {
 });
 
 describe('updateProduct Mutation 호출시', () => {
-  let resolver: ProductResolver;
+  let resolver: OrderResolver;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    resolver = module.get<ProductResolver>(ProductResolver);
+    resolver = module.get<OrderResolver>(OrderResolver);
   });
   describe('올바른 dto 가 주어졌다면', () => {
     it('등록된 product 응답', async () => {
@@ -98,11 +98,11 @@ describe('updateProduct Mutation 호출시', () => {
 });
 
 describe('updateProductOptionGroup Mutation 호출시', () => {
-  let resolver: ProductResolver;
+  let resolver: OrderResolver;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    resolver = module.get<ProductResolver>(ProductResolver);
+    resolver = module.get<OrderResolver>(OrderResolver);
   });
   describe('올바른 dto 가 주어졌다면', () => {
     it('등록된 product 응답', async () => {
@@ -123,11 +123,11 @@ describe('updateProductOptionGroup Mutation 호출시', () => {
 });
 
 describe('updateProductOption Mutation 호출시', () => {
-  let resolver: ProductResolver;
+  let resolver: OrderResolver;
 
   beforeEach(async () => {
     const module = await getTestModule();
-    resolver = module.get<ProductResolver>(ProductResolver);
+    resolver = module.get<OrderResolver>(OrderResolver);
   });
   describe('올바른 dto 가 주어졌다면', () => {
     it('등록된 product 응답', async () => {
