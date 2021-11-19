@@ -5,7 +5,7 @@ import * as faker from 'faker';
 import { ProductDtoMapper } from '../../src/interfaces/product-dto.mapper';
 import { Logger } from '@nestjs/common';
 import { EntityNotFoundError } from 'typeorm';
-import { Product } from '../../src/domain/entity/product.entity';
+import { Product } from '../../src/domain/entity/product/product.entity';
 
 const mockFacade = {
   register: jest.fn(),

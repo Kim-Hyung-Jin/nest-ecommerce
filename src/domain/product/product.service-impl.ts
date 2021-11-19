@@ -1,17 +1,16 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { UpdateProductDto } from '../interfaces/dto/product/update-product.dto';
 import { ProductReader } from './product.reader';
 import ProductStore from './product.store';
-import { CreateProductCommand } from './dto/create-product.command';
-import { ProductCommandMapper } from './product.command.mapper';
-import { ProductInfo } from './dto/product.info';
-import { ProductService } from './product.service';
-import { logger } from '../common/logger';
 import {
-  UpdateProductCommand,
-  UpdateProductOptionCommand,
+  CreateProductCommand,
+  UpdateProductCommand, UpdateProductOptionCommand,
   UpdateProductOptionGroupCommand,
-} from './dto/update-product.command';
+} from '../dto/product/product.command';
+import { ProductCommandMapper } from './product.command.mapper';
+import { ProductInfo } from '../dto/product/product.info';
+import { ProductService } from './product.service';
+import { logger } from '../../common/logger';
+import { UpdateProductDto } from '../../interfaces/dto/product.dto';
 
 @Injectable()
 export class ProductServiceImpl implements ProductService {

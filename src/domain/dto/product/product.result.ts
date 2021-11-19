@@ -1,4 +1,4 @@
-import { ProductInfo } from './dto/product.info';
+import { ProductInfo } from './product.info';
 
 export interface ProductResult {
   productInfo: ProductInfo;

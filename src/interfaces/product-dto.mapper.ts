@@ -2,11 +2,11 @@ import {
   CreateProductCommand,
   CreateProductOptionCommand,
   CreateProductOptionGroupCommand,
-} from '../domain/dto/create-product.command';
-import { ProductResult } from '../domain/product.result';
+} from '../domain/dto/product/product.command';
+import { ProductResult } from '../domain/dto/product/product.result';
 import { Injectable } from '@nestjs/common';
-import { CreateProductResponse } from './dto/product/create-product.response';
-import { CreateProductDto, CreateProductOptionDto, CreateProductOptionGroupDto } from './dto/product/create-product.dto';
+import { ProductResponse } from './dto/product.response';
+import { CreateProductDto, CreateProductOptionDto, CreateProductOptionGroupDto } from './dto/product.dto';
 
 @Injectable()
 export class ProductDtoMapper {
@@ -43,7 +43,7 @@ export class ProductDtoMapper {
     };
   }
 
-  ofResponse(result: ProductResult): CreateProductResponse {
+  ofResponse(result: ProductResult): ProductResponse {
     return {
       productCode: result.productInfo.productCode,
     };

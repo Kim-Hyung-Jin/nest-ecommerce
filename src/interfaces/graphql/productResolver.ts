@@ -7,18 +7,22 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Inject } from '@nestjs/common';
-import { ProductService } from '../../domain/product.service';
-import { ProductInfo } from '../../domain/dto/product.info';
-import { CreateProductDto } from '../dto/product/create-product.dto';
+import { ProductService } from '../../domain/product/product.service';
+import { ProductInfo } from '../../domain/dto/product/product.info';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  UpdateProductOptionDto,
+  UpdateProductOptionGroupDto,
+} from '../dto/product.dto';
 import { ProductDtoMapper } from '../product-dto.mapper';
 import ProductFacade from '../../application/product.facade';
-import { UpdateProductDto, UpdateProductOptionDto, UpdateProductOptionGroupDto } from '../dto/product/update-product.dto';
-import { UpdateProductResponse } from '../dto/product/update-product.response';
+import { UpdateProductResponse } from '../dto/product.response';
 import {
   UpdateProductCommand,
   UpdateProductOptionCommand,
   UpdateProductOptionGroupCommand,
-} from '../../domain/dto/update-product.command';
+} from '../../domain/dto/product/product.command';
 
 @Resolver('Product')
 export class ProductResolver {

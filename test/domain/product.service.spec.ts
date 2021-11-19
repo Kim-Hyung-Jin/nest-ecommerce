@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductService } from '../../src/domain/product.service';
-import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
-import { ProductServiceImpl } from '../../src/domain/product.service-impl';
+import { ProductService } from '../../src/domain/product/product.service';
+import { ProductCommandMapper } from '../../src/domain/product/product.command.mapper';
+import { ProductServiceImpl } from '../../src/domain/product/product.service-impl';
 import * as faker from 'faker';
 import * as uuid from 'uuid';
-import { Product } from '../../src/domain/entity/product.entity';
-import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
-import ProductOption from '../../src/domain/entity/product-option.entity';
+import { Product } from '../../src/domain/entity/product/product.entity';
+import ProductOptionGroup from '../../src/domain/entity/product/product-option-group.entity';
+import ProductOption from '../../src/domain/entity/product/product-option.entity';
 import {
   fixtureCreateCommand,
   fixtureProduct,
@@ -14,9 +14,9 @@ import {
   fixtureUpdateProductOptionCommand,
   fixtureUpdateProductOptionGroupCommand,
 } from '../fixture';
-import { CreateProductCommand } from '../../src/domain/dto/create-product.command';
+import { CreateProductCommand } from '../../src/domain/dto/product/product.command';
 import { cloneDeep } from 'lodash';
-import { ProductInfo } from '../../src/domain/dto/product.info';
+import { ProductInfo } from '../../src/domain/dto/product/product.info';
 
 jest.mock('uuid');
 

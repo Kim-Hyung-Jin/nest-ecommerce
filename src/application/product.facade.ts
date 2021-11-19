@@ -1,14 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateProductCommand } from '../domain/dto/create-product.command';
-import { ProductServiceImpl } from '../domain/product.service-impl';
-import { ProductCommandMapper } from '../domain/product.command.mapper';
-import { ProductResult } from '../domain/product.result';
-import { ProductService } from '../domain/product.service';
 import {
-  UpdateProductCommand,
-  UpdateProductOptionCommand,
+  CreateProductCommand,
+  UpdateProductCommand, UpdateProductOptionCommand,
   UpdateProductOptionGroupCommand,
-} from '../domain/dto/update-product.command';
+} from '../domain/dto/product/product.command';
+import { ProductServiceImpl } from '../domain/product/product.service-impl';
+import { ProductCommandMapper } from '../domain/product/product.command.mapper';
+import { ProductResult } from '../domain/dto/product/product.result';
+import { ProductService } from '../domain/product/product.service';
 
 @Injectable()
 export default class ProductFacade {

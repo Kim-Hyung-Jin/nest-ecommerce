@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
-import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
+import { ProductCommandMapper } from '../../src/domain/product/product.command.mapper';
 import { ProductReaderImpl } from '../../src/infra/product.reader-impl';
-import { Product } from '../../src/domain/entity/product.entity';
+import { Product } from '../../src/domain/entity/product/product.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityNotFoundError } from 'typeorm';
-import { ProductReader } from '../../src/domain/product.reader';
+import { ProductReader } from '../../src/domain/product/product.reader';
 import { fixtureProduct } from '../fixture';
 
 const mockRepo = {

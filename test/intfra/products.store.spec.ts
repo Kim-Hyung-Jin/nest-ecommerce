@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Product } from '../../src/domain/entity/product.entity';
+import { Product } from '../../src/domain/entity/product/product.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import ProductStore from '../../src/domain/product.store';
+import ProductStore from '../../src/domain/product/product.store';
 import { ProductStoreImpl } from '../../src/infra/product.store-impl';
 import { fixtureProduct } from '../fixture';
 

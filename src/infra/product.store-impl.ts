@@ -1,5 +1,5 @@
-import ProductStore from '../domain/product.store';
-import { Product } from '../domain/entity/product.entity';
+import ProductStore from '../domain/product/product.store';
+import { Product } from '../domain/entity/product/product.entity';
 import { Repository } from 'typeorm';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';

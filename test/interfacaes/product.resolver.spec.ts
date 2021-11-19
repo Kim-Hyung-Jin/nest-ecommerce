@@ -4,7 +4,7 @@ import { ProductResolver } from '../../src/interfaces/graphql/productResolver';
 import { ProductDtoMapper } from '../../src/interfaces/product-dto.mapper';
 import { fixtureInfo } from '../fixture';
 import ProductFacade from '../../src/application/product.facade';
-import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
+import { ProductCommandMapper } from '../../src/domain/product/product.command.mapper';
 import { IsNumber } from 'class-validator';
 
 const mockFacade = {

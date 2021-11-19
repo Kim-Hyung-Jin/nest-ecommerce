@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import ProductOptionGroup from './product-option-group.entity';
+import ProductOptionGroup from '../product/product-option-group.entity';
 import { randomUUID } from 'crypto';
 import { v4 } from 'uuid';
 

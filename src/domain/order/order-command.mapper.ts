@@ -1,10 +1,10 @@
-import * as OrderCommand from './dto/order.command';
-import { OrderAddress } from './entity/order-address';
-import { Order } from './entity/order.entity';
+import * as OrderCommand from '../dto/order/order.command';
+import { OrderAddress } from '../entity/order/order.address.entity';
+import { Order } from '../entity/order/order.entity';
 import { Injectable } from '@nestjs/common';
-import { OrderLine } from './entity/order-line.entity';
-import { OrderProductOptionGroup } from './entity/order-product-option-group.entity';
-import { OrderProductOption } from './entity/order-product-option.entity';
+import { OrderLine } from '../entity/order/order-line.entity';
+import { OrderProductOptionGroup } from '../entity/order/order-product-option-group.entity';
+import { OrderProductOption } from '../entity/order/order-product-option.entity';
 
 @Injectable()
 export default class OrderCommandMapper {

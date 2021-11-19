@@ -1,6 +1,6 @@
-import * as OrderCommand from '../domain/dto/order.command';
-import * as OrderResult from '../domain/dto/order.result';
-import OrderService from '../domain/order.service';
+import * as OrderCommand from '../domain/dto/order/order.command';
+import * as OrderResult from '../domain/dto/order/order.result';
+import OrderService from '../domain/order/order.service';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()

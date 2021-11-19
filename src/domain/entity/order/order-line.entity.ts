@@ -5,10 +5,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import ProductOptionGroup from './product-option-group.entity';
+import ProductOptionGroup from '../product/product-option-group.entity';
 import { randomUUID } from 'crypto';
 import { v4 } from 'uuid';
-import { CreateOrderProductOptionGroup } from '../dto/order.command';
+import { CreateOrderProductOptionGroup } from '../../dto/order/order.command';
 import { OrderProductOptionGroup } from './order-product-option-group.entity';
 
 export enum OrderStatus {

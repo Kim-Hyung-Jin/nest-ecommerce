@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { ProductServiceImpl } from '../domain/product.service-impl';
+import { ProductServiceImpl } from '../domain/product/product.service-impl';
 import ProductController from '../interfaces/product.controller';
 import ProductFacade from '../application/product.facade';
 import { ProductStoreImpl } from '../infra/product.store-impl';
 import { ProductReaderImpl } from '../infra/product.reader-impl';
 import { ProductDtoMapper } from '../interfaces/product-dto.mapper';
-import { ProductCommandMapper } from '../domain/product.command.mapper';
+import { ProductCommandMapper } from '../domain/product/product.command.mapper';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from '../domain/entity/product.entity';
-import ProductOptionGroup from '../domain/entity/product-option-group.entity';
+import { Product } from '../domain/entity/product/product.entity';
+import ProductOptionGroup from '../domain/entity/product/product-option-group.entity';
 import { ProductResolver } from '../interfaces/graphql/productResolver';
 
 @Module({

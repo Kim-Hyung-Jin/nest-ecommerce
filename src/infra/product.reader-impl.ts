@@ -1,12 +1,12 @@
-import { ProductReader } from '../domain/product.reader';
-import { Product } from '../domain/entity/product.entity';
-import { ProductOptionGroupInfo } from '../domain/dto/product.info';
+import { ProductReader } from '../domain/product/product.reader';
+import { Product } from '../domain/entity/product/product.entity';
+import { ProductOptionGroupInfo } from '../domain/dto/product/product.info';
 import { Entity, EntityNotFoundError, Repository } from 'typeorm';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import ProductOptionGroup from '../domain/entity/product-option-group.entity';
-import { ProductCommandMapper } from '../domain/product.command.mapper';
-import ProductOption from '../domain/entity/product-option.entity';
+import ProductOptionGroup from '../domain/entity/product/product-option-group.entity';
+import { ProductCommandMapper } from '../domain/product/product.command.mapper';
+import ProductOption from '../domain/entity/product/product-option.entity';
 
 @Injectable()
 export class ProductReaderImpl implements ProductReader {

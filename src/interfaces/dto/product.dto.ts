@@ -5,6 +5,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Exclude, Type } from 'class-transformer';
+import { OmitType } from '@nestjs/mapped-types';
 
 export class CreateProductDto {
   @IsString()
@@ -41,4 +42,24 @@ export class CreateProductOptionDto {
 
   @IsNumber()
   productOptionPrice: number;
+}
+
+export class UpdateProductDto extends OmitType(CreateProductDto, [
+  'productOptionGroupList',
+] as const) {
+  productCode: string;
+}
+
+export class UpdateProductOptionGroupDto extends OmitType(
+  CreateProductOptionGroupDto,
+  ['productOptionList'] as const,
+) {
+  productCode: string;
+  id: number;
+}
+
+export class UpdateProductOptionDto extends CreateProductOptionDto {
+  productCode: string;
+  optionGroupId: number;
+  id: number;
 }

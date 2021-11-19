@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import ProductFacade from '../application/product.facade';
-import { CreateProductDto } from './dto/product/create-product.dto';
-import { CreateProductResponse } from './dto/product/create-product.response';
+import { CreateProductDto } from './dto/product.dto';
+import { ProductResponse } from './dto/product.response';
 import { ProductDtoMapper } from './product-dto.mapper';
-import { ProductResult } from '../domain/product.result';
+import { ProductResult } from '../domain/dto/product/product.result';
 
 @Controller('products')
 export default class ProductController {
@@ -15,7 +15,7 @@ export default class ProductController {
   @Post()
   async create(
     @Body() createProductDto: CreateProductDto,
-  ): Promise<CreateProductResponse> {
+  ): Promise<ProductResponse> {
     const command =
       this.productDtoMapper.toCreateProductCommand(createProductDto);
     const result = await this.productFacade.register(command);

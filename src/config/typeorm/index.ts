@@ -1,7 +1,7 @@
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { Product } from '../../domain/entity/product.entity';
-import ProductOptionGroup from '../../domain/entity/product-option-group.entity';
-import ProductOption from '../../domain/entity/product-option.entity';
+import { Product } from '../../domain/entity/product/product.entity';
+import ProductOptionGroup from '../../domain/entity/product/product-option-group.entity';
+import ProductOption from '../../domain/entity/product/product-option.entity';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '../../common/logger-services';
 

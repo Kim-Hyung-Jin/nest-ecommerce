@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductService } from '../../src/domain/product.service';
-import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
-import { ProductServiceImpl } from '../../src/domain/product.service-impl';
+import { ProductService } from '../../src/domain/product/product.service';
+import { ProductCommandMapper } from '../../src/domain/product/product.command.mapper';
+import { ProductServiceImpl } from '../../src/domain/product/product.service-impl';
 import * as faker from 'faker';
 import * as uuid from 'uuid';
-import { Product } from '../../src/domain/entity/product.entity';
-import ProductOptionGroup from '../../src/domain/entity/product-option-group.entity';
-import ProductOption from '../../src/domain/entity/product-option.entity';
+import { Product } from '../../src/domain/entity/product/product.entity';
+import ProductOptionGroup from '../../src/domain/entity/product/product-option-group.entity';
+import ProductOption from '../../src/domain/entity/product/product-option.entity';
 import {
   fixtureCreateCommand,
   fixtureProduct,
@@ -14,27 +14,27 @@ import {
   fixtureUpdateProductOptionCommand,
   fixtureUpdateProductOptionGroupCommand,
 } from '../fixture';
-import { CreateProductCommand } from '../../src/domain/dto/create-product.command';
+import { CreateProductCommand } from '../../src/domain/dto/product/product.command';
 import { cloneDeep } from 'lodash';
-import { ProductInfo } from '../../src/domain/dto/product.info';
-import OrderCommandMapper from '../../src/domain/order-command.mapper';
-import OrderServiceImpl from '../../src/domain/order.service-impl';
-import OrderService from '../../src/domain/order.service';
+import { ProductInfo } from '../../src/domain/dto/product/product.info';
+import OrderCommandMapper from '../../src/domain/order/order-command.mapper';
+import OrderServiceImpl from '../../src/domain/order/order.service-impl';
+import OrderService from '../../src/domain/order/order.service';
 import {
   CreateAddress,
   CreateOrder,
   CreateOrderLine,
   CreateOrderProductOption,
   CreateOrderProductOptionGroup,
-} from '../../src/domain/dto/order.command';
-import { Order } from '../../src/domain/entity/order.entity';
-import { OrderAddress } from '../../src/domain/entity/order-address';
+} from '../../src/domain/dto/order/order.command';
+import { Order } from '../../src/domain/entity/order/order.entity';
+import { OrderAddress } from '../../src/domain/entity/order/order.address.entity';
 import {
   OrderLine,
   OrderStatus,
-} from '../../src/domain/entity/order-line.entity';
-import { OrderProductOptionGroup } from '../../src/domain/entity/order-product-option-group.entity';
-import { OrderProductOption } from '../../src/domain/entity/order-product-option.entity';
+} from '../../src/domain/entity/order/order-line.entity';
+import { OrderProductOptionGroup } from '../../src/domain/entity/order/order-product-option-group.entity';
+import { OrderProductOption } from '../../src/domain/entity/order/order-product-option.entity';
 
 jest.mock('uuid');
 

@@ -1,17 +1,17 @@
-import { Product } from './entity/product.entity';
+import { Product } from '../entity/product/product.entity';
 import {
   CreateProductCommand,
   CreateProductOptionCommand,
   CreateProductOptionGroupCommand,
-} from './dto/create-product.command';
-import ProductOption from './entity/product-option.entity';
-import ProductOptionGroup from './entity/product-option-group.entity';
+} from '../dto/product/product.command';
+import ProductOption from '../entity/product/product-option.entity';
+import ProductOptionGroup from '../entity/product/product-option-group.entity';
 import {
   ProductInfo,
   ProductOptionGroupInfo,
   ProductOptionInfo,
-} from './dto/product.info';
-import { ProductResult } from './product.result';
+} from '../dto/product/product.info';
+import { ProductResult } from '../dto/product/product.result';
 import { Injectable, Logger } from '@nestjs/common';
 import { LoggerService } from '@nestjs/common';
 

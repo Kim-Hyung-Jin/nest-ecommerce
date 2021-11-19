@@ -1,6 +1,6 @@
-import { Product } from '../src/domain/entity/product.entity';
-import ProductOptionGroup from '../src/domain/entity/product-option-group.entity';
-import ProductOption from '../src/domain/entity/product-option.entity';
+import { Product } from '../src/domain/entity/product/product.entity';
+import ProductOptionGroup from '../src/domain/entity/product/product-option-group.entity';
+import ProductOption from '../src/domain/entity/product/product-option.entity';
 import * as faker from 'faker';
 
 export function fixtureProduct() {

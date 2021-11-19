@@ -1,12 +1,12 @@
-import * as OrderInfo from './dto/order.info';
-import * as OrderCommand from './dto/order.command';
-import * as OrderResult from './dto/order.result';
+import * as OrderInfo from '../dto/order/order.info';
+import * as OrderCommand from '../dto/order/order.command';
+import * as OrderResult from '../dto/order/order.result';
 import OrderService from './order.service';
 import OrderStore from './order.store';
 import { Inject, Injectable } from '@nestjs/common';
 import OrderCommandMapper from './order-command.mapper';
 import OrderReader from './order.reader';
-import { Order } from './entity/order.entity';
+import { Order } from '../entity/order/order.entity';
 
 @Injectable()
 export default class OrderServiceImpl implements OrderService {

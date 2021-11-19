@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import ProductFacade from '../../src/application/product.facade';
 import * as faker from 'faker';
-import { ProductCommandMapper } from '../../src/domain/product.command.mapper';
+import { ProductCommandMapper } from '../../src/domain/product/product.command.mapper';
 import { MockType } from '../../src/common/mock.helper';
-import { ProductService } from '../../src/domain/product.service';
-import { ProductServiceImpl } from '../../src/domain/product.service-impl';
+import { ProductService } from '../../src/domain/product/product.service';
+import { ProductServiceImpl } from '../../src/domain/product/product.service-impl';
 import {
   fixtureCreateCommand,
   fixtureInfo,
