@@ -24,13 +24,10 @@ describe('graphql (e2e)', () => {
           useClass: GraphQLService,
         }),
         TypeOrmModule.forRootAsync({
-          useClass: TypeOrmService,
+          useClass: TypeormTestService,
         }),
       ],
     }).compile();
-    //
-    // type: 'sqlite',
-    //   database: ':memory:',
 
     app = moduleFixture.createNestApplication();
     await app.init();
@@ -70,8 +67,7 @@ describe('graphql (e2e)', () => {
                       }
                       `;
       it('생성된 주문의 정보 응답', () => {
-        console.log('2222222 -> ' + query);
-        const test = makeCreateOrderRequest();
+        const dto = makeCreateOrderRequest();
         return request(app.getHttpServer())
           .post('/graphql')
           .set('Accept', 'application/json')
@@ -79,16 +75,15 @@ describe('graphql (e2e)', () => {
           .send({
             query: query,
             variables: {
-              data: test,
+              data: dto,
             },
           })
           .expect(res => {
-            console.log('####' + JSON.stringify(res.text));
-            test.orderLineList.map(orderLine => {
+            dto.orderLineList.map(orderLine => {
               Reflect.set(orderLine, 'status', '결제전');
             });
             expect(res.body.data).toStrictEqual({
-              create: { ...test },
+              create: { ...dto },
             });
           });
       });

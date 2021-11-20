@@ -27,7 +27,7 @@ async function getTestModule() {
   return await Test.createTestingModule({
     providers: [
       OrderFacade,
-      { provide: 'ProductService', useValue: mockService },
+      { provide: 'OrderService', useValue: mockService },
     ],
   }).compile();
 }
