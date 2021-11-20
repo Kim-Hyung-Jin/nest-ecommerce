@@ -22,19 +22,47 @@ describe('graphql (e2e)', () => {
   describe('/graphql', () => {
     describe('orders mutations 시', () => {
       const response = { orderCode: faker.datatype.uuid() };
+      const query = `mutation($data: CreateOrder) {
+                        create(dto: $data) {
+                          userId
+                          payMethod
+                          address  {
+                              receiverName
+                              receiverPhone
+                              receiverZipcode
+                              receiverAddress1
+                              receiverAddress2
+                          }
+                          orderLineList {
+                              ordering
+                              productCode
+                              orderCount
+                              productPrice
+                              productOptionGroupList {
+                                  productOptionGroupName
+                                  ordering
+                            
+                              }
+                          }
+                        }
+                      }
+                      `;
       it('생성된 주문의 정보 응답', () => {
+        console.log('2222222 -> ' + query);
+        const test = makeCreateOrderRequest();
         return request(app.getHttpServer())
           .post('/graphql')
+          .set('Accept', 'application/json')
+          .type('application/json')
           .send({
-            query: `mutation {create(dto: ${makeCreateOrderRequest()}) {userId orderCode payMethod orderAddress orderLineList}}`,
+            query: query,
+            variables: {
+              data: test,
+            },
           })
           .expect(res => {
-            console.log('####' + JSON.stringify(makeCreateOrderRequest()));
-            console.log(
-              '####2' +
-                `mutation {create(dto: ${test}) {userId orderCode payMethod orderAddress orderLineList}}`,
-            );
-            expect(res.body).toStrictEqual('res');
+            console.log('####' + JSON.stringify(res.text));
+            expect(res.body.data).toStrictEqual(test);
           });
       });
     });
@@ -57,7 +85,7 @@ function makeCreateOrderRequest() {
 function makeCreateAddress() {
   return {
     receiverName: faker.commerce.productName(),
-    receiverPhone: faker.datatype.number(),
+    receiverPhone: faker.datatype.string(),
     receiverZipcode: faker.address.countryCode(),
     receiverAddress1: faker.address.streetAddress(),
     receiverAddress2: faker.address.secondaryAddress(),
@@ -69,7 +97,7 @@ function makeCreateOrderLine() {
     ordering: faker.datatype.number(),
     productCode: faker.datatype.string(),
     orderCount: faker.datatype.number(),
-    productPrice: faker.commerce.price(),
+    productPrice: faker.datatype.number(),
     productOptionGroupList: [
       makeProductOptionGroup(),
       makeProductOptionGroup(),
@@ -92,7 +120,7 @@ function makeProductOptionGroup() {
 
 function makeProductOption() {
   return {
-    productOptionPrice: faker.commerce.price(),
+    productOptionPrice: faker.datatype.number(),
     productOptionName: faker.commerce.productName(),
     ordering: faker.datatype.number(),
   };

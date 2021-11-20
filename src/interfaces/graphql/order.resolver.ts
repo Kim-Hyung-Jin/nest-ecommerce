@@ -12,6 +12,7 @@ export class OrderResolver {
   async create(
     @Args('dto') dto: OrderDto.CreateOrder,
   ): Promise<OrderResponse.CreateOrder> {
+    console.log('111111');
     const command: OrderCommand.CreateOrder = { ...dto };
     const result = await this.orderFacade.create(command);
     return { ...result.orderInfo };
