@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -10,6 +11,8 @@ import { randomUUID } from 'crypto';
 import { v4 } from 'uuid';
 import { CreateOrderProductOptionGroup } from '../../dto/order/order.command';
 import { OrderProductOptionGroup } from './order-product-option-group.entity';
+import { ProductStatus } from '../product/product.entity';
+import { Order } from './order.entity';
 
 export enum OrderStatus {
   PRE_PAYED = '결제전',
@@ -23,12 +26,32 @@ export enum OrderStatus {
 export class OrderLine extends BaseEntity {
   @PrimaryGeneratedColumn() id: number;
 
+  @Column({ type: 'int', nullable: false })
   ordering: number;
+  @Column({ type: 'varchar', nullable: false })
   productCode: string;
+  @Column({ type: 'int', nullable: false })
   orderCount: number;
+  @Column({ type: 'int', nullable: false })
   productPrice: number;
-  productOptionGroupList: OrderProductOptionGroup[];
+  @Column({
+    type: 'simple-enum',
+    enum: OrderStatus,
+    default: OrderStatus.PRE_PAYED,
+  })
   status: OrderStatus = OrderStatus.PRE_PAYED;
+
+  @ManyToOne(type => Order, order => order.orderLineList)
+  order: Order;
+
+  @OneToMany(
+    type => OrderProductOptionGroup,
+    orderProductOptionGroup => orderProductOptionGroup.orderLine,
+    {
+      cascade: true,
+    },
+  )
+  productOptionGroupList: OrderProductOptionGroup[];
 
   constructor(
     ordering: number,

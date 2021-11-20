@@ -4,10 +4,11 @@ type OrderProductOption {
     ordering: Int!
 }
 
+
 type OrderProductOptionGroup {
     productOptionGroupName: String!
     ordering: Int!
-    productionOptionList: String!
+    productionOptionList: [OrderProductOption]!
 }
 
 type OrderLine {
@@ -15,8 +16,8 @@ type OrderLine {
     productCode: String!
     orderCount: Int!
     productPrice: Int!
-    productOptionGroupList: [OrderProductOptionGroup]
     status: String!
+    productOptionGroupList: [OrderProductOptionGroup!]!
 }
 
 type OrderAddress {
@@ -32,7 +33,7 @@ type Order {
     userId: String!
     payMethod: String!
     address: OrderAddress!
-    orderLineList: [OrderLine]
+    orderLineList: [OrderLine!]!
 }
 
 type Query{

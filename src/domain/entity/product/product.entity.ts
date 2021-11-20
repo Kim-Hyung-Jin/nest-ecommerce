@@ -29,7 +29,7 @@ export class Product extends BaseEntity {
   productPrice: number;
 
   @Column({
-    type: 'enum',
+    type: 'simple-enum',
     enum: ProductStatus,
     default: ProductStatus.PREPARE,
   })

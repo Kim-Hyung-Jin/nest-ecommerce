@@ -19,6 +19,7 @@ export class OrderStoreImpl implements OrderStore {
   ) {}
 
   async store(order: Order): Promise<Order> {
-    return await this.orderRepository.save(order);
+    const a = await this.orderRepository.save(order);
+    return a;
   }
 }
