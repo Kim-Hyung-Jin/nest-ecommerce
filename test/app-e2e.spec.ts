@@ -14,6 +14,7 @@ import { TypeormTestService } from '../src/config/typeorm/typeorm-test';
 jest.setTimeout(30000);
 describe('graphql (e2e)', () => {
   let app: INestApplication;
+  let testOrderCode = undefined;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -79,12 +80,64 @@ describe('graphql (e2e)', () => {
             },
           })
           .expect(res => {
+            testOrderCode = res.body.data.orderCode;
             dto.orderLineList.map(orderLine => {
               Reflect.set(orderLine, 'status', '결제전');
             });
             expect(res.body.data).toStrictEqual({
               create: { ...dto },
             });
+          });
+      });
+    });
+
+    describe('cancel mutations 시', () => {
+      const response = { orderCode: faker.datatype.uuid() };
+      const query = `mutation($data: PartCancelOrder) {
+                        cancel(dto: $data) {
+                          userId
+                          payMethod
+                          address  {
+                              receiverName
+                              receiverPhone
+                              receiverZipcode
+                              receiverAddress1
+                              receiverAddress2
+                          }
+                          orderLineList {
+                              ordering
+                              productCode
+                              orderCount
+                              productPrice
+                              status
+                              productOptionGroupList {
+                                  productOptionGroupName
+                                  ordering
+                                  productionOptionList {
+                                    productOptionPrice
+                                    productOptionName
+                                    ordering
+                                  }
+                              }
+                          }
+                        }
+                      }
+                      `;
+      it('생성된 주문의 정보 응답', () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .set('Accept', 'application/json')
+          .type('application/json')
+          .send({
+            query: query,
+            variables: {
+              data: {
+                orderCode: testOrderCode,
+              },
+            },
+          })
+          .expect(res => {
+            console.log('111111 -> ' + res.text);
           });
       });
     });

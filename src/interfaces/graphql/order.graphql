@@ -75,7 +75,18 @@ input CreateOrder {
     orderLineList: [CreateOrderLine]
 }
 
+input CancelOrder {
+    orderCode: String!
+}
+
+input PartCancelOrder {
+    orderCode: String!,
+    orderLineIdList: [Int]!,
+}
+
 
 type Mutation{
     create(dto: CreateOrder): Order
+    cancel(dto: CancelOrder): Order
+    partCancel(dto: PartCancelOrder): Order
 }

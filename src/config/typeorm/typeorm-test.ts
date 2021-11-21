@@ -35,6 +35,7 @@ export class TypeormTestService implements TypeOrmOptionsFactory {
       synchronize: true,
       logging: ['query', 'error'],
       logger: this.logger,
+      keepConnectionAlive: true,
     };
   }
 }

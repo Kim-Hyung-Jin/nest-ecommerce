@@ -32,3 +32,12 @@ export class CreateOrderProductOption {
   productOptionName: string;
   ordering: number;
 }
+
+export class CancelOrder {
+  orderCode: string;
+}
+
+export class PartCancelOrder {
+  orderCode: string;
+  orderLineIdList: number[];
+}

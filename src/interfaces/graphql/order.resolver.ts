@@ -12,9 +12,29 @@ export class OrderResolver {
   async create(
     @Args('dto') dto: OrderDto.CreateOrder,
   ): Promise<OrderResponse.CreateOrder> {
-    console.log('111111');
     const command: OrderCommand.CreateOrder = { ...dto };
     const result = await this.orderFacade.create(command);
+    return { ...result.orderInfo };
+  }
+
+  @Mutation()
+  async cancel(
+    @Args('dto') dto: OrderDto.CancelOrder,
+  ): Promise<OrderResponse.CreateOrder> {
+    const command: OrderCommand.CancelOrder = { ...dto };
+    const result = await this.orderFacade.cancel(command.orderCode);
+    return { ...result.orderInfo };
+  }
+
+  @Mutation()
+  async partCancel(
+    @Args('dto') dto: OrderDto.PartCancelOrder,
+  ): Promise<OrderResponse.CreateOrder> {
+    const command: OrderCommand.PartCancelOrder = { ...dto };
+    const result = await this.orderFacade.partCancel(
+      command.orderCode,
+      command.orderLineIdList,
+    );
     return { ...result.orderInfo };
   }
 }

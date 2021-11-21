@@ -32,3 +32,12 @@ export interface CreateOrderProductOption {
   productOptionName: string;
   ordering: number;
 }
+
+export interface CancelOrder {
+  orderCode: string;
+}
+
+export interface PartCancelOrder {
+  orderCode: string;
+  orderLineIdList: number[];
+}
