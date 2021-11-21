@@ -18,15 +18,17 @@ export class OrderReaderImpl implements OrderReader {
   ) {}
 
   async getOrder(orderCode: string): Promise<Order> {
-    const order = await this.orderRepository.findOne(orderCode, {
-      relations: [
-        'orderAddress',
-        'orderLineList',
-        'orderLineList.productOptionGroupList',
-        'orderLineList.productOptionGroupList.productionOptionList',
-        'orderLineList.productOptionGroupList.productionOptionList.OrderProductOption',
-      ],
-    });
+    const order = await this.orderRepository.findOne(
+      { orderCode: orderCode },
+      {
+        relations: [
+          'address',
+          'orderLineList',
+          'orderLineList.productOptionGroupList',
+          'orderLineList.productOptionGroupList.productionOptionList',
+        ],
+      },
+    );
     if (!order) {
       throw new EntityNotFoundError(Order, orderCode);
     }
