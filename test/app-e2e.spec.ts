@@ -367,7 +367,7 @@ function makeOrderProductOptionGroup() {
 
 function makeOrderProductOption() {
   return new OrderProductOption(
-    faker.commerce.color(),
+    faker.datatype.number(),
     faker.commerce.price(),
     faker.datatype.number(),
   );
