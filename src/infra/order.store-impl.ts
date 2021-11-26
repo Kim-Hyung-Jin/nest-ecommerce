@@ -8,17 +8,17 @@ import ProductOptionGroup from '../domain/entity/product/product-option-group.en
 import { ProductCommandMapper } from '../domain/product/product.command.mapper';
 import ProductOption from '../domain/entity/product/product-option.entity';
 import OrderReader from '../domain/order/order.reader';
-import { Order } from '../domain/entity/order/order.entity';
+import { OrderPersist } from '../domain/entity/order/persist/order.persist';
 import OrderStore from '../domain/order/order.store';
 
 @Injectable()
 export class OrderStoreImpl implements OrderStore {
   constructor(
-    @InjectRepository(Order)
-    private orderRepository: Repository<Order>,
+    @InjectRepository(OrderPersist)
+    private orderRepository: Repository<OrderPersist>,
   ) {}
 
-  async store(order: Order): Promise<Order> {
+  async store(order: OrderPersist): Promise<OrderPersist> {
     return await this.orderRepository.save(order);;
   }
 }

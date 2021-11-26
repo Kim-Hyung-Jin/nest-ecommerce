@@ -1,6 +1,6 @@
 import { Product } from '../entity/product/product.entity';
-import { Order } from '../entity/order/order.entity';
+import { OrderPersist } from '../entity/order/persist/order.persist';
 
 export default interface OrderStore {
-  store: (order: Order) => Promise<Order>;
+  store: (order: OrderPersist) => Promise<OrderPersist>;
 }

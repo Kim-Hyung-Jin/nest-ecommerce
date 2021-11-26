@@ -4,11 +4,11 @@ import ProductOptionGroup from '../../domain/entity/product/product-option-group
 import ProductOption from '../../domain/entity/product/product-option.entity';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '../../common/logger-services';
-import { Order } from '../../domain/entity/order/order.entity';
-import { OrderAddress } from '../../domain/entity/order/order.address.entity';
-import { OrderLine } from '../../domain/entity/order/order-line.entity';
-import { OrderProductOptionGroup } from '../../domain/entity/order/order-product-option-group.entity';
-import { OrderProductOption } from '../../domain/entity/order/order-product-option.entity';
+import { OrderPersist } from '../../domain/entity/order/persist/order.persist';
+import { OrderAddressPersist } from '../../domain/entity/order/persist/order.address.persist';
+import { OrderLinePersist } from '../../domain/entity/order/persist/order-line.entity';
+import { OrderProductOptionGroupPersist } from '../../domain/entity/order/persist/order-product-option-group.persist';
+import { OrderProductOptionPersist } from '../../domain/entity/order/persist/order-product-option.persist';
 
 @Injectable()
 export class TypeormTestService implements TypeOrmOptionsFactory {
@@ -26,11 +26,11 @@ export class TypeormTestService implements TypeOrmOptionsFactory {
         Product,
         ProductOptionGroup,
         ProductOption,
-        Order,
-        OrderAddress,
-        OrderLine,
-        OrderProductOptionGroup,
-        OrderProductOption,
+        OrderPersist,
+        OrderAddressPersist,
+        OrderLinePersist,
+        OrderProductOptionGroupPersist,
+        OrderProductOptionPersist,
       ],
       synchronize: true,
       logging: ['query', 'error'],

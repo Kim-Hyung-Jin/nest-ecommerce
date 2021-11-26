@@ -27,14 +27,14 @@ import {
   CreateOrderProductOption,
   CreateOrderProductOptionGroup,
 } from '../../src/domain/dto/order/order.command';
-import { Order } from '../../src/domain/entity/order/order.entity';
-import { OrderAddress } from '../../src/domain/entity/order/order.address.entity';
+import { OrderPersist } from '../../src/domain/entity/order/persist/order.persist';
+import { OrderAddressPersist } from '../../src/domain/entity/order/persist/order.address.persist';
 import {
-  OrderLine,
+  OrderLinePersist,
   OrderStatus,
-} from '../../src/domain/entity/order/order-line.entity';
-import { OrderProductOptionGroup } from '../../src/domain/entity/order/order-product-option-group.entity';
-import { OrderProductOption } from '../../src/domain/entity/order/order-product-option.entity';
+} from '../../src/domain/entity/order/persist/order-line.entity';
+import { OrderProductOptionGroupPersist } from '../../src/domain/entity/order/persist/order-product-option-group.persist';
+import { OrderProductOptionPersist } from '../../src/domain/entity/order/persist/order-product-option.persist';
 
 jest.mock('uuid');
 
@@ -284,7 +284,7 @@ function makeProductOption() {
 }
 
 function makeOrderBy(command: CreateOrder) {
-  const order = new Order(
+  const order = new OrderPersist(
     command.userId,
     command.payMethod,
     makeOrderAddressBy(command.address),
@@ -294,8 +294,8 @@ function makeOrderBy(command: CreateOrder) {
   return order;
 }
 
-function makeOrderAddressBy(command: CreateAddress): OrderAddress {
-  return new OrderAddress(
+function makeOrderAddressBy(command: CreateAddress): OrderAddressPersist {
+  return new OrderAddressPersist(
     command.receiverName,
     command.receiverPhone,
     command.receiverZipcode,
@@ -304,8 +304,8 @@ function makeOrderAddressBy(command: CreateAddress): OrderAddress {
   );
 }
 
-function makeOrderLineListBy(command: CreateOrderLine): OrderLine {
-  return new OrderLine(
+function makeOrderLineListBy(command: CreateOrderLine): OrderLinePersist {
+  return new OrderLinePersist(
     command.ordering,
     command.productCode,
     command.orderCount,
@@ -318,8 +318,8 @@ function makeOrderLineListBy(command: CreateOrderLine): OrderLine {
 
 function makeOrderProductOptionGroupBy(
   command: CreateOrderProductOptionGroup,
-): OrderProductOptionGroup {
-  return new OrderProductOptionGroup(
+): OrderProductOptionGroupPersist {
+  return new OrderProductOptionGroupPersist(
     command.productOptionGroupName,
     command.ordering,
     command.productionOptionList.map(value1 =>
@@ -330,8 +330,8 @@ function makeOrderProductOptionGroupBy(
 
 function makeOrderProductOptionBy(
   command: CreateOrderProductOption,
-): OrderProductOption {
-  return new OrderProductOption(
+): OrderProductOptionPersist {
+  return new OrderProductOptionPersist(
     command.productOptionPrice,
     command.productOptionName,
     command.ordering,
@@ -339,7 +339,7 @@ function makeOrderProductOptionBy(
 }
 
 function makeOrderAddress() {
-  return new OrderAddress(
+  return new OrderAddressPersist(
     faker.commerce.productName(),
     faker.datatype.number(),
     faker.address.countryCode(),
@@ -349,7 +349,7 @@ function makeOrderAddress() {
 }
 
 function makeOrderLineList() {
-  return new OrderLine(
+  return new OrderLinePersist(
     faker.datatype.number(),
     faker.datatype.string(),
     faker.datatype.number(),
@@ -363,7 +363,7 @@ function makeOrderLineList() {
 }
 
 function makeOrderProductOptionGroup() {
-  return new OrderProductOptionGroup(
+  return new OrderProductOptionGroupPersist(
     faker.commerce.productName(),
     faker.datatype.number(),
     [
@@ -375,7 +375,7 @@ function makeOrderProductOptionGroup() {
 }
 
 function makeOrderProductOption() {
-  return new OrderProductOption(
+  return new OrderProductOptionPersist(
     faker.commerce.color(),
     faker.commerce.price(),
     faker.datatype.number(),
@@ -383,7 +383,7 @@ function makeOrderProductOption() {
 }
 
 function _makeOrder() {
-  const order = new Order(
+  const order = new OrderPersist(
     faker.datatype.string(),
     faker.datatype.string(),
     makeOrderAddress(),
@@ -406,7 +406,7 @@ function makeOrder(command: CreateOrder) {
   return makeOrderBy(command);
 }
 
-function makeOrderLineMap(order: Order) {
+function makeOrderLineMap(order: OrderPersist) {
   const orderLineMap = new Map();
   order.orderLineList.map(orderLine => {
     return orderLineMap.set(orderLine.id, orderLine);
@@ -414,11 +414,11 @@ function makeOrderLineMap(order: Order) {
   return orderLineMap;
 }
 
-function makePartCancelOrder(entity: Order, cancelIdList: number[]) {
+function makePartCancelOrder(entity: OrderPersist, cancelIdList: number[]) {
   const expectedCancelEntity = cloneDeep(entity); //TODO depp copy인가
   const orderLineMap = makeOrderLineMap(expectedCancelEntity);
   cancelIdList.map(cancelOrderLineId => {
-    const orderLine: OrderLine = orderLineMap.get(cancelOrderLineId);
+    const orderLine: OrderLinePersist = orderLineMap.get(cancelOrderLineId);
     Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
   });
   return expectedCancelEntity;

@@ -10,22 +10,22 @@ import { GraphQLService } from '../src/config/graphql';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmService } from '../src/config/typeorm';
 import { TypeormTestService } from '../src/config/typeorm/typeorm-test';
-import { Order } from '../src/domain/entity/order/order.entity';
+import { OrderPersist } from '../src/domain/entity/order/persist/order.persist';
 import { getRepository, Repository } from 'typeorm';
 import { CreateOrder } from '../src/domain/dto/order/order.command';
 import { cloneDeep } from 'lodash';
 import {
-  OrderLine,
+  OrderLinePersist,
   OrderStatus,
-} from '../src/domain/entity/order/order-line.entity';
-import { OrderAddress } from '../src/domain/entity/order/order.address.entity';
-import { OrderProductOptionGroup } from '../src/domain/entity/order/order-product-option-group.entity';
-import { OrderProductOption } from '../src/domain/entity/order/order-product-option.entity';
+} from '../src/domain/entity/order/persist/order-line.entity';
+import { OrderAddressPersist } from '../src/domain/entity/order/persist/order.address.persist';
+import { OrderProductOptionGroupPersist } from '../src/domain/entity/order/persist/order-product-option-group.persist';
+import { OrderProductOptionPersist } from '../src/domain/entity/order/persist/order-product-option.persist';
 
 jest.setTimeout(30000);
 describe('graphql (e2e)', () => {
   let app: INestApplication;
-  let repository: Repository<Order>;
+  let repository: Repository<OrderPersist>;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -39,11 +39,11 @@ describe('graphql (e2e)', () => {
           useClass: TypeormTestService,
         }),
       ],
-      providers: [{ provide: getRepositoryToken(Order), useClass: Repository }],
+      providers: [{ provide: getRepositoryToken(OrderPersist), useClass: Repository }],
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    repository = getRepository(Order);
+    repository = getRepository(OrderPersist);
     await app.init();
   });
 
@@ -296,7 +296,7 @@ describe('graphql (e2e)', () => {
 });
 
 function makeOrder() {
-  const order = new Order(
+  const order = new OrderPersist(
     faker.datatype.string(),
     faker.datatype.string(),
     makeOrderAddress(),
@@ -312,7 +312,7 @@ function makeOrder() {
 }
 
 function makeOrderAddress() {
-  return new OrderAddress(
+  return new OrderAddressPersist(
     faker.commerce.productName(),
     faker.datatype.number(),
     faker.address.countryCode(),
@@ -322,7 +322,7 @@ function makeOrderAddress() {
 }
 
 function makeOrderLineList() {
-  return new OrderLine(
+  return new OrderLinePersist(
     faker.datatype.number(),
     faker.datatype.string(),
     faker.datatype.number(),
@@ -335,7 +335,7 @@ function makeOrderLineList() {
   );
 }
 
-function makeOrderLineMap(order: Order) {
+function makeOrderLineMap(order: OrderPersist) {
   const orderLineMap = new Map();
   order.orderLineList.map(orderLine => {
     return orderLineMap.set(orderLine.id, orderLine);
@@ -343,18 +343,18 @@ function makeOrderLineMap(order: Order) {
   return orderLineMap;
 }
 
-function makePartCancelOrder(entity: Order, cancelIdList: number[]) {
+function makePartCancelOrder(entity: OrderPersist, cancelIdList: number[]) {
   const expectedCancelEntity = cloneDeep(entity); //TODO depp copy인가
   const orderLineMap = makeOrderLineMap(expectedCancelEntity);
   cancelIdList.map(cancelOrderLineId => {
-    const orderLine: OrderLine = orderLineMap.get(cancelOrderLineId);
+    const orderLine: OrderLinePersist = orderLineMap.get(cancelOrderLineId);
     Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
   });
   return expectedCancelEntity;
 }
 
 function makeOrderProductOptionGroup() {
-  return new OrderProductOptionGroup(
+  return new OrderProductOptionGroupPersist(
     faker.commerce.productName(),
     faker.datatype.number(),
     [
@@ -366,7 +366,7 @@ function makeOrderProductOptionGroup() {
 }
 
 function makeOrderProductOption() {
-  return new OrderProductOption(
+  return new OrderProductOptionPersist(
     faker.datatype.number(),
     faker.commerce.price(),
     faker.datatype.number(),

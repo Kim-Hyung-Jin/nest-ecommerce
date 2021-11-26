@@ -6,14 +6,14 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import ProductOptionGroup from '../product/product-option-group.entity';
+import ProductOptionGroup from '../../product/product-option-group.entity';
 import { randomUUID } from 'crypto';
 import { v4 } from 'uuid';
-import { OrderLine } from './order-line.entity';
-import { OrderProductOptionGroup } from './order-product-option-group.entity';
+import { OrderLinePersist } from './order-line.entity';
+import { OrderProductOptionGroupPersist } from './order-product-option-group.persist';
 
 @Entity()
-export class OrderProductOption extends BaseEntity {
+export class OrderProductOptionPersist extends BaseEntity {
   constructor(
     productOptionPrice: number,
     productOptionName: string,
@@ -35,8 +35,8 @@ export class OrderProductOption extends BaseEntity {
   ordering: number;
 
   @ManyToOne(
-    type => OrderProductOptionGroup,
+    type => OrderProductOptionGroupPersist,
     OrderProductOptionGroup => OrderProductOptionGroup.productionOptionList,
   )
-  productionOptionGroup: OrderProductOptionGroup;
+  productionOptionGroup: OrderProductOptionGroupPersist;
 }

@@ -7,13 +7,13 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import ProductOptionGroup from '../product/product-option-group.entity';
+import ProductOptionGroup from '../../product/product-option-group.entity';
 import { randomUUID } from 'crypto';
 import { v4 } from 'uuid';
-import { Order } from './order.entity';
+import { OrderPersist } from './order.persist';
 
 @Entity()
-export class OrderAddress extends BaseEntity {
+export class OrderAddressPersist extends BaseEntity {
   @PrimaryGeneratedColumn() id: number;
 
   constructor(
@@ -42,6 +42,6 @@ export class OrderAddress extends BaseEntity {
   @Column({ type: 'varchar', nullable: false })
   receiverAddress2: string;
 
-  @OneToOne(type => Order, order => order.address)
-  order: Order;
+  @OneToOne(type => OrderPersist, order => order.address)
+  order: OrderPersist;
 }

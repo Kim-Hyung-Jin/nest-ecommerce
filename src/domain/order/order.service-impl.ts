@@ -6,7 +6,7 @@ import OrderStore from './order.store';
 import { Inject, Injectable } from '@nestjs/common';
 import OrderCommandMapper from './order-command.mapper';
 import OrderReader from './order.reader';
-import { Order } from '../entity/order/order.entity';
+import { OrderPersist } from '../entity/order/persist/order.persist';
 
 @Injectable()
 export default class OrderServiceImpl implements OrderService {
@@ -46,7 +46,7 @@ export default class OrderServiceImpl implements OrderService {
     return { ...canceledOrder };
   }
 
-  private getCancelOrderLine(order: Order, cancelOrderLineId: number) {
+  private getCancelOrderLine(order: OrderPersist, cancelOrderLineId: number) {
     return order.orderLineList.find(
       orderLine => orderLine.id == cancelOrderLineId,
     );

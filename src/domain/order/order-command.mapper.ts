@@ -1,15 +1,15 @@
 import * as OrderCommand from '../dto/order/order.command';
-import { OrderAddress } from '../entity/order/order.address.entity';
-import { Order } from '../entity/order/order.entity';
+import { OrderAddressPersist } from '../entity/order/persist/order.address.persist';
+import { OrderPersist } from '../entity/order/persist/order.persist';
 import { Injectable } from '@nestjs/common';
-import { OrderLine } from '../entity/order/order-line.entity';
-import { OrderProductOptionGroup } from '../entity/order/order-product-option-group.entity';
-import { OrderProductOption } from '../entity/order/order-product-option.entity';
+import { OrderLinePersist } from '../entity/order/persist/order-line.entity';
+import { OrderProductOptionGroupPersist } from '../entity/order/persist/order-product-option-group.persist';
+import { OrderProductOptionPersist } from '../entity/order/persist/order-product-option.persist';
 
 @Injectable()
 export default class OrderCommandMapper {
-  toEntity(command: OrderCommand.CreateOrder): Order {
-    const orderAddress = new OrderAddress(
+  toEntity(command: OrderCommand.CreateOrder): OrderPersist {
+    const orderAddress = new OrderAddressPersist(
       command.address.receiverName,
       command.address.receiverPhone,
       command.address.receiverZipcode,
@@ -18,17 +18,17 @@ export default class OrderCommandMapper {
     );
 
     const orderLineList = command.orderLineList.map(orderLine => {
-      return new OrderLine(
+      return new OrderLinePersist(
         orderLine.ordering,
         orderLine.productCode,
         orderLine.orderCount,
         orderLine.productPrice,
         orderLine.productOptionGroupList.map(optionGroup => {
-          return new OrderProductOptionGroup(
+          return new OrderProductOptionGroupPersist(
             optionGroup.productOptionGroupName,
             optionGroup.ordering,
             optionGroup.productionOptionList.map(option => {
-              return new OrderProductOption(
+              return new OrderProductOptionPersist(
                 option.productOptionPrice,
                 option.productOptionName,
                 option.ordering,
@@ -39,7 +39,7 @@ export default class OrderCommandMapper {
       );
     });
 
-    return new Order(
+    return new OrderPersist(
       command.userId,
       command.payMethod,
       orderAddress,
