@@ -11,17 +11,17 @@ import { OrderProductOptionGroup } from '../../domain/entity/order/order-product
 import { OrderProductOption } from '../../domain/entity/order/order-product-option.entity';
 
 @Injectable()
-export class TypeOrmService implements TypeOrmOptionsFactory {
-  private logger = new LoggerService(TypeOrmService.name);
+export class TypeormTestService implements TypeOrmOptionsFactory {
+  private logger = new LoggerService(TypeormTestService.name);
 
   createTypeOrmOptions(): Promise<TypeOrmModuleOptions> | TypeOrmModuleOptions {
     return {
-      type: 'mysql',
+      type: 'sqlite' as any,
+      database: ':memory:',
       host: 'localhost',
       port: 3306,
       username: 'root',
       password: 'jin',
-      database: 'test',
       entities: [
         Product,
         ProductOptionGroup,
@@ -35,6 +35,7 @@ export class TypeOrmService implements TypeOrmOptionsFactory {
       synchronize: true,
       logging: ['query', 'error'],
       logger: this.logger,
+      keepConnectionAlive: true,
     };
   }
 }

@@ -1,0 +1,92 @@
+type OrderProductOption {
+    productOptionPrice: Int!
+    productOptionName: String!
+    ordering: Int!
+}
+
+
+type OrderProductOptionGroup {
+    productOptionGroupName: String!
+    ordering: Int!
+    productionOptionList: [OrderProductOption]!
+}
+
+type OrderLine {
+    ordering: Int!
+    productCode: String!
+    orderCount: Int!
+    productPrice: Int!
+    status: String!
+    productOptionGroupList: [OrderProductOptionGroup!]!
+}
+
+type OrderAddress {
+    receiverName: String!
+    receiverPhone: String!
+    receiverZipcode: String!
+    receiverAddress1: String!
+    receiverAddress2: String!
+}
+
+type Order {
+    orderCode: String!
+    userId: String!
+    payMethod: String!
+    address: OrderAddress!
+    orderLineList: [OrderLine!]!
+}
+
+type Query{
+    getOrder(orderCode: String!): Order
+}
+
+input CreateOrderLine {
+    ordering: Int!
+    productCode: String!
+    orderCount: Int!
+    productPrice: Int!
+    productOptionGroupList: [CreateOrderProductOptionGroup]!
+}
+
+input CreateOrderProductOptionGroup {
+    productOptionGroupName: String!
+    ordering: Int!
+    productionOptionList: [CreateOrderProductOption]!
+}
+
+input CreateOrderProductOption {
+    productOptionPrice: Int!
+    productOptionName: String!
+    ordering: Int!
+}
+
+input CreateAddress {
+    receiverName: String!
+    receiverPhone: String!
+    receiverZipcode: String!
+    receiverAddress1: String!
+    receiverAddress2: String!
+}
+
+input CreateOrder {
+    userId: String!
+    payMethod: String!
+    address: CreateAddress
+    orderLineList: [CreateOrderLine]
+}
+
+input CancelOrder {
+    orderCode: String!
+}
+
+input PartCancelOrder {
+    orderCode: String!,
+    orderLineIdList: [Int]!,
+}
+
+
+type Mutation{
+    create(dto: CreateOrder): Order
+    cancel(dto: CancelOrder): Order
+    partCancel(dto: PartCancelOrder): Order
+}

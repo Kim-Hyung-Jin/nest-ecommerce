@@ -1,26 +1,44 @@
-type ProductsOption {
+type ProductOption {
     productOptionName: String!
     productOptionPrice: Int!
     ordering: Int!
 }
 
-type ProductsOptionGroup {
+type ProductOptionGroup {
     productOptionGroupName: String!
     ordering: Int!
-    productOptionList: [ProductsOption]
+    productOptionList: [ProductOption]
 }
 
-type Products {
+type Product {
     productName: String!
     productCode: String!
     productPrice: Int!
     status: String!
-    productOptionGroupList: [ProductsOptionGroup]
+    productOptionGroupList: [ProductOptionGroup]
 }
 
 type Query{
-    getProduct(productCode: String!): Products
+    getProduct(productCode: String!): Product
 }
+
+input UpdateProduct {
+    productCode: String!
+    productOptionGroupList: [UpdateProductOptionGroup]!
+}
+
+input UpdateProductOptionGroup {
+    id: Int!
+    productCode: String!
+    productOptionGroupList: [UpdateProductOption]!
+}
+
+input UpdateProductOption {
+    productCode: String!
+    optionGroupId: Int!
+    id: Int!
+}
+
 
 input CreateProduct {
     productName: String!
@@ -43,5 +61,8 @@ input CreateProductOption {
 }
 
 type Mutation{
-    registerProduct(dto: CreateProduct): Products
+    registerProduct(dto: CreateProduct): Product
+    updateProduct(dto: UpdateProduct): Product
+    updateProductOptionGroup(dto: UpdateProductOptionGroup): Product
+    updateProductOption(dto: UpdateProductOption): Product
 }
