@@ -24,7 +24,14 @@ export default class OrderServiceImpl implements OrderService {
 
   async get(orderCode: string): Promise<OrderInfo.Simple> {
     const order = await this.orderReader.getOrder(orderCode);
-    return { ...order };
+
+    return {
+      orderCode: order.orderCode,
+      userId: order.userId,
+      payMethod: order.payMethod,
+      address: order.address,
+      orderLineList: order.orderLineList,
+    };
   }
 
   async cancel(orderCode: string): Promise<OrderInfo.Simple> {

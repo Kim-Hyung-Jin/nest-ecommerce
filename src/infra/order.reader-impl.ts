@@ -9,6 +9,7 @@ import { ProductCommandMapper } from '../domain/product/product.command.mapper';
 import ProductOption from '../domain/entity/product/product-option.entity';
 import OrderReader from '../domain/order/order.reader';
 import { OrderPersist } from '../domain/entity/order/persist/order.persist';
+import { Order } from '../domain/entity/order/order';
 
 @Injectable()
 export class OrderReaderImpl implements OrderReader {
@@ -17,7 +18,7 @@ export class OrderReaderImpl implements OrderReader {
     private orderRepository: Repository<OrderPersist>,
   ) {}
 
-  async getOrder(orderCode: string): Promise<OrderPersist> {
+  async getOrder(orderCode: string): Promise<Order> {
     const order = await this.orderRepository.findOne(
       { orderCode: orderCode },
       {
@@ -32,6 +33,7 @@ export class OrderReaderImpl implements OrderReader {
     if (!order) {
       throw new EntityNotFoundError(OrderPersist, orderCode);
     }
-    return order;
+
+    return new Order(order);
   }
 }
