@@ -95,7 +95,47 @@ describe('get() 호출시', () => {
   describe('orderCode 가 주어지면', () => {
     it('해당 주문 정보 응답', async () => {
       const orderCode = faker.datatype.uuid();
-      const mockInfo = { orderCode: faker.datatype.uuid() };
+      const expectedEntity = makeOrder(undefined);
+      const mockInfo = {
+        orderCode: expectedEntity.orderCode,
+        userId: expectedEntity.userId,
+        payMethod: expectedEntity.payMethod,
+        address: {
+          receiverName: expectedEntity.address.receiverName,
+          receiverPhone: expectedEntity.address.receiverPhone,
+          receiverZipcode: expectedEntity.address.receiverZipcode,
+          receiverAddress1: expectedEntity.address.receiverAddress1,
+          receiverAddress2: expectedEntity.address.receiverAddress2,
+        },
+        orderLineList: expectedEntity.orderLineList.map(orderLine => {
+          return {
+            ordering: orderLine.ordering,
+            productCode: orderLine.productCode,
+            orderCount: orderLine.orderCount,
+            productPrice: orderLine.productPrice,
+            status: orderLine.status,
+            productOptionGroupList: orderLine.productOptionGroupList.map(
+              productOptionGroup => {
+                return {
+                  productOptionGroupName:
+                    productOptionGroup.productOptionGroupName,
+                  ordering: productOptionGroup.ordering,
+                  productionOptionList:
+                    productOptionGroup.productionOptionList.map(
+                      productOption => {
+                        return {
+                          productOptionPrice: productOption.productOptionPrice,
+                          productOptionName: productOption.productOptionName,
+                          ordering: productOption.ordering,
+                        };
+                      },
+                    ),
+                };
+              },
+            ),
+          };
+        }),
+      };
 
       mockReader.getOrder.mockReturnValue(mockInfo);
 
@@ -213,7 +253,46 @@ describe('partCancel() 호출시', () => {
         cancelOrderLineIdList,
       );
       const mockedStoredCancelEntity = cloneDeep(expectedCancelOrder);
-      const mockInfo = { ...mockedStoredCancelEntity };
+      const mockInfo = {
+        orderCode: mockedStoredCancelEntity.orderCode,
+        userId: mockedStoredCancelEntity.userId,
+        payMethod: mockedStoredCancelEntity.payMethod,
+        address: {
+          receiverName: mockedStoredCancelEntity.address.receiverName,
+          receiverPhone: mockedStoredCancelEntity.address.receiverPhone,
+          receiverZipcode: mockedStoredCancelEntity.address.receiverZipcode,
+          receiverAddress1: mockedStoredCancelEntity.address.receiverAddress1,
+          receiverAddress2: mockedStoredCancelEntity.address.receiverAddress2,
+        },
+        orderLineList: mockedStoredCancelEntity.orderLineList.map(orderLine => {
+          return {
+            ordering: orderLine.ordering,
+            productCode: orderLine.productCode,
+            orderCount: orderLine.orderCount,
+            productPrice: orderLine.productPrice,
+            status: orderLine.status,
+            productOptionGroupList: orderLine.productOptionGroupList.map(
+              productOptionGroup => {
+                return {
+                  productOptionGroupName:
+                    productOptionGroup.productOptionGroupName,
+                  ordering: productOptionGroup.ordering,
+                  productionOptionList:
+                    productOptionGroup.productionOptionList.map(
+                      productOption => {
+                        return {
+                          productOptionPrice: productOption.productOptionPrice,
+                          productOptionName: productOption.productOptionName,
+                          ordering: productOption.ordering,
+                        };
+                      },
+                    ),
+                };
+              },
+            ),
+          };
+        }),
+      };
 
       mockReader.getOrder.mockReturnValue(mockRetrieveOrder);
       mockStore.store.mockReturnValue(mockedStoredCancelEntity);
