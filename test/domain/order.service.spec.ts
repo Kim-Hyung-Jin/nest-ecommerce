@@ -79,7 +79,7 @@ describe('create() 호출시', () => {
 
       const res = await service.create(command);
       expect(mockStore.store).toHaveBeenCalledWith(expectedEntity);
-      expect(res).toStrictEqual(mockInfo);
+      expect(res).toEqual(mockInfo);
     });
   });
 });
@@ -101,7 +101,7 @@ describe('get() 호출시', () => {
 
       const res = await service.get(orderCode);
       expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
-      expect(res).toStrictEqual(mockInfo);
+      expect(res).toEqual(mockInfo);
     });
   });
 });
@@ -132,7 +132,7 @@ describe('cancel() 호출시', () => {
       const res = await service.cancel(orderCode);
       expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
       expect(mockStore.store).toHaveBeenCalledWith(expectedCancelEntity);
-      expect(res).toStrictEqual(mockInfo);
+      expect(res).toEqual(mockInfo);
     });
   });
 
@@ -221,7 +221,7 @@ describe('partCancel() 호출시', () => {
       const res = await service.partCancel(orderCode, cancelOrderLineIdList);
       expect(mockReader.getOrder).toHaveBeenCalledWith(orderCode);
       expect(mockStore.store).toHaveBeenCalledWith(expectedCancelOrder);
-      expect(res).toStrictEqual(mockInfo);
+      expect(res).toEqual(mockInfo);
     });
   });
 });
@@ -242,7 +242,7 @@ function makeCreateOrderCommand() {
 function makeCreateAddress() {
   return {
     receiverName: faker.commerce.productName(),
-    receiverPhone: faker.datatype.number(),
+    receiverPhone: faker.datatype.string(),
     receiverZipcode: faker.address.countryCode(),
     receiverAddress1: faker.address.streetAddress(),
     receiverAddress2: faker.address.secondaryAddress(),

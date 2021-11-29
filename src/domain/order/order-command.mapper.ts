@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { OrderLine } from '../entity/order/order-line.entity';
 import { OrderProductOptionGroup } from '../entity/order/order-product-option-group.entity';
 import { OrderProductOption } from '../entity/order/order-product-option.entity';
+import * as OrderInfo from '../dto/order/order.info';
 
 @Injectable()
 export default class OrderCommandMapper {
@@ -45,5 +46,46 @@ export default class OrderCommandMapper {
       orderAddress,
       orderLineList,
     );
+  }
+
+  of(entity: Order): OrderInfo.Simple {
+    return {
+      orderCode: entity.orderCode,
+      userId: entity.userId,
+      payMethod: entity.payMethod,
+      address: {
+        receiverName: entity.address.receiverName,
+        receiverPhone: entity.address.receiverPhone,
+        receiverZipcode: entity.address.receiverZipcode,
+        receiverAddress1: entity.address.receiverAddress1,
+        receiverAddress2: entity.address.receiverAddress2,
+      },
+      orderLineList: entity.orderLineList.map(orderLine => {
+        return {
+          ordering: orderLine.ordering,
+          productCode: orderLine.productCode,
+          orderCount: orderLine.orderCount,
+          productPrice: orderLine.productPrice,
+          status: orderLine.status,
+          productOptionGroupList: orderLine.productOptionGroupList.map(
+            productOptionGroup => {
+              return {
+                productOptionGroupName:
+                  productOptionGroup.productOptionGroupName,
+                ordering: productOptionGroup.ordering,
+                productionOptionList:
+                  productOptionGroup.productionOptionList.map(productOption => {
+                    return {
+                      productOptionPrice: productOption.productOptionPrice,
+                      productOptionName: productOption.productOptionName,
+                      ordering: productOption.ordering,
+                    };
+                  }),
+              };
+            },
+          ),
+        };
+      }),
+    };
   }
 }

@@ -13,25 +13,25 @@ export default class OrderServiceImpl implements OrderService {
   constructor(
     @Inject('OrderStore') private orderStore: OrderStore,
     @Inject('OrderReader') private orderReader: OrderReader,
-    private orderCommandMapper: OrderCommandMapper,
+    private mapper: OrderCommandMapper,
   ) {}
 
   async create(command: OrderCommand.CreateOrder): Promise<OrderInfo.Simple> {
-    const initEntity = this.orderCommandMapper.toEntity(command);
+    const initEntity = this.mapper.toEntity(command);
     const order = await this.orderStore.store(initEntity);
-    return { ...order };
+    return this.mapper.of(order);
   }
 
   async get(orderCode: string): Promise<OrderInfo.Simple> {
     const order = await this.orderReader.getOrder(orderCode);
-    return { ...order };
+    return this.mapper.of(order);
   }
 
   async cancel(orderCode: string): Promise<OrderInfo.Simple> {
     const retrievedOrder = await this.orderReader.getOrder(orderCode);
     retrievedOrder.orderLineList.map(orderLine => orderLine.onCancel());
     const canceledOrder = await this.orderStore.store(retrievedOrder);
-    return { ...canceledOrder };
+    return this.mapper.of(canceledOrder);
   }
 
   async partCancel(
@@ -43,7 +43,7 @@ export default class OrderServiceImpl implements OrderService {
       this.getCancelOrderLine(retrievedOrder, cancelOrderLineId).onCancel(),
     );
     const canceledOrder = await this.orderStore.store(retrievedOrder);
-    return { ...canceledOrder };
+    return this.mapper.of(canceledOrder);
   }
 
   private getCancelOrderLine(order: Order, cancelOrderLineId: number) {

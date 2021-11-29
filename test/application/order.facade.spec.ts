@@ -148,7 +148,7 @@ function makeCreateOrderCommand() {
 function makeCreateAddress() {
   return {
     receiverName: faker.commerce.productName(),
-    receiverPhone: faker.datatype.number(),
+    receiverPhone: faker.datatype.string(),
     receiverZipcode: faker.address.countryCode(),
     receiverAddress1: faker.address.streetAddress(),
     receiverAddress2: faker.address.secondaryAddress(),

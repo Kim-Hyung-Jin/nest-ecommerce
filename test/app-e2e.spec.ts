@@ -21,6 +21,8 @@ import {
 import { OrderAddress } from '../src/domain/entity/order/order.address.entity';
 import { OrderProductOptionGroup } from '../src/domain/entity/order/order-product-option-group.entity';
 import { OrderProductOption } from '../src/domain/entity/order/order-product-option.entity';
+import * as OrderInfo from '../src/domain/dto/order/order.info';
+import * as OrderResult from '../src/domain/dto/order/order.result';
 
 jest.setTimeout(30000);
 describe('graphql (e2e)', () => {
@@ -155,6 +157,12 @@ describe('graphql (e2e)', () => {
         it('생성된 주문의 정보 응답', async () => {
           const initOrder = makeOrder();
           const order = await repository.save(initOrder);
+          const expectCancelOrder = order;
+          expectCancelOrder.orderLineList.map(orderLine => {
+            Reflect.set(orderLine, 'status', OrderStatus.CANCEL);
+          });
+          const expectInfo: OrderInfo.Simple = { ...expectCancelOrder };
+          const expectResult: OrderResult.Simple = { orderInfo: expectInfo };
 
           return request(app.getHttpServer())
             .post('/graphql')
@@ -167,7 +175,7 @@ describe('graphql (e2e)', () => {
               },
             })
             .expect(res => {
-              expect(res.body);
+              expect(res.body.data.cancel).toStrictEqual(expectResult);
               console.log('111111 -> ' + res.text);
             });
         });

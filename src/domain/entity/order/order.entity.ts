@@ -12,10 +12,13 @@ import { randomUUID } from 'crypto';
 import { v4 } from 'uuid';
 import { OrderAddress } from './order.address.entity';
 import { OrderLine } from './order-line.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Order extends BaseEntity {
-  @PrimaryGeneratedColumn() id: number;
+  @Exclude()
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'varchar', nullable: false })
   orderCode: string = v4();

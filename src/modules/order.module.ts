@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { OrderReaderImpl } from '../infra/Order.reader-impl';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderAddress } from '../domain/entity/order/order.address.entity';
 import { OrderLine } from '../domain/entity/order/order-line.entity';
@@ -11,6 +10,7 @@ import OrderCommandMapper from '../domain/order/order-command.mapper';
 import { OrderResolver } from '../interfaces/graphql/order.resolver';
 import { OrderProductOption } from '../domain/entity/order/order-product-option.entity';
 import { OrderStoreImpl } from '../infra/order.store-impl';
+import { OrderReaderImpl } from '../infra/order.reader-impl';
 
 @Module({
   imports: [
